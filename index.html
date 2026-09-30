@@ -3,353 +3,328 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0b0d12">
+  <meta name="theme-color" content="#f5f5f7">
   <title>KitchenFlow</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <div class="app">
+  <header class="topbar">
+    <div>
+      <div class="logo">Kitchen<span>Flow</span></div>
+      <div class="subtitle">KITCHEN CONTROL</div>
+    </div>
 
-    <!-- HEADER -->
-    <header class="topbar">
-      <div>
-        <div class="brand">Kitchen<span>Flow</span></div>
-        <div class="subtitle">Kitchen control</div>
+    <button class="theme-btn" id="themeBtn" aria-label="Changer le thème">
+      ☀️
+    </button>
+  </header>
+
+
+  <main id="app">
+
+    <!-- ACCUEIL -->
+    <section class="page active" id="homePage">
+
+      <div class="hero">
+        <div class="eyebrow">AUJOURD'HUI</div>
+        <h1>Ta cuisine.<br><span>Ton rythme.</span></h1>
+        <p>Tout ce dont tu as besoin pour gérer ton service au même endroit.</p>
+
+        <button class="primary big" id="homeNewTimer">
+          ＋ Nouveau minuteur
+        </button>
       </div>
 
-      <button class="icon-btn" id="themeBtn" aria-label="Changer le thème">
-        ☼
-      </button>
-    </header>
 
-
-    <!-- MAIN -->
-    <main>
-
-      <!-- ================= DASHBOARD ================= -->
-      <section class="screen active" id="screen-home">
-
-        <div class="hero">
-          <p class="eyebrow">TABLEAU DE BORD</p>
-          <h1>Prêt pour le service ?</h1>
-          <p class="hero-text">
-            Tout ce dont tu as besoin pour garder ta cuisine sous contrôle.
-          </p>
-        </div>
-
-        <button class="primary-btn big-btn" id="quickTimerBtn">
-          <span>＋</span>
-          Nouveau minuteur
-        </button>
-
-
+      <section class="section">
         <div class="section-head">
           <div>
-            <p class="eyebrow">EN COURS</p>
+            <div class="eyebrow">EN COURS</div>
             <h2>Minuteurs</h2>
           </div>
-          <span class="counter" id="timerCount">0</span>
+          <div class="counter" id="timerCount">0</div>
         </div>
 
-        <div id="homeTimers" class="timer-list"></div>
-
-
-        <div class="section-head spaced">
-          <div>
-            <p class="eyebrow">ACCÈS RAPIDE</p>
-            <h2>Mes outils</h2>
+        <div id="homeTimers" class="timer-list empty">
+          <div class="empty-state">
+            <div class="empty-icon">⏱️</div>
+            <strong>Aucun minuteur actif</strong>
+            <span>Lance une cuisson pour la voir apparaître ici.</span>
           </div>
         </div>
+      </section>
 
-        <div class="quick-grid">
 
-          <button class="tool-card" data-screen="timers">
-            <div class="tool-icon">⏱</div>
+      <section class="section">
+        <div class="eyebrow">ACCÈS RAPIDE</div>
+        <h2>Mes outils</h2>
+
+        <div class="tool-grid">
+
+          <button class="tool-card" data-page="timers">
+            <div class="tool-icon">⏱️</div>
             <strong>Minuteurs</strong>
             <span>Cuissons & temps</span>
           </button>
 
-          <button class="tool-card" data-screen="products">
-            <div class="tool-icon">▣</div>
+          <button class="tool-card" data-page="preparations">
+            <div class="tool-icon">📋</div>
             <strong>Préparations</strong>
             <span>Recettes & procédures</span>
           </button>
 
-          <button class="tool-card" data-screen="checklists">
+          <button class="tool-card" data-page="lists">
             <div class="tool-icon">✓</div>
-            <strong>Checklists</strong>
-            <span>Mise en place & service</span>
+            <strong>Listes</strong>
+            <span>Mise en place</span>
           </button>
 
-          <button class="tool-card" data-screen="settings">
-            <div class="tool-icon">⚙</div>
+          <button class="tool-card" data-page="settings">
+            <div class="tool-icon">⚙️</div>
             <strong>Réglages</strong>
-            <span>Personnaliser KitchenFlow</span>
+            <span>Personnaliser</span>
           </button>
 
         </div>
-
       </section>
 
+    </section>
 
-      <!-- ================= TIMERS ================= -->
-      <section class="screen" id="screen-timers">
 
-        <div class="page-header">
-          <div>
-            <p class="eyebrow">TEMPS</p>
-            <h1>Minuteurs</h1>
-          </div>
+    <!-- MINUTEURS -->
+    <section class="page" id="timersPage">
 
-          <button class="small-primary" id="addTimerBtn">＋ Ajouter</button>
+      <div class="page-header">
+        <div>
+          <div class="eyebrow">CUISSONS</div>
+          <h1>Minuteurs</h1>
         </div>
 
+        <button class="primary" id="newTimerBtn">＋ Ajouter</button>
+      </div>
 
-        <div id="timersContainer" class="timer-list"></div>
+      <div id="timerList" class="timer-list"></div>
+
+    </section>
 
 
-        <div id="emptyTimers" class="empty-state">
-          <div class="empty-icon">⏱</div>
-          <h3>Aucun minuteur</h3>
-          <p>
-            Lance une cuisson ou crée un minuteur personnalisé.
-          </p>
-          <button class="primary-btn" id="emptyAddTimer">
-            Nouveau minuteur
+    <!-- PRÉPARATIONS -->
+    <section class="page" id="preparationsPage">
+
+      <div class="page-header">
+        <div>
+          <div class="eyebrow">RECETTES</div>
+          <h1>Préparations</h1>
+        </div>
+
+        <button class="primary" id="newPrepBtn">＋ Ajouter</button>
+      </div>
+
+      <div id="prepList" class="card-list"></div>
+
+    </section>
+
+
+    <!-- LISTES -->
+    <section class="page" id="listsPage">
+
+      <div class="page-header">
+        <div>
+          <div class="eyebrow">ORGANISATION</div>
+          <h1>Mes listes</h1>
+        </div>
+
+        <button class="primary" id="newListBtn">＋ Ajouter</button>
+      </div>
+
+      <div id="listsContainer"></div>
+
+    </section>
+
+
+    <!-- RÉGLAGES -->
+    <section class="page" id="settingsPage">
+
+      <div class="page-header">
+        <div>
+          <div class="eyebrow">APPLICATION</div>
+          <h1>Réglages</h1>
+        </div>
+      </div>
+
+      <div class="settings-card">
+
+        <label>
+          <span>Nom de la cuisine</span>
+          <input id="kitchenName" type="text" placeholder="Ma cuisine">
+        </label>
+
+        <div class="setting-row">
+          <div>
+            <strong>Sons</strong>
+            <small>Son à la fin des minuteurs</small>
+          </div>
+          <button class="switch active" id="soundToggle">
+            <span></span>
           </button>
         </div>
 
-
-        <div class="subsection">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">PRÉRÉGLAGES</p>
-              <h2>Mes cuissons</h2>
-            </div>
-
-            <button class="text-btn" id="managePresetsBtn">
-              Gérer
-            </button>
-          </div>
-
-          <div id="presetList" class="preset-list"></div>
-        </div>
-
-      </section>
-
-
-      <!-- ================= PRODUCTS ================= -->
-      <section class="screen" id="screen-products">
-
-        <div class="page-header">
+        <div class="setting-row">
           <div>
-            <p class="eyebrow">PROCÉDURES</p>
-            <h1>Préparations</h1>
+            <strong>Sonnerie</strong>
+            <small>Tester la sonnerie actuelle</small>
           </div>
-
-          <button class="small-primary" id="addProductBtn">＋ Ajouter</button>
+          <button class="secondary" id="testSound">Tester</button>
         </div>
 
-        <p class="page-description">
-          Enregistre tes sauces, préparations, recettes et procédures
-          pour pouvoir les refaire rapidement.
-        </p>
-
-        <div id="productsContainer" class="product-grid"></div>
-
-        <div id="emptyProducts" class="empty-state">
-          <div class="empty-icon">▣</div>
-          <h3>Aucune préparation</h3>
-          <p>
-            Crée ta première préparation personnalisée.
-          </p>
-          <button class="primary-btn" id="emptyAddProduct">
-            Ajouter une préparation
-          </button>
-        </div>
-
-      </section>
-
-
-      <!-- ================= CHECKLISTS ================= -->
-      <section class="screen" id="screen-checklists">
-
-        <div class="page-header">
+        <div class="setting-row">
           <div>
-            <p class="eyebrow">ORGANISATION</p>
-            <h1>Checklists</h1>
+            <strong>Thème</strong>
+            <small>Clair ou sombre</small>
           </div>
-
-          <button class="small-primary" id="addChecklistBtn">＋ Ajouter</button>
+          <button class="secondary" id="settingsTheme">Changer</button>
         </div>
 
-        <div id="checklistsContainer" class="checklist-grid"></div>
+        <button class="danger" id="resetApp">
+          Réinitialiser l'application
+        </button>
 
-        <div id="emptyChecklists" class="empty-state">
-          <div class="empty-icon">✓</div>
-          <h3>Aucune checklist</h3>
-          <p>
-            Crée une liste pour ton ouverture, ton service ou ta fermeture.
-          </p>
-          <button class="primary-btn" id="emptyAddChecklist">
-            Nouvelle checklist
-          </button>
-        </div>
+      </div>
 
-      </section>
+    </section>
+
+  </main>
 
 
-      <!-- ================= SETTINGS ================= -->
-      <section class="screen" id="screen-settings">
+  <!-- NAVIGATION -->
+  <nav class="bottom-nav">
 
-        <div class="page-header">
-          <div>
-            <p class="eyebrow">PERSONNALISATION</p>
-            <h1>Réglages</h1>
-          </div>
-        </div>
+    <button class="nav-btn active" data-page="home">
+      <span>⌂</span>
+      <small>Accueil</small>
+    </button>
 
+    <button class="nav-btn" data-page="timers">
+      <span>⏱</span>
+      <small>Minuteurs</small>
+    </button>
 
-        <div class="settings-card">
+    <button class="nav-btn" data-page="preparations">
+      <span>▣</span>
+      <small>Préparations</small>
+    </button>
 
-          <div class="setting-row">
-            <div>
-              <strong>Son des minuteurs</strong>
-              <span>Son joué lorsqu'un minuteur arrive à zéro.</span>
-            </div>
+    <button class="nav-btn" data-page="lists">
+      <span>✓</span>
+      <small>Listes</small>
+    </button>
 
-            <select id="soundSelect">
-              <option value="bell">Cloche</option>
-              <option value="beep">Bip</option>
-              <option value="double">Double bip</option>
-              <option value="alarm">Alarme</option>
-            </select>
-          </div>
+    <button class="nav-btn" data-page="settings">
+      <span>⚙</span>
+      <small>Réglages</small>
+    </button>
 
-
-          <div class="setting-row column">
-
-            <div>
-              <strong>Volume</strong>
-              <span id="volumeLabel">70%</span>
-            </div>
-
-            <input
-              type="range"
-              id="volumeSlider"
-              min="0"
-              max="100"
-              value="70"
-            >
-
-          </div>
+  </nav>
 
 
-          <div class="setting-row">
+  <!-- MODAL MINUTEUR -->
+  <div class="modal" id="timerModal">
+    <div class="modal-box">
 
-            <div>
-              <strong>Sonnerie répétée</strong>
-              <span>Répète la sonnerie jusqu'à ton arrêt.</span>
-            </div>
+      <div class="modal-head">
+        <h2>Nouveau minuteur</h2>
+        <button class="close" data-close="timerModal">×</button>
+      </div>
 
-            <label class="switch">
-              <input type="checkbox" id="repeatSound">
-              <span></span>
-            </label>
+      <label>
+        Nom
+        <input id="timerName" type="text" placeholder="Ex. Sauce tomate">
+      </label>
 
-          </div>
+      <div class="time-inputs">
 
+        <label>
+          Minutes
+          <input id="timerMinutes" type="number" min="0" value="5">
+        </label>
 
-          <div class="setting-row">
+        <label>
+          Secondes
+          <input id="timerSeconds" type="number" min="0" max="59" value="0">
+        </label>
 
-            <div>
-              <strong>Thème sombre</strong>
-              <span>Adapter l'apparence de l'application.</span>
-            </div>
+      </div>
 
-            <label class="switch">
-              <input type="checkbox" id="darkMode">
-              <span></span>
-            </label>
+      <div class="quick-times">
+        <button data-time="60">1 min</button>
+        <button data-time="300">5 min</button>
+        <button data-time="600">10 min</button>
+        <button data-time="900">15 min</button>
+        <button data-time="1800">30 min</button>
+      </div>
 
-          </div>
-
-        </div>
-
-
-        <div class="settings-card danger-zone">
-
-          <div class="setting-row column">
-            <strong>Réinitialisation</strong>
-            <span>
-              Supprime toutes les données enregistrées sur cet appareil.
-            </span>
-
-            <button class="danger-btn" id="resetApp">
-              Réinitialiser KitchenFlow
-            </button>
-          </div>
-
-        </div>
-
-      </section>
-
-    </main>
-
-
-    <!-- ================= BOTTOM NAV ================= -->
-    <nav class="bottom-nav">
-
-      <button class="nav-btn active" data-screen="home">
-        <span>⌂</span>
-        <small>Accueil</small>
+      <button class="primary full" id="createTimer">
+        Démarrer
       </button>
 
-      <button class="nav-btn" data-screen="timers">
-        <span>⏱</span>
-        <small>Minuteurs</small>
-      </button>
-
-      <button class="nav-btn" data-screen="products">
-        <span>▣</span>
-        <small>Préparations</small>
-      </button>
-
-      <button class="nav-btn" data-screen="checklists">
-        <span>✓</span>
-        <small>Listes</small>
-      </button>
-
-      <button class="nav-btn" data-screen="settings">
-        <span>⚙</span>
-        <small>Réglages</small>
-      </button>
-
-    </nav>
-
+    </div>
   </div>
 
 
-  <!-- ================= MODAL ================= -->
-  <div class="modal-backdrop" id="modalBackdrop">
+  <!-- MODAL PRÉPARATION -->
+  <div class="modal" id="prepModal">
+    <div class="modal-box">
 
-    <div class="modal">
-
-      <div class="modal-header">
-        <div>
-          <p class="eyebrow" id="modalEyebrow">NOUVEAU</p>
-          <h2 id="modalTitle">Créer</h2>
-        </div>
-
-        <button class="close-btn" id="closeModal">×</button>
+      <div class="modal-head">
+        <h2>Nouvelle préparation</h2>
+        <button class="close" data-close="prepModal">×</button>
       </div>
 
-      <div id="modalContent"></div>
+      <label>
+        Nom
+        <input id="prepName" type="text" placeholder="Ex. Sauce maison">
+      </label>
+
+      <label>
+        Étapes
+        <textarea id="prepSteps" rows="7"
+          placeholder="Une étape par ligne&#10;&#10;Ex. Émincer les oignons&#10;Faire chauffer la casserole&#10;Ajouter les tomates"></textarea>
+      </label>
+
+      <button class="primary full" id="createPrep">
+        Créer la préparation
+      </button>
 
     </div>
+  </div>
 
+
+  <!-- MODAL LISTE -->
+  <div class="modal" id="listModal">
+    <div class="modal-box">
+
+      <div class="modal-head">
+        <h2>Nouvelle liste</h2>
+        <button class="close" data-close="listModal">×</button>
+      </div>
+
+      <label>
+        Nom
+        <input id="listName" type="text" placeholder="Ex. Mise en place">
+      </label>
+
+      <label>
+        Première tâche
+        <input id="firstTask" type="text" placeholder="Ex. Préparer les sauces">
+      </label>
+
+      <button class="primary full" id="createList">
+        Créer la liste
+      </button>
+
+    </div>
   </div>
 
 
