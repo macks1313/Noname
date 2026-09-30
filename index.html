@@ -1,35 +1,50 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        content="width=device-width, initial-scale=1.0"
     >
 
     <title>THE RULES</title>
 
     <link rel="stylesheet" href="./style.css">
+
 </head>
 
 <body>
 
 <div id="app">
 
-    <header class="header">
-        <div class="logo">THE RULES</div>
-        <div class="session">SESSION <span id="session">001</span></div>
+    <header>
+
+        <div class="logo">
+            THE RULES
+        </div>
+
+        <div class="session">
+            SESSION <span id="session">001</span>
+        </div>
+
     </header>
 
 
-    <!-- ÉCRAN D'ACCUEIL -->
+    <!-- ========================= -->
+    <!-- ACCUEIL -->
+    <!-- ========================= -->
 
-    <section id="intro" class="page page-visible">
+    <section
+        id="intro"
+        class="screen active"
+    >
 
-        <div class="intro">
+        <div class="intro-content">
 
-            <div class="small-title">
+            <div class="eyebrow">
                 AN INTERACTIVE EXPERIMENT
             </div>
 
@@ -39,7 +54,9 @@
                 <span>NO RULES.</span>
             </h1>
 
-            <p>Or maybe there are.</p>
+            <p>
+                Or maybe there are.
+            </p>
 
             <button id="begin">
                 BEGIN
@@ -50,41 +67,58 @@
     </section>
 
 
+    <!-- ========================= -->
     <!-- JEU -->
+    <!-- ========================= -->
 
-    <section id="game" class="page">
+    <section
+        id="game"
+        class="screen"
+    >
 
-        <div class="rule-number" id="ruleNumber">
-            RULE #01
-        </div>
+        <div class="game-content">
 
-        <div class="rule" id="rule">
-            There are no rules.
-        </div>
-
-        <div id="arena">
-
-            <button id="actionButton">
-                DO SOMETHING
-            </button>
-
-        </div>
-
-        <div class="stats">
-
-            <div>
-                <span>ACTIONS</span>
-                <strong id="actions">0</strong>
+            <div
+                id="ruleNumber"
+                class="rule-number"
+            >
+                RULE #01
             </div>
 
-            <div>
-                <span>DISCOVERED</span>
-                <strong id="discoveries">0</strong>
+            <div
+                id="rule"
+                class="rule"
+            >
+                There are no rules.
             </div>
 
-            <div>
-                <span>RULES</span>
-                <strong id="rules">1</strong>
+
+            <div id="arena">
+
+                <button id="actionButton">
+                    DO SOMETHING
+                </button>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div>
+                    <span>ACTIONS</span>
+                    <strong id="actions">0</strong>
+                </div>
+
+                <div>
+                    <span>DISCOVERED</span>
+                    <strong id="discoveries">0</strong>
+                </div>
+
+                <div>
+                    <span>RULES</span>
+                    <strong id="rules">1</strong>
+                </div>
+
             </div>
 
         </div>
@@ -92,13 +126,18 @@
     </section>
 
 
+    <!-- ========================= -->
     <!-- FIN -->
+    <!-- ========================= -->
 
-    <section id="end" class="page">
+    <section
+        id="end"
+        class="screen"
+    >
 
-        <div class="end">
+        <div class="end-content">
 
-            <div class="small-title">
+            <div class="eyebrow">
                 EXPERIMENT COMPLETE
             </div>
 
@@ -108,8 +147,9 @@
             </h2>
 
             <p id="endText">
-                You discovered the experiment.
+                You interacted with the experiment long enough for it to react to you.
             </p>
+
 
             <div class="final-stats">
 
@@ -130,6 +170,7 @@
 
             </div>
 
+
             <button id="again">
                 AGAIN
             </button>
@@ -144,7 +185,12 @@
 </div>
 
 
-<script src="./app.js"></script>
+<!-- IMPORTANT : defer + version -->
+<script
+    src="./app.js?v=3"
+    defer
+></script>
 
 </body>
+
 </html>
