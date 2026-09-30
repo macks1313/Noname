@@ -1,79 +1,90 @@
-:root {
-    --bg: #050505;
-    --white: #f3f3f0;
-    --grey: #777;
-    --line: rgba(255,255,255,.12);
-    --red: #ff3b30;
-    --green: #61ff9b;
-}
-
 * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
     margin: 0;
+    padding: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
 }
 
 body {
-    background: var(--bg);
-    color: var(--white);
+    background: #050505;
+    color: #eeeeea;
+
     font-family:
         Arial,
         Helvetica,
         sans-serif;
-    user-select: none;
-    -webkit-user-select: none;
 }
 
 button {
-    font-family: inherit;
-    -webkit-tap-highlight-color: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+
+    border: 0;
+    outline: 0;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    cursor: pointer;
 }
 
-#game {
+#app {
+    position: relative;
+
     width: 100%;
     height: 100dvh;
-    position: relative;
+
     overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            #172026 0%,
+            #090d10 42%,
+            #030405 100%
+        );
 }
 
 
 /* HEADER */
 
-header {
+.header {
     position: absolute;
+
     top: 0;
     left: 0;
 
     width: 100%;
 
-    padding:
-        25px
-        28px;
+    padding: 24px;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    z-index: 20;
+    z-index: 100;
 
     pointer-events: none;
 }
 
 .logo {
     font-size: 12px;
-    font-weight: 900;
+    font-weight: 800;
+
     letter-spacing: 4px;
 }
 
 .session {
-    color: #555;
+    color: #555d63;
+
     font-size: 9px;
+
     letter-spacing: 2px;
 }
 
@@ -82,91 +93,112 @@ header {
 }
 
 
-/* SCREENS */
+/* PAGES */
 
-.screen {
+.page {
     position: absolute;
 
     inset: 0;
 
     display: none;
 
-    align-items: center;
-    justify-content: center;
+    width: 100%;
+    height: 100%;
 }
 
-.screen.active {
+.page-visible {
     display: flex;
 }
 
 
 /* INTRO */
 
-.intro-content {
-    width: min(600px, 90%);
+#intro {
+    align-items: center;
+    justify-content: center;
 
     text-align: center;
-
-    animation: appear 1.2s ease;
 }
 
-.tiny {
-    font-size: 9px;
-    letter-spacing: 4px;
-    color: #555;
+.intro {
+    width: 90%;
+    max-width: 700px;
+}
+
+.small-title {
     margin-bottom: 25px;
+
+    color: #596168;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 4px;
 }
 
 h1 {
-    font-size: clamp(65px, 14vw, 150px);
+    margin: 0;
+
+    font-size: clamp(
+        55px,
+        15vw,
+        145px
+    );
 
     line-height: .78;
 
-    letter-spacing: -7px;
-
-    margin: 0;
+    letter-spacing: -6px;
 
     font-weight: 900;
 }
 
 h1 span {
     color: transparent;
-    -webkit-text-stroke: 1px #666;
+
+    -webkit-text-stroke:
+        1px #70777b;
 }
 
-.intro-content p {
-    margin-top: 35px;
+.intro p {
+    margin: 35px 0 25px;
 
-    color: #666;
+    color: #737a7e;
 
-    font-size: 14px;
+    font-size: 15px;
 
     font-style: italic;
 }
 
-#startButton,
-#restartButton {
-    margin-top: 30px;
-
+#begin,
+#again {
     padding: 16px 35px;
 
-    border: 1px solid #555;
-
     background: transparent;
+
+    border: 1px solid #555d61;
 
     color: white;
 
     font-size: 10px;
 
+    font-weight: 700;
+
     letter-spacing: 4px;
 
-    cursor: pointer;
-
-    transition: .25s;
+    transition:
+        background .2s,
+        color .2s,
+        transform .2s;
 }
 
-#startButton:hover,
-#restartButton:hover {
+#begin:active,
+#again:active {
+    transform: scale(.96);
+}
+
+#begin:hover,
+#again:hover {
     background: white;
     color: black;
 }
@@ -174,109 +206,94 @@ h1 span {
 
 /* GAME */
 
-#gameScreen {
+#game {
     flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
 }
 
-#ruleNumber {
+.rule-number {
     position: absolute;
 
-    top: 19%;
+    top: 20%;
+
+    color: #565e63;
 
     font-size: 9px;
 
     letter-spacing: 4px;
-
-    color: #555;
 }
 
-#ruleText {
+.rule {
     position: absolute;
 
-    top: 23%;
+    top: 25%;
 
     width: 90%;
 
     text-align: center;
 
-    font-size: clamp(20px, 5vw, 42px);
+    font-size: clamp(
+        22px,
+        5vw,
+        42px
+    );
 
     font-weight: 700;
 
     letter-spacing: -1px;
-
-    transition:
-        opacity .3s,
-        transform .3s;
 }
-
-
-/* ARENA */
 
 #arena {
     position: absolute;
 
+    top: 34%;
     left: 0;
-    right: 0;
 
-    top: 31%;
-    bottom: 16%;
+    width: 100%;
+    height: 45%;
 
     overflow: hidden;
 }
 
-
-/* MYSTERY BUTTON */
-
-#mysteryButton {
+#actionButton {
     position: absolute;
 
     left: 50%;
     top: 50%;
 
-    transform: translate(-50%, -50%);
+    transform:
+        translate(-50%, -50%);
 
-    width: 170px;
-    height: 70px;
+    width: 190px;
+    height: 68px;
 
-    border-radius: 0;
+    background: #080a0c;
 
-    border: 1px solid #555;
-
-    background: #090909;
+    border: 1px solid #596166;
 
     color: white;
 
-    cursor: pointer;
+    font-size: 10px;
 
     letter-spacing: 2px;
-
-    font-size: 10px;
 
     transition:
         transform .15s,
         background .2s,
-        border .2s,
-        box-shadow .2s;
+        border .2s;
 }
 
-#mysteryButton:hover {
-    border-color: #aaa;
+#actionButton:active {
+    transform:
+        translate(-50%, -50%)
+        scale(.94);
 }
 
-#mysteryButton:active {
-    transform: translate(-50%, -50%) scale(.94);
-}
-
-#mysteryButton.red {
-    background: var(--red);
-    border-color: var(--red);
-    color: black;
-}
-
-#mysteryButton.hidden {
-    opacity: 0;
-    pointer-events: none;
+#actionButton:hover {
+    border-color: white;
 }
 
 
@@ -290,109 +307,123 @@ h1 span {
 
     border-radius: 50%;
 
-    border: 1px solid #444;
+    background: #12171b;
 
-    background: #111;
+    border: 1px solid #596166;
 
-    cursor: pointer;
+    animation: appear .3s ease;
 
-    animation: objectAppear .4s ease;
-
-    transition: .2s;
+    transition:
+        transform .2s,
+        opacity .2s;
 }
 
-.object:hover {
-    transform: scale(1.4);
-    border-color: white;
+.object:active {
+    transform: scale(.7);
 }
 
 .object.red {
-    background: var(--red);
-    border-color: var(--red);
+    background: #ff4037;
+
+    border-color: #ff4037;
 }
 
 .object.green {
-    background: var(--green);
-    border-color: var(--green);
-}
+    background: #62f59d;
 
-.object.square {
-    border-radius: 3px;
+    border-color: #62f59d;
 }
 
 
-/* BOTTOM */
+/* STATS */
 
-.bottom {
+.stats {
     position: absolute;
 
-    bottom: 35px;
+    bottom: 28px;
 
-    width: min(500px, 90%);
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: min(
+        500px,
+        calc(100% - 40px)
+    );
+
+    padding-top: 14px;
+
+    border-top: 1px solid #20262a;
 
     display: flex;
 
     justify-content: space-between;
-
-    border-top: 1px solid var(--line);
-
-    padding-top: 15px;
 }
 
-.bottom div {
+.stats div,
+.final-stats div {
     display: flex;
 
     flex-direction: column;
 
-    gap: 4px;
+    gap: 5px;
 }
 
-.label {
+.stats span,
+.final-stats span {
+    color: #4e565b;
+
     font-size: 7px;
 
     letter-spacing: 2px;
-
-    color: #444;
 }
 
-.bottom strong {
-    font-size: 14px;
+.stats strong,
+.final-stats strong {
+    color: #ddd;
+
+    font-size: 18px;
 
     font-weight: 400;
 }
 
 
-/* NOTIFICATION */
+/* MESSAGE */
 
-#notification {
+#message {
     position: fixed;
 
     left: 50%;
-    bottom: 70px;
+
+    bottom: 80px;
 
     transform:
         translate(-50%, 20px);
 
     opacity: 0;
 
+    z-index: 200;
+
+    padding: 11px 18px;
+
+    background: #0b0d0f;
+
+    border: 1px solid #333b40;
+
+    color: white;
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
     pointer-events: none;
 
-    z-index: 100;
-
-    padding: 10px 18px;
-
-    border: 1px solid #333;
-
-    background: #0b0b0b;
-
-    font-size: 10px;
-
-    letter-spacing: 1px;
-
-    transition: .3s;
+    transition:
+        opacity .25s,
+        transform .25s;
 }
 
-#notification.show {
+#message.visible {
     opacity: 1;
 
     transform:
@@ -400,129 +431,78 @@ h1 span {
 }
 
 
-/* FLASH */
+/* END */
 
-#flash {
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 200;
-
-    pointer-events: none;
-
-    background: white;
-
-    opacity: 0;
-}
-
-#flash.active {
-    animation: flash .35s ease;
-}
-
-
-/* ENDING */
-
-.ending-content {
-    width: min(650px, 90%);
+#end {
+    align-items: center;
+    justify-content: center;
 
     text-align: center;
-
-    animation: appear .8s ease;
 }
 
-.ending-content h2 {
+.end {
+    width: 90%;
+    max-width: 700px;
+}
+
+.end h2 {
     margin: 0;
 
-    font-size: clamp(50px, 12vw, 110px);
+    font-size: clamp(
+        50px,
+        12vw,
+        110px
+    );
 
     line-height: .82;
 
     letter-spacing: -5px;
 }
 
-#endingText {
-    max-width: 500px;
+.end h2 span {
+    color: transparent;
+
+    -webkit-text-stroke:
+        1px #70777b;
+}
+
+.end p {
+    max-width: 480px;
 
     margin: 30px auto;
 
-    color: #777;
-
-    line-height: 1.7;
+    color: #747c81;
 
     font-size: 13px;
+
+    line-height: 1.6;
 }
 
-.stats {
+.final-stats {
     display: flex;
 
     justify-content: center;
 
-    gap: 50px;
+    gap: 45px;
 
-    margin-top: 30px;
-}
-
-.stats div {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 7px;
-}
-
-.stats span {
-    font-size: 7px;
-
-    color: #444;
-
-    letter-spacing: 2px;
-}
-
-.stats strong {
-    font-size: 24px;
-
-    font-weight: 400;
+    margin: 30px 0;
 }
 
 
-/* ANIMATIONS */
+/* ANIMATION */
 
 @keyframes appear {
+
     from {
         opacity: 0;
-        transform: translateY(20px);
+
+        transform: scale(.5);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-@keyframes objectAppear {
-    from {
-        opacity: 0;
-        transform: scale(0);
-    }
-
-    to {
-        opacity: 1;
         transform: scale(1);
-    }
-}
-
-@keyframes flash {
-    0% {
-        opacity: 0;
-    }
-
-    30% {
-        opacity: .8;
-    }
-
-    100% {
-        opacity: 0;
     }
 }
 
@@ -531,32 +511,36 @@ h1 span {
 
 @media (max-width: 600px) {
 
-    header {
-        padding: 20px;
+    .header {
+        padding: 18px;
     }
 
-    #ruleText {
+    .logo {
+        font-size: 10px;
+        letter-spacing: 3px;
+    }
+
+    .session {
+        font-size: 8px;
+    }
+
+    h1 {
+        font-size: 65px;
+        letter-spacing: -4px;
+    }
+
+    .rule {
         padding: 0 15px;
+
+        font-size: 25px;
     }
 
-    #arena {
-        top: 30%;
-        bottom: 18%;
+    #actionButton {
+        width: 180px;
     }
 
-    #mysteryButton {
-        width: 160px;
-    }
-
-    .bottom {
-        bottom: 25px;
-    }
-
-    .stats {
+    .final-stats {
         gap: 25px;
     }
 
-    .stats strong {
-        font-size: 20px;
-    }
 }
