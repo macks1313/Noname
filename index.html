@@ -1,196 +1,27 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>THE RULES</title>
-
-    <link rel="stylesheet" href="./style.css">
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0b0d1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Immeuble 7B</title>
+<meta name="description" content="Un immeuble en pixel art à explorer : neuf appartements animés, des objets à toucher, du matin à la nuit.">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+<header><h1>7B</h1><span id="score"></span></header>
+<div id="view"><canvas id="c" aria-label="Immeuble en pixel art avec neuf appartements"></canvas></div>
+<nav>
+  <button type="button" data-t="matin">Matin</button>
+  <button type="button" data-t="soir">Soir</button>
+  <button type="button" data-t="nuit">Nuit</button>
+  <button type="button" id="fit">Tout voir</button>
+  <button type="button" id="rain">Pluie</button>
+  <button type="button" id="mute" aria-label="Son">🔊</button>
+</nav>
+<div id="toast" role="status"></div>
 
-<div id="app">
-
-    <header>
-
-        <div class="logo">
-            THE RULES
-        </div>
-
-        <div class="session">
-            SESSION <span id="session">001</span>
-        </div>
-
-    </header>
-
-
-    <!-- ========================= -->
-    <!-- ACCUEIL -->
-    <!-- ========================= -->
-
-    <section
-        id="intro"
-        class="screen active"
-    >
-
-        <div class="intro-content">
-
-            <div class="eyebrow">
-                AN INTERACTIVE EXPERIMENT
-            </div>
-
-            <h1>
-                THERE<br>
-                ARE<br>
-                <span>NO RULES.</span>
-            </h1>
-
-            <p>
-                Or maybe there are.
-            </p>
-
-            <button id="begin">
-                BEGIN
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- ========================= -->
-    <!-- JEU -->
-    <!-- ========================= -->
-
-    <section
-        id="game"
-        class="screen"
-    >
-
-        <div class="game-content">
-
-            <div
-                id="ruleNumber"
-                class="rule-number"
-            >
-                RULE #01
-            </div>
-
-            <div
-                id="rule"
-                class="rule"
-            >
-                There are no rules.
-            </div>
-
-
-            <div id="arena">
-
-                <button id="actionButton">
-                    DO SOMETHING
-                </button>
-
-            </div>
-
-
-            <div class="stats">
-
-                <div>
-                    <span>ACTIONS</span>
-                    <strong id="actions">0</strong>
-                </div>
-
-                <div>
-                    <span>DISCOVERED</span>
-                    <strong id="discoveries">0</strong>
-                </div>
-
-                <div>
-                    <span>RULES</span>
-                    <strong id="rules">1</strong>
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ========================= -->
-    <!-- FIN -->
-    <!-- ========================= -->
-
-    <section
-        id="end"
-        class="screen"
-    >
-
-        <div class="end-content">
-
-            <div class="eyebrow">
-                EXPERIMENT COMPLETE
-            </div>
-
-            <h2>
-                YOU FOUND<br>
-                <span>SOMETHING.</span>
-            </h2>
-
-            <p id="endText">
-                You interacted with the experiment long enough for it to react to you.
-            </p>
-
-
-            <div class="final-stats">
-
-                <div>
-                    <span>ACTIONS</span>
-                    <strong id="finalActions">0</strong>
-                </div>
-
-                <div>
-                    <span>DISCOVERIES</span>
-                    <strong id="finalDiscoveries">0</strong>
-                </div>
-
-                <div>
-                    <span>RULES</span>
-                    <strong id="finalRules">0</strong>
-                </div>
-
-            </div>
-
-
-            <button id="again">
-                AGAIN
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <div id="message"></div>
-
-</div>
-
-
-<!-- IMPORTANT : defer + version -->
-<script
-    src="./app.js?v=3"
-    defer
-></script>
-
+<script src="app.js"></script>
 </body>
-
 </html>
