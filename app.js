@@ -1,225 +1,296 @@
 /* =========================================================
    KITCHENFLOW
    Application logic
-========================================================= */
+   ========================================================= */
 
 
-/* =========================================================
-   DATA
-========================================================= */
+/* ---------------------------------------------------------
+   DONNÉES
+--------------------------------------------------------- */
 
-const defaultData = {
+const STORAGE_KEY = "kitchenflow_v1";
+
+let data = {
+  theme: "light",
+  sound: true,
+  kitchenName: "KitchenFlow",
   timers: [],
-  presets: [
-    {
-      id: crypto.randomUUID(),
-      name: "Œufs mollets",
-      seconds: 360
-    },
-    {
-      id: crypto.randomUUID(),
-      name: "Pâtes",
-      seconds: 600
-    },
-    {
-      id: crypto.randomUUID(),
-      name: "Frites",
-      seconds: 240
-    }
-  ],
-
-  products: [],
-
-  checklists: [
-    {
-      id: crypto.randomUUID(),
-      name: "Mise en place",
-      items: [
-        { id: crypto.randomUUID(), text: "Préparer le poste", done: false },
-        { id: crypto.randomUUID(), text: "Vérifier les produits", done: false },
-        { id: crypto.randomUUID(), text: "Vérifier le matériel", done: false }
-      ]
-    }
-  ],
-
-  settings: {
-    sound: "bell",
-    volume: 70,
-    repeat: false,
-    dark: false
-  }
+  preparations: [],
+  lists: []
 };
 
 
-let data = loadData();
-
-let audioContext = null;
-let activeOscillators = [];
-
-let timerInterval = null;
-
-
-/* =========================================================
-   STORAGE
-========================================================= */
+/* ---------------------------------------------------------
+   CHARGEMENT / SAUVEGARDE
+--------------------------------------------------------- */
 
 function loadData() {
 
   try {
 
-    const saved = localStorage.getItem("kitchenflow-data");
+    const saved = localStorage.getItem(STORAGE_KEY);
 
-    if (!saved) {
-      return structuredClone(defaultData);
+    if (saved) {
+      data = {
+        ...data,
+        ...JSON.parse(saved)
+      };
     }
 
-    const parsed = JSON.parse(saved);
-
-    return {
-      ...structuredClone(defaultData),
-      ...parsed,
-      settings: {
-        ...defaultData.settings,
-        ...(parsed.settings || {})
-      }
-    };
-
   } catch (error) {
-
-    console.error(error);
-
-    return structuredClone(defaultData);
+    console.log("Impossible de charger les données.");
   }
+
+  applyTheme();
+  updateSettings();
 }
 
 
 function saveData() {
 
   localStorage.setItem(
-    "kitchenflow-data",
+    STORAGE_KEY,
     JSON.stringify(data)
   );
 }
 
 
-/* =========================================================
+/* ---------------------------------------------------------
    NAVIGATION
-========================================================= */
+--------------------------------------------------------- */
 
-const screens = [
-  "home",
-  "timers",
-  "products",
-  "checklists",
-  "settings"
-];
+function showPage(page) {
 
-
-function showScreen(name) {
-
-  screens.forEach(screen => {
-
-    const element =
-      document.getElementById(`screen-${screen}`);
-
-    if (element) {
-      element.classList.toggle(
-        "active",
-        screen === name
-      );
-    }
-
+  document.querySelectorAll(".page").forEach(section => {
+    section.classList.remove("active");
   });
 
+  const target = document.getElementById(page + "Page");
+
+  if (target) {
+    target.classList.add("active");
+  }
 
   document.querySelectorAll(".nav-btn").forEach(button => {
-
     button.classList.toggle(
       "active",
-      button.dataset.screen === name
+      button.dataset.page === page
     );
-
   });
-
 
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
 
+  if (page === "home") {
+    renderHome();
+  }
+
+  if (page === "timers") {
+    renderTimers();
+  }
+
+  if (page === "preparations") {
+    renderPreparations();
+  }
+
+  if (page === "lists") {
+    renderLists();
+  }
 }
 
 
-document.querySelectorAll("[data-screen]").forEach(button => {
+/* Navigation du menu */
+
+document.querySelectorAll("[data-page]").forEach(button => {
 
   button.addEventListener("click", () => {
 
-    showScreen(button.dataset.screen);
+    showPage(button.dataset.page);
 
   });
 
 });
 
 
-/* =========================================================
-   MODAL
-========================================================= */
+/* ---------------------------------------------------------
+   MINUTEURS
+--------------------------------------------------------- */
 
-const modalBackdrop =
-  document.getElementById("modalBackdrop");
+function openTimerModal() {
 
-const modalContent =
-  document.getElementById("modalContent");
+  document.getElementById("timerModal")
+    .classList.add("open");
 
-const modalTitle =
-  document.getElementById("modalTitle");
-
-const modalEyebrow =
-  document.getElementById("modalEyebrow");
+  document.getElementById("timerName").focus();
+}
 
 
-function openModal(title, eyebrow, html) {
+function closeModal(id) {
 
-  modalTitle.textContent = title;
-  modalEyebrow.textContent = eyebrow;
-
-  modalContent.innerHTML = html;
-
-  modalBackdrop.classList.add("open");
+  document.getElementById(id)
+    .classList.remove("open");
 
 }
 
 
-function closeModal() {
+document.querySelectorAll("[data-close]").forEach(button => {
 
-  modalBackdrop.classList.remove("open");
-
-}
-
-
-document
-  .getElementById("closeModal")
-  .addEventListener("click", closeModal);
-
-
-modalBackdrop.addEventListener("click", event => {
-
-  if (event.target === modalBackdrop) {
-    closeModal();
-  }
+  button.addEventListener("click", () => {
+    closeModal(button.dataset.close);
+  });
 
 });
 
 
-/* =========================================================
-   TIMER HELPERS
-========================================================= */
+document.getElementById("newTimerBtn")
+  .addEventListener("click", openTimerModal);
+
+
+document.getElementById("homeNewTimer")
+  .addEventListener("click", openTimerModal);
+
+
+/* Temps rapides */
+
+document.querySelectorAll(".quick-times button")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      const total = Number(button.dataset.time);
+
+      document.getElementById("timerMinutes").value =
+        Math.floor(total / 60);
+
+      document.getElementById("timerSeconds").value =
+        total % 60;
+
+    });
+
+  });
+
+
+/* Création */
+
+document.getElementById("createTimer")
+  .addEventListener("click", createTimer);
+
+
+function createTimer() {
+
+  let name =
+    document.getElementById("timerName").value.trim();
+
+  let minutes =
+    Number(document.getElementById("timerMinutes").value) || 0;
+
+  let seconds =
+    Number(document.getElementById("timerSeconds").value) || 0;
+
+  const totalSeconds =
+    Math.max(1, minutes * 60 + seconds);
+
+  if (!name) {
+    name = "Cuisson";
+  }
+
+  const timer = {
+
+    id: Date.now(),
+
+    name,
+
+    total: totalSeconds,
+
+    remaining: totalSeconds,
+
+    running: true,
+
+    finished: false,
+
+    createdAt: Date.now(),
+
+    lastUpdate: Date.now()
+
+  };
+
+  data.timers.push(timer);
+
+  saveData();
+
+  closeModal("timerModal");
+
+  document.getElementById("timerName").value = "";
+
+  showPage("timers");
+
+  renderTimers();
+
+}
+
+
+/* Mise à jour des minuteurs */
+
+function updateTimers() {
+
+  const now = Date.now();
+
+  let changed = false;
+
+  data.timers.forEach(timer => {
+
+    if (!timer.running || timer.finished) {
+      return;
+    }
+
+    const elapsed =
+      Math.floor((now - timer.lastUpdate) / 1000);
+
+    if (elapsed <= 0) {
+      return;
+    }
+
+    timer.remaining =
+      Math.max(0, timer.remaining - elapsed);
+
+    timer.lastUpdate = now;
+
+    changed = true;
+
+    if (timer.remaining <= 0) {
+
+      timer.remaining = 0;
+      timer.running = false;
+      timer.finished = true;
+
+      playAlarm();
+
+    }
+
+  });
+
+  if (changed) {
+    saveData();
+    renderTimers();
+    renderHome();
+  }
+
+}
+
+
+setInterval(updateTimers, 500);
+
+
+/* Formatage */
 
 function formatTime(seconds) {
 
-  seconds = Math.max(0, Math.round(seconds));
+  seconds = Math.max(0, seconds);
 
-  const hours = Math.floor(seconds / 3600);
+  const hours =
+    Math.floor(seconds / 3600);
 
   const minutes =
     Math.floor((seconds % 3600) / 60);
@@ -227,320 +298,125 @@ function formatTime(seconds) {
   const secs =
     seconds % 60;
 
-
   if (hours > 0) {
 
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    return (
+      String(hours).padStart(2, "0") +
+      ":" +
+      String(minutes).padStart(2, "0") +
+      ":" +
+      String(secs).padStart(2, "0")
+    );
 
   }
 
-
-  return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-}
-
-
-function createTimer(name, seconds, autoStart = true) {
-
-  const timer = {
-
-    id: crypto.randomUUID(),
-
-    name:
-      name.trim() || "Nouveau minuteur",
-
-    duration: Math.max(1, seconds),
-
-    remaining: Math.max(1, seconds),
-
-    running: autoStart,
-
-    finished: false,
-
-    lastTick: Date.now()
-
-  };
-
-
-  data.timers.push(timer);
-
-  saveData();
-
-  renderTimers();
-
-  return timer;
-}
-
-
-/* =========================================================
-   TIMER ENGINE
-========================================================= */
-
-function startTimerEngine() {
-
-  if (timerInterval) {
-    return;
-  }
-
-
-  timerInterval = setInterval(() => {
-
-    let changed = false;
-
-    const now = Date.now();
-
-
-    data.timers.forEach(timer => {
-
-      if (!timer.running || timer.finished) {
-        return;
-      }
-
-
-      const elapsed =
-        (now - timer.lastTick) / 1000;
-
-
-      if (elapsed <= 0) {
-        return;
-      }
-
-
-      timer.remaining -= elapsed;
-
-      timer.lastTick = now;
-
-      changed = true;
-
-
-      if (timer.remaining <= 0) {
-
-        timer.remaining = 0;
-
-        timer.running = false;
-
-        timer.finished = true;
-
-        playTimerSound();
-
-      }
-
-    });
-
-
-    if (changed) {
-
-      saveData();
-
-      renderTimers();
-
-    }
-
-  }, 250);
+  return (
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(secs).padStart(2, "0")
+  );
 
 }
 
 
-startTimerEngine();
-
-
-function toggleTimer(id) {
-
-  const timer =
-    data.timers.find(item => item.id === id);
-
-  if (!timer) return;
-
-
-  if (timer.finished) {
-
-    timer.remaining = timer.duration;
-    timer.finished = false;
-
-  }
-
-
-  timer.running = !timer.running;
-
-  timer.lastTick = Date.now();
-
-  saveData();
-
-  renderTimers();
-
-}
-
-
-function stopTimer(id) {
-
-  data.timers =
-    data.timers.filter(timer => timer.id !== id);
-
-  saveData();
-
-  renderTimers();
-
-}
-
-
-function resetTimer(id) {
-
-  const timer =
-    data.timers.find(item => item.id === id);
-
-  if (!timer) return;
-
-
-  timer.remaining = timer.duration;
-  timer.running = false;
-  timer.finished = false;
-  timer.lastTick = Date.now();
-
-  saveData();
-
-  renderTimers();
-
-}
-
-
-/* =========================================================
-   TIMER RENDER
-========================================================= */
+/* Affichage minuteurs */
 
 function renderTimers() {
 
   const container =
-    document.getElementById("timersContainer");
+    document.getElementById("timerList");
 
-  const home =
-    document.getElementById("homeTimers");
+  if (!data.timers.length) {
 
-  const empty =
-    document.getElementById("emptyTimers");
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⏱️</div>
+        <strong>Aucun minuteur</strong>
+        <span>Ajoute ton premier minuteur.</span>
+      </div>
+    `;
 
-  const count =
-    document.getElementById("timerCount");
+    return;
+  }
 
-
-  count.textContent =
-    data.timers.filter(t => t.running).length;
-
-
-  const html =
+  container.innerHTML =
     data.timers
-      .map(timerCard)
+      .slice()
+      .reverse()
+      .map(timerHTML)
       .join("");
-
-
-  container.innerHTML = html;
-
-  home.innerHTML =
-    data.timers
-      .filter(timer => timer.running || timer.finished)
-      .slice(0, 3)
-      .map(timerCard)
-      .join("");
-
-
-  empty.style.display =
-    data.timers.length ? "none" : "block";
-
 
   attachTimerEvents();
-
-  renderPresets();
 
 }
 
 
-function timerCard(timer) {
+function timerHTML(timer) {
 
-  const percent =
-    Math.max(
-      0,
-      Math.min(
-        100,
-        (timer.remaining / timer.duration) * 100
-      )
-    );
+  const progress =
+    timer.total > 0
+      ? ((timer.total - timer.remaining) / timer.total) * 100
+      : 0;
 
-
-  let status = "En pause";
-
-  if (timer.running) {
-    status = "En cours";
-  }
+  let status = "";
 
   if (timer.finished) {
-    status = "Terminé";
+    status = "TERMINÉ";
+  } else if (timer.running) {
+    status = "EN COURS";
+  } else {
+    status = "EN PAUSE";
   }
-
-
-  let buttonText = "Reprendre";
-
-  if (timer.running) {
-    buttonText = "Pause";
-  }
-
-  if (timer.finished) {
-    buttonText = "Relancer";
-  }
-
 
   return `
 
     <article
       class="timer-card ${timer.finished ? "finished" : ""}"
-      data-timer-id="${timer.id}"
+      data-id="${timer.id}"
     >
 
       <div class="timer-top">
 
         <div>
-
-          <div class="timer-name">
-            ${escapeHtml(timer.name)}
-          </div>
-
-          <div class="timer-status">
-            ${status}
-          </div>
-
+          <div class="eyebrow">${status}</div>
+          <div class="timer-name">${escapeHTML(timer.name)}</div>
         </div>
 
-      </div>
+        <div>${timer.finished ? "🔔" : "⏱️"}</div>
 
+      </div>
 
       <div class="timer-time">
         ${formatTime(timer.remaining)}
       </div>
 
-
-      <div class="timer-progress">
+      <div class="progress">
         <div
-          class="timer-progress-bar"
-          style="width:${percent}%"
+          class="progress-bar"
+          style="width:${progress}%"
         ></div>
       </div>
 
-
       <div class="timer-actions">
 
-        <button
-          class="timer-action main"
-          data-action="toggle"
-        >
-          ${buttonText}
-        </button>
+        ${
+          timer.finished
+
+          ? `
+            <button data-action="restart">
+              ↻ Recommencer
+            </button>
+          `
+
+          : `
+            <button data-action="pause">
+              ${timer.running ? "Ⅱ Pause" : "▶ Reprendre"}
+            </button>
+          `
+        }
 
         <button
-          class="timer-action"
-          data-action="reset"
-        >
-          Réinitialiser
-        </button>
-
-        <button
-          class="timer-action delete"
+          class="stop"
           data-action="delete"
         >
           Supprimer
@@ -555,39 +431,23 @@ function timerCard(timer) {
 
 function attachTimerEvents() {
 
-  document
-    .querySelectorAll("[data-timer-id]")
+  document.querySelectorAll(".timer-card")
     .forEach(card => {
 
       const id =
-        card.dataset.timerId;
+        Number(card.dataset.id);
 
+      card.querySelectorAll("[data-action]")
+        .forEach(button => {
 
-      card
-        .querySelector("[data-action='toggle']")
-        ?.addEventListener("click", () => {
+          button.addEventListener("click", () => {
 
-          unlockAudio();
+            const action =
+              button.dataset.action;
 
-          toggleTimer(id);
+            handleTimerAction(id, action);
 
-        });
-
-
-      card
-        .querySelector("[data-action='reset']")
-        ?.addEventListener("click", () => {
-
-          resetTimer(id);
-
-        });
-
-
-      card
-        .querySelector("[data-action='delete']")
-        ?.addEventListener("click", () => {
-
-          stopTimer(id);
+          });
 
         });
 
@@ -596,570 +456,229 @@ function attachTimerEvents() {
 }
 
 
-/* =========================================================
-   NEW TIMER
-========================================================= */
+function handleTimerAction(id, action) {
 
-function openTimerModal(existing = null) {
+  const timer =
+    data.timers.find(t => t.id === id);
 
-  openModal(
-    existing ? "Modifier le minuteur" : "Nouveau minuteur",
-    existing ? "MODIFIER" : "MINUTEUR",
-
-    `
-
-      <div class="form-group">
-
-        <label>Nom</label>
-
-        <input
-          id="timerName"
-          class="form-input"
-          placeholder="Ex : Frites, steak, sauce..."
-          value="${existing ? escapeAttr(existing.name) : ""}"
-        >
-
-      </div>
+  if (!timer) return;
 
 
-      <div class="form-group">
+  if (action === "pause") {
 
-        <label>Durée</label>
+    timer.running = !timer.running;
+    timer.lastUpdate = Date.now();
 
-        <div class="duration-grid">
-
-          <input
-            id="timerMinutes"
-            class="form-input"
-            type="number"
-            min="0"
-            placeholder="Minutes"
-            value="${
-              existing
-                ? Math.floor(existing.duration / 60)
-                : 5
-            }"
-          >
-
-          <input
-            id="timerSeconds"
-            class="form-input"
-            type="number"
-            min="0"
-            max="59"
-            placeholder="Secondes"
-            value="${
-              existing
-                ? existing.duration % 60
-                : 0
-            }"
-          >
-
-        </div>
-
-      </div>
+  }
 
 
-      <div class="form-group">
+  if (action === "restart") {
 
-        <label>Action</label>
+    timer.remaining = timer.total;
+    timer.running = true;
+    timer.finished = false;
+    timer.lastUpdate = Date.now();
 
-        <select
-          id="timerAutoStart"
-          class="form-input"
-        >
-
-          <option value="true">
-            Démarrer immédiatement
-          </option>
-
-          <option value="false">
-            Créer sans démarrer
-          </option>
-
-        </select>
-
-      </div>
+  }
 
 
-      <button
-        class="primary-btn modal-submit"
-        id="saveTimer"
-      >
-        ${existing ? "Enregistrer" : "Démarrer le minuteur"}
-      </button>
+  if (action === "delete") {
 
-    `
-  );
+    data.timers =
+      data.timers.filter(t => t.id !== id);
+
+  }
 
 
-  document
-    .getElementById("saveTimer")
-    .addEventListener("click", () => {
+  saveData();
 
-      unlockAudio();
-
-
-      const name =
-        document.getElementById("timerName").value;
-
-
-      const minutes =
-        Number(
-          document.getElementById("timerMinutes").value
-        ) || 0;
-
-
-      const seconds =
-        Number(
-          document.getElementById("timerSeconds").value
-        ) || 0;
-
-
-      const total =
-        minutes * 60 + seconds;
-
-
-      if (total <= 0) {
-
-        alert("Indique une durée.");
-
-        return;
-
-      }
-
-
-      const autoStart =
-        document.getElementById("timerAutoStart").value === "true";
-
-
-      if (existing) {
-
-        existing.name =
-          name.trim() || existing.name;
-
-        existing.duration =
-          total;
-
-        existing.remaining =
-          total;
-
-        existing.running =
-          autoStart;
-
-        existing.finished =
-          false;
-
-        existing.lastTick =
-          Date.now();
-
-      } else {
-
-        createTimer(
-          name,
-          total,
-          autoStart
-        );
-
-      }
-
-
-      saveData();
-
-      closeModal();
-
-      renderTimers();
-
-    });
+  renderTimers();
+  renderHome();
 
 }
 
 
-document
-  .getElementById("addTimerBtn")
-  .addEventListener("click", () => openTimerModal());
+/* ---------------------------------------------------------
+   PAGE ACCUEIL
+--------------------------------------------------------- */
 
+function renderHome() {
 
-document
-  .getElementById("emptyAddTimer")
-  .addEventListener("click", () => openTimerModal());
+  const activeTimers =
+    data.timers.filter(t => !t.finished);
 
-
-document
-  .getElementById("quickTimerBtn")
-  .addEventListener("click", () => openTimerModal());
-
-
-/* =========================================================
-   PRESETS
-========================================================= */
-
-function renderPresets() {
+  document.getElementById("timerCount")
+    .textContent = activeTimers.length;
 
   const container =
-    document.getElementById("presetList");
+    document.getElementById("homeTimers");
 
+  if (!activeTimers.length) {
+
+    container.classList.add("empty");
+
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⏱️</div>
+        <strong>Aucun minuteur actif</strong>
+        <span>Lance une cuisson pour la voir apparaître ici.</span>
+      </div>
+    `;
+
+    return;
+  }
+
+  container.classList.remove("empty");
 
   container.innerHTML =
-    data.presets.map(preset => `
+    activeTimers
+      .slice()
+      .reverse()
+      .map(timerHTML)
+      .join("");
 
-      <div class="preset">
-
-        <div class="preset-info">
-
-          <strong>
-            ${escapeHtml(preset.name)}
-          </strong>
-
-          <span>
-            ${formatTime(preset.seconds)}
-          </span>
-
-        </div>
-
-        <div class="preset-actions">
-
-          <button
-            class="mini-btn"
-            data-preset-start="${preset.id}"
-          >
-            ▶
-          </button>
-
-          <button
-            class="mini-btn"
-            data-preset-edit="${preset.id}"
-          >
-            ✎
-          </button>
-
-        </div>
-
-      </div>
-
-    `).join("");
-
-
-  document
-    .querySelectorAll("[data-preset-start]")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        unlockAudio();
-
-        const preset =
-          data.presets.find(
-            p => p.id === button.dataset.presetStart
-          );
-
-        if (!preset) return;
-
-        createTimer(
-          preset.name,
-          preset.seconds,
-          true
-        );
-
-      });
-
-    });
-
-
-  document
-    .querySelectorAll("[data-preset-edit]")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        const preset =
-          data.presets.find(
-            p => p.id === button.dataset.presetEdit
-          );
-
-        if (!preset) return;
-
-        openPresetModal(preset);
-
-      });
-
-    });
+  attachTimerEvents();
 
 }
 
 
-function openPresetModal(existing = null) {
+/* ---------------------------------------------------------
+   PRÉPARATIONS
+--------------------------------------------------------- */
 
-  openModal(
-    existing ? "Modifier une cuisson" : "Nouvelle cuisson",
-    "PRÉRÉGLAGE",
-
-    `
-
-      <div class="form-group">
-
-        <label>Nom</label>
-
-        <input
-          id="presetName"
-          class="form-input"
-          value="${existing ? escapeAttr(existing.name) : ""}"
-          placeholder="Ex : Cuisson riz"
-        >
-
-      </div>
-
-
-      <div class="form-group">
-
-        <label>Durée en secondes</label>
-
-        <input
-          id="presetSeconds"
-          class="form-input"
-          type="number"
-          min="1"
-          value="${existing ? existing.seconds : 300}"
-        >
-
-      </div>
-
-
-      <button
-        class="primary-btn modal-submit"
-        id="savePreset"
-      >
-        Enregistrer
-      </button>
-
-    `
-  );
-
-
-  document
-    .getElementById("savePreset")
-    .addEventListener("click", () => {
-
-      const name =
-        document.getElementById("presetName").value.trim();
-
-      const seconds =
-        Number(
-          document.getElementById("presetSeconds").value
-        );
-
-
-      if (!name || seconds <= 0) {
-
-        alert("Complète les informations.");
-
-        return;
-
-      }
-
-
-      if (existing) {
-
-        existing.name = name;
-        existing.seconds = seconds;
-
-      } else {
-
-        data.presets.push({
-
-          id: crypto.randomUUID(),
-
-          name,
-
-          seconds
-
-        });
-
-      }
-
-
-      saveData();
-
-      closeModal();
-
-      renderPresets();
-
-    });
-
-}
-
-
-document
-  .getElementById("managePresetsBtn")
+document.getElementById("newPrepBtn")
   .addEventListener("click", () => {
 
-    openPresetModal();
+    document.getElementById("prepModal")
+      .classList.add("open");
 
   });
 
 
-/* =========================================================
-   PRODUCTS
-========================================================= */
+document.getElementById("createPrep")
+  .addEventListener("click", createPreparation);
 
-function renderProducts() {
+
+function createPreparation() {
+
+  const name =
+    document.getElementById("prepName")
+      .value.trim();
+
+  const raw =
+    document.getElementById("prepSteps")
+      .value.trim();
+
+  if (!name) {
+    alert("Donne un nom à ta préparation.");
+    return;
+  }
+
+  const steps =
+    raw
+      .split("\n")
+      .map(x => x.trim())
+      .filter(Boolean);
+
+  data.preparations.push({
+
+    id: Date.now(),
+
+    name,
+
+    steps
+
+  });
+
+  saveData();
+
+  document.getElementById("prepName").value = "";
+  document.getElementById("prepSteps").value = "";
+
+  closeModal("prepModal");
+
+  renderPreparations();
+
+}
+
+
+function renderPreparations() {
 
   const container =
-    document.getElementById("productsContainer");
+    document.getElementById("prepList");
 
-  const empty =
-    document.getElementById("emptyProducts");
+  if (!data.preparations.length) {
 
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <strong>Aucune préparation</strong>
+        <span>Crée tes recettes et procédures.</span>
+      </div>
+    `;
 
-  empty.style.display =
-    data.products.length ? "none" : "block";
-
+    return;
+  }
 
   container.innerHTML =
-    data.products
-      .map(product => {
+    data.preparations
+      .slice()
+      .reverse()
+      .map(prep => `
 
-        const total =
-          product.steps.length;
+        <article class="prep-card">
 
-        const done =
-          product.steps.filter(step => step.done).length;
+          <h3>${escapeHTML(prep.name)}</h3>
 
-        const percent =
-          total
-            ? (done / total) * 100
-            : 0;
+          ${
+            prep.steps.length
+              ? `
+                <ol>
+                  ${prep.steps
+                    .map(step =>
+                      `<li>${escapeHTML(step)}</li>`
+                    )
+                    .join("")}
+                </ol>
+              `
+              : `
+                <p style="color:var(--muted)">
+                  Aucune étape.
+                </p>
+              `
+          }
 
+          <div class="card-actions">
 
-        return `
+            <button
+              data-delete-prep="${prep.id}"
+            >
+              Supprimer
+            </button>
 
-          <article
-            class="product-card"
-            data-product-id="${product.id}"
-          >
+          </div>
 
-            <div class="product-header">
+        </article>
 
-              <div>
-
-                <div class="product-title">
-                  ${escapeHtml(product.name)}
-                </div>
-
-                <div class="product-meta">
-                  ${done}/${total} étapes terminées
-                </div>
-
-              </div>
-
-            </div>
-
-
-            <div class="product-progress">
-
-              <div style="width:${percent}%"></div>
-
-            </div>
-
-
-            <div class="product-actions">
-
-              <button
-                class="primary"
-                data-product-run="${product.id}"
-              >
-                Commencer
-              </button>
-
-              <button
-                data-product-edit="${product.id}"
-              >
-                Modifier
-              </button>
-
-              <button
-                data-product-delete="${product.id}"
-              >
-                Supprimer
-              </button>
-
-            </div>
-
-          </article>
-
-        `;
-
-      })
+      `)
       .join("");
 
 
-  attachProductEvents();
-
-}
-
-
-function attachProductEvents() {
-
-  document
-    .querySelectorAll("[data-product-run]")
+  document.querySelectorAll("[data-delete-prep]")
     .forEach(button => {
 
       button.addEventListener("click", () => {
 
-        const product =
-          data.products.find(
-            p => p.id === button.dataset.productRun
-          );
+        const id =
+          Number(button.dataset.deletePrep);
 
-        if (!product) return;
-
-        product.steps.forEach(
-          step => step.done = false
-        );
+        data.preparations =
+          data.preparations
+            .filter(x => x.id !== id);
 
         saveData();
 
-        openProductModal(product, true);
-
-      });
-
-    });
-
-
-  document
-    .querySelectorAll("[data-product-edit]")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        const product =
-          data.products.find(
-            p => p.id === button.dataset.productEdit
-          );
-
-        if (product) {
-          openProductModal(product);
-        }
-
-      });
-
-    });
-
-
-  document
-    .querySelectorAll("[data-product-delete]")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        data.products =
-          data.products.filter(
-            p => p.id !== button.dataset.productDelete
-          );
-
-        saveData();
-
-        renderProducts();
+        renderPreparations();
 
       });
 
@@ -1168,452 +687,270 @@ function attachProductEvents() {
 }
 
 
-function openProductModal(existing = null, running = false) {
+/* ---------------------------------------------------------
+   LISTES
+--------------------------------------------------------- */
 
-  const steps =
-    existing
-      ? existing.steps
-      : [
-          {
-            id: crypto.randomUUID(),
-            text: "",
-            done: false
-          }
-        ];
+document.getElementById("newListBtn")
+  .addEventListener("click", () => {
 
+    document.getElementById("listModal")
+      .classList.add("open");
 
-  openModal(
-    running
-      ? existing.name
-      : existing
-        ? "Modifier la préparation"
-        : "Nouvelle préparation",
-
-    running ? "PRÉPARATION" : "PROCÉDURE",
-
-    `
-
-      <div class="form-group">
-
-        <label>Nom</label>
-
-        <input
-          id="productName"
-          class="form-input"
-          value="${existing ? escapeAttr(existing.name) : ""}"
-          placeholder="Ex : Sauce burger"
-        >
-
-      </div>
+  });
 
 
-      <div class="form-group">
-
-        <label>Étapes</label>
-
-        <div
-          id="stepBuilder"
-          class="step-builder"
-        >
-
-          ${
-            steps
-              .map(step => `
-
-                <div class="step-line">
-
-                  <input
-                    class="form-input step-input"
-                    value="${escapeAttr(step.text)}"
-                    placeholder="Étape..."
-                  >
-
-                  <button
-                    class="remove-step"
-                    type="button"
-                  >
-                    ×
-                  </button>
-
-                </div>
-
-              `)
-              .join("")
-          }
-
-        </div>
+document.getElementById("createList")
+  .addEventListener("click", createList);
 
 
-        <button
-          class="add-step"
-          id="addStep"
-          type="button"
-        >
-          ＋ Ajouter une étape
-        </button>
+function createList() {
 
-      </div>
+  const name =
+    document.getElementById("listName")
+      .value.trim();
 
+  const firstTask =
+    document.getElementById("firstTask")
+      .value.trim();
 
-      <button
-        class="primary-btn modal-submit"
-        id="saveProduct"
-      >
-        ${running ? "Terminer" : "Enregistrer"}
-      </button>
+  if (!name) {
+    alert("Donne un nom à ta liste.");
+    return;
+  }
 
-    `
-  );
+  const tasks = [];
 
+  if (firstTask) {
 
-  const builder =
-    document.getElementById("stepBuilder");
+    tasks.push({
 
+      id: Date.now(),
 
-  function attachRemoveButtons() {
+      text: firstTask,
 
-    builder
-      .querySelectorAll(".remove-step")
-      .forEach(button => {
+      done: false
 
-        button.onclick = () => {
-
-          button.parentElement.remove();
-
-        };
-
-      });
+    });
 
   }
 
+  data.lists.push({
 
-  attachRemoveButtons();
+    id: Date.now(),
 
+    name,
 
-  document
-    .getElementById("addStep")
-    .addEventListener("click", () => {
+    tasks
 
-      const line =
-        document.createElement("div");
+  });
 
-      line.className = "step-line";
+  saveData();
 
-      line.innerHTML = `
+  document.getElementById("listName").value = "";
+  document.getElementById("firstTask").value = "";
 
-        <input
-          class="form-input step-input"
-          placeholder="Étape..."
-        >
+  closeModal("listModal");
 
-        <button
-          class="remove-step"
-          type="button"
-        >
-          ×
-        </button>
-
-      `;
-
-      builder.appendChild(line);
-
-      attachRemoveButtons();
-
-    });
-
-
-  if (running) {
-
-    renderRunningProduct(existing, builder);
-
-  }
-
-
-  document
-    .getElementById("saveProduct")
-    .addEventListener("click", () => {
-
-      const name =
-        document.getElementById("productName").value.trim();
-
-
-      const inputs =
-        [...builder.querySelectorAll(".step-input")];
-
-
-      const newSteps =
-        inputs
-          .map(input => input.value.trim())
-          .filter(Boolean)
-          .map((text, index) => ({
-
-            id:
-              existing?.steps[index]?.id
-              || crypto.randomUUID(),
-
-            text,
-
-            done:
-              existing?.steps[index]?.done || false
-
-          }));
-
-
-      if (!name) {
-
-        alert("Donne un nom à la préparation.");
-
-        return;
-
-      }
-
-
-      if (existing) {
-
-        existing.name = name;
-        existing.steps = newSteps;
-
-      } else {
-
-        data.products.push({
-
-          id: crypto.randomUUID(),
-
-          name,
-
-          steps: newSteps
-
-        });
-
-      }
-
-
-      saveData();
-
-      closeModal();
-
-      renderProducts();
-
-    });
+  renderLists();
 
 }
 
 
-function renderRunningProduct(product, builder) {
-
-  builder
-    .querySelectorAll(".step-line")
-    .forEach((line, index) => {
-
-      const input =
-        line.querySelector("input");
-
-
-      if (!product.steps[index]) {
-        return;
-      }
-
-
-      input.style.textDecoration =
-        product.steps[index].done
-          ? "line-through"
-          : "none";
-
-
-      input.addEventListener("click", () => {
-
-        product.steps[index].done =
-          !product.steps[index].done;
-
-        saveData();
-
-        input.style.textDecoration =
-          product.steps[index].done
-            ? "line-through"
-            : "none";
-
-      });
-
-    });
-
-}
-
-
-document
-  .getElementById("addProductBtn")
-  .addEventListener("click", () => openProductModal());
-
-
-document
-  .getElementById("emptyAddProduct")
-  .addEventListener("click", () => openProductModal());
-
-
-/* =========================================================
-   CHECKLISTS
-========================================================= */
-
-function renderChecklists() {
+function renderLists() {
 
   const container =
-    document.getElementById("checklistsContainer");
+    document.getElementById("listsContainer");
 
-  const empty =
-    document.getElementById("emptyChecklists");
+  if (!data.lists.length) {
 
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">✓</div>
+        <strong>Aucune liste</strong>
+        <span>Crée une liste de mise en place.</span>
+      </div>
+    `;
 
-  empty.style.display =
-    data.checklists.length
-      ? "none"
-      : "block";
-
+    return;
+  }
 
   container.innerHTML =
-    data.checklists
-      .map(list => {
+    data.lists
+      .map(list => `
 
-        const done =
-          list.items.filter(item => item.done).length;
+        <article
+          class="list-card"
+          data-list="${list.id}"
+        >
 
+          <h3>${escapeHTML(list.name)}</h3>
 
-        return `
+          <div class="tasks">
 
-          <article
-            class="checklist-card"
-            data-list-id="${list.id}"
-          >
+            ${
+              list.tasks.length
+                ? list.tasks.map(task => `
 
-            <div class="checklist-title">
-              ${escapeHtml(list.name)}
-            </div>
-
-            <div class="checklist-count">
-              ${done}/${list.items.length} terminées
-            </div>
-
-
-            <div class="check-items">
-
-              ${
-                list.items
-                  .map(item => `
-
-                    <label
-                      class="check-item ${
-                        item.done ? "done" : ""
-                      }"
-                    >
+                    <div class="task ${task.done ? "done" : ""}">
 
                       <input
                         type="checkbox"
-                        data-check-item="${item.id}"
-                        ${
-                          item.done
-                            ? "checked"
-                            : ""
-                        }
+                        ${task.done ? "checked" : ""}
+                        data-task-check="${list.id}"
+                        data-task-id="${task.id}"
                       >
 
                       <span>
-                        ${escapeHtml(item.text)}
+                        ${escapeHTML(task.text)}
                       </span>
 
-                    </label>
+                      <button
+                        class="delete-task"
+                        data-task-delete="${list.id}"
+                        data-task-id="${task.id}"
+                      >
+                        ×
+                      </button>
 
-                  `)
-                  .join("")
-              }
+                    </div>
 
-            </div>
+                  `).join("")
 
+                : `
+                  <p style="color:var(--muted)">
+                    Aucune tâche.
+                  </p>
+                `
+            }
 
-            <div class="check-actions">
+          </div>
 
-              <button
-                data-check-edit="${list.id}"
-              >
-                Modifier
-              </button>
+          <div class="task-add">
 
-              <button
-                data-check-reset="${list.id}"
-              >
-                Réinitialiser
-              </button>
+            <input
+              type="text"
+              placeholder="Ajouter une tâche..."
+              data-task-input="${list.id}"
+            >
 
-              <button
-                data-check-delete="${list.id}"
-              >
-                Supprimer
-              </button>
+            <button
+              data-task-add="${list.id}"
+            >
+              +
+            </button>
 
-            </div>
+          </div>
 
-          </article>
+          <div class="card-actions">
 
-        `;
+            <button data-delete-list="${list.id}">
+              Supprimer la liste
+            </button>
 
-      })
+          </div>
+
+        </article>
+
+      `)
       .join("");
 
 
-  attachChecklistEvents();
+  /* Checkbox */
 
-}
-
-
-function attachChecklistEvents() {
-
-  document
-    .querySelectorAll("[data-check-item]")
+  document.querySelectorAll("[data-task-check]")
     .forEach(input => {
 
       input.addEventListener("change", () => {
 
-        const card =
-          input.closest("[data-list-id]");
+        const listId =
+          Number(input.dataset.taskCheck);
+
+        const taskId =
+          Number(input.dataset.taskId);
 
         const list =
-          data.checklists.find(
-            l => l.id === card.dataset.listId
-          );
+          data.lists.find(x => x.id === listId);
 
         if (!list) return;
 
+        const task =
+          list.tasks.find(x => x.id === taskId);
 
-        const item =
-          list.items.find(
-            i => i.id === input.dataset.checkItem
-          );
+        if (!task) return;
 
-        if (!item) return;
-
-
-        item.done =
-          input.checked;
+        task.done = input.checked;
 
         saveData();
 
-        renderChecklists();
+        renderLists();
 
       });
 
     });
 
 
-  document
-    .querySelectorAll("[data-check-edit]")
+  /* Suppression tâche */
+
+  document.querySelectorAll("[data-task-delete]")
     .forEach(button => {
 
       button.addEventListener("click", () => {
 
+        const listId =
+          Number(button.dataset.taskDelete);
+
+        const taskId =
+          Number(button.dataset.taskId);
+
         const list =
-          data.checklists.find(
-            l => l.id === button.dataset.checkEdit
+          data.lists.find(x => x.id === listId);
+
+        if (!list) return;
+
+        list.tasks =
+          list.tasks.filter(
+            task => task.id !== taskId
           );
 
-        if (list) {
-          openChecklistModal(list);
+        saveData();
+
+        renderLists();
+
+      });
+
+    });
+
+
+  /* Ajouter tâche */
+
+  document.querySelectorAll("[data-task-add]")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        addTask(
+          Number(button.dataset.taskAdd)
+        );
+
+      });
+
+    });
+
+
+  /* Entrée clavier */
+
+  document.querySelectorAll("[data-task-input]")
+    .forEach(input => {
+
+      input.addEventListener("keydown", event => {
+
+        if (event.key === "Enter") {
+
+          addTask(
+            Number(input.dataset.taskInput)
+          );
+
         }
 
       });
@@ -1621,48 +958,22 @@ function attachChecklistEvents() {
     });
 
 
-  document
-    .querySelectorAll("[data-check-reset]")
+  /* Supprimer liste */
+
+  document.querySelectorAll("[data-delete-list]")
     .forEach(button => {
 
       button.addEventListener("click", () => {
 
-        const list =
-          data.checklists.find(
-            l => l.id === button.closest("[data-list-id]").dataset.listId
-          );
+        const id =
+          Number(button.dataset.deleteList);
 
-        if (!list) return;
-
-
-        list.items.forEach(
-          item => item.done = false
-        );
+        data.lists =
+          data.lists.filter(x => x.id !== id);
 
         saveData();
 
-        renderChecklists();
-
-      });
-
-    });
-
-
-  document
-    .querySelectorAll("[data-check-delete]")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        data.checklists =
-          data.checklists.filter(
-            list =>
-              list.id !== button.dataset.checkDelete
-          );
-
-        saveData();
-
-        renderChecklists();
+        renderLists();
 
       });
 
@@ -1671,257 +982,54 @@ function attachChecklistEvents() {
 }
 
 
-function openChecklistModal(existing = null) {
+function addTask(listId) {
 
-  const items =
-    existing?.items?.length
-      ? existing.items
-      : [
-          {
-            id: crypto.randomUUID(),
-            text: "",
-            done: false
-          }
-        ];
+  const input =
+    document.querySelector(
+      `[data-task-input="${listId}"]`
+    );
 
+  if (!input) return;
 
-  openModal(
-    existing
-      ? "Modifier la checklist"
-      : "Nouvelle checklist",
+  const text =
+    input.value.trim();
 
-    "CHECKLIST",
+  if (!text) return;
 
-    `
+  const list =
+    data.lists.find(x => x.id === listId);
 
-      <div class="form-group">
+  if (!list) return;
 
-        <label>Nom</label>
+  list.tasks.push({
 
-        <input
-          id="checklistName"
-          class="form-input"
-          placeholder="Ex : Fermeture"
-          value="${
-            existing
-              ? escapeAttr(existing.name)
-              : ""
-          }"
-        >
+    id: Date.now(),
 
-      </div>
+    text,
+
+    done: false
+
+  });
+
+  saveData();
+
+  renderLists();
+
+}
 
 
-      <div class="form-group">
+/* ---------------------------------------------------------
+   SONNERIE
+--------------------------------------------------------- */
 
-        <label>Tâches</label>
-
-        <div
-          id="checklistBuilder"
-          class="step-builder"
-        >
-
-          ${
-            items
-              .map(item => `
-
-                <div class="step-line">
-
-                  <input
-                    class="form-input checklist-input"
-                    value="${escapeAttr(item.text)}"
-                    placeholder="Tâche..."
-                  >
-
-                  <button
-                    class="remove-step"
-                    type="button"
-                  >
-                    ×
-                  </button>
-
-                </div>
-
-              `)
-              .join("")
-          }
-
-        </div>
+let audioContext = null;
 
 
-        <button
-          class="add-step"
-          id="addChecklistItem"
-          type="button"
-        >
-          ＋ Ajouter une tâche
-        </button>
+function playAlarm() {
 
-      </div>
-
-
-      <button
-        class="primary-btn modal-submit"
-        id="saveChecklist"
-      >
-        Enregistrer
-      </button>
-
-    `
-  );
-
-
-  const builder =
-    document.getElementById("checklistBuilder");
-
-
-  function attachRemove() {
-
-    builder
-      .querySelectorAll(".remove-step")
-      .forEach(button => {
-
-        button.onclick = () => {
-
-          button.parentElement.remove();
-
-        };
-
-      });
-
+  if (!data.sound) {
+    return;
   }
-
-
-  attachRemove();
-
-
-  document
-    .getElementById("addChecklistItem")
-    .addEventListener("click", () => {
-
-      const line =
-        document.createElement("div");
-
-      line.className = "step-line";
-
-      line.innerHTML = `
-
-        <input
-          class="form-input checklist-input"
-          placeholder="Tâche..."
-        >
-
-        <button
-          class="remove-step"
-          type="button"
-        >
-          ×
-        </button>
-
-      `;
-
-      builder.appendChild(line);
-
-      attachRemove();
-
-    });
-
-
-  document
-    .getElementById("saveChecklist")
-    .addEventListener("click", () => {
-
-      const name =
-        document
-          .getElementById("checklistName")
-          .value
-          .trim();
-
-
-      const inputs =
-        [...builder.querySelectorAll(".checklist-input")];
-
-
-      const newItems =
-        inputs
-          .map(input => input.value.trim())
-          .filter(Boolean)
-          .map((text, index) => ({
-
-            id:
-              existing?.items[index]?.id
-              || crypto.randomUUID(),
-
-            text,
-
-            done:
-              existing?.items[index]?.done
-              || false
-
-          }));
-
-
-      if (!name) {
-
-        alert("Donne un nom à la checklist.");
-
-        return;
-
-      }
-
-
-      if (existing) {
-
-        existing.name = name;
-        existing.items = newItems;
-
-      } else {
-
-        data.checklists.push({
-
-          id: crypto.randomUUID(),
-
-          name,
-
-          items: newItems
-
-        });
-
-      }
-
-
-      saveData();
-
-      closeModal();
-
-      renderChecklists();
-
-    });
-
-}
-
-
-document
-  .getElementById("addChecklistBtn")
-  .addEventListener(
-    "click",
-    () => openChecklistModal()
-  );
-
-
-document
-  .getElementById("emptyAddChecklist")
-  .addEventListener(
-    "click",
-    () => openChecklistModal()
-  );
-
-
-/* =========================================================
-   AUDIO
-========================================================= */
-
-function unlockAudio() {
 
   try {
 
@@ -1935,281 +1043,144 @@ function unlockAudio() {
 
     }
 
+    const now =
+      audioContext.currentTime;
 
-    if (audioContext.state === "suspended") {
+    for (let i = 0; i < 4; i++) {
 
-      audioContext.resume();
+      const oscillator =
+        audioContext.createOscillator();
+
+      const gain =
+        audioContext.createGain();
+
+      oscillator.type = "sine";
+
+      oscillator.frequency.value =
+        i % 2 === 0 ? 880 : 660;
+
+      gain.gain.setValueAtTime(
+        0,
+        now + i * .35
+      );
+
+      gain.gain.linearRampToValueAtTime(
+        .35,
+        now + i * .35 + .03
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        .001,
+        now + i * .35 + .3
+      );
+
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+
+      oscillator.start(now + i * .35);
+      oscillator.stop(now + i * .35 + .32);
 
     }
 
   } catch (error) {
 
-    console.error(error);
+    console.log("Audio non disponible.");
 
   }
 
 }
 
 
-function playTone(
-  frequency,
-  duration,
-  delay = 0
-) {
+/* Test son */
 
-  if (!audioContext) {
-    unlockAudio();
-  }
-
-  if (!audioContext) return;
-
-
-  const oscillator =
-    audioContext.createOscillator();
-
-  const gain =
-    audioContext.createGain();
-
-
-  oscillator.type = "sine";
-
-  oscillator.frequency.value =
-    frequency;
-
-
-  const volume =
-    data.settings.volume / 100;
-
-
-  gain.gain.setValueAtTime(
-    0,
-    audioContext.currentTime + delay
-  );
-
-
-  gain.gain.linearRampToValueAtTime(
-    volume * 0.35,
-    audioContext.currentTime + delay + .02
-  );
-
-
-  gain.gain.exponentialRampToValueAtTime(
-    .001,
-    audioContext.currentTime + delay + duration
-  );
-
-
-  oscillator.connect(gain);
-
-  gain.connect(audioContext.destination);
-
-
-  oscillator.start(
-    audioContext.currentTime + delay
-  );
-
-
-  oscillator.stop(
-    audioContext.currentTime +
-    delay +
-    duration +
-    .05
-  );
-
-}
-
-
-function playTimerSound() {
-
-  unlockAudio();
-
-
-  const type =
-    data.settings.sound;
-
-
-  if (type === "beep") {
-
-    playTone(880, .8);
-
-  }
-
-
-  if (type === "double") {
-
-    playTone(880, .35, 0);
-
-    playTone(880, .35, .5);
-
-  }
-
-
-  if (type === "bell") {
-
-    playTone(660, .8, 0);
-
-    playTone(880, 1, .12);
-
-  }
-
-
-  if (type === "alarm") {
-
-    playTone(900, .3, 0);
-
-    playTone(650, .3, .35);
-
-    playTone(900, .3, .7);
-
-    playTone(650, .3, 1.05);
-
-  }
-
-
-  if (data.settings.repeat) {
-
-    setTimeout(() => {
-
-      const stillFinished =
-        data.timers.some(
-          timer =>
-            timer.finished
-        );
-
-
-      if (stillFinished) {
-
-        playTimerSound();
-
-      }
-
-    }, 3000);
-
-  }
-
-}
-
-
-/* =========================================================
-   SETTINGS
-========================================================= */
-
-const soundSelect =
-  document.getElementById("soundSelect");
-
-const volumeSlider =
-  document.getElementById("volumeSlider");
-
-const volumeLabel =
-  document.getElementById("volumeLabel");
-
-const repeatSound =
-  document.getElementById("repeatSound");
-
-const darkMode =
-  document.getElementById("darkMode");
-
-
-function loadSettingsUI() {
-
-  soundSelect.value =
-    data.settings.sound;
-
-  volumeSlider.value =
-    data.settings.volume;
-
-  volumeLabel.textContent =
-    `${data.settings.volume}%`;
-
-  repeatSound.checked =
-    data.settings.repeat;
-
-  darkMode.checked =
-    data.settings.dark;
-
-  applyTheme();
-
-}
-
-
-soundSelect.addEventListener("change", () => {
-
-  data.settings.sound =
-    soundSelect.value;
-
-  saveData();
-
-});
-
-
-volumeSlider.addEventListener("input", () => {
-
-  data.settings.volume =
-    Number(volumeSlider.value);
-
-  volumeLabel.textContent =
-    `${data.settings.volume}%`;
-
-  saveData();
-
-});
-
-
-repeatSound.addEventListener("change", () => {
-
-  data.settings.repeat =
-    repeatSound.checked;
-
-  saveData();
-
-});
-
-
-darkMode.addEventListener("change", () => {
-
-  data.settings.dark =
-    darkMode.checked;
-
-  saveData();
-
-  applyTheme();
-
-});
-
-
-document
-  .getElementById("themeBtn")
+document.getElementById("testSound")
   .addEventListener("click", () => {
 
-    data.settings.dark =
-      !data.settings.dark;
-
-    darkMode.checked =
-      data.settings.dark;
-
-    saveData();
-
-    applyTheme();
+    playAlarm();
 
   });
 
+
+/* ---------------------------------------------------------
+   RÉGLAGES
+--------------------------------------------------------- */
 
 function applyTheme() {
 
   document.body.classList.toggle(
     "dark",
-    data.settings.dark
+    data.theme === "dark"
   );
+
+  document.getElementById("themeBtn")
+    .textContent =
+      data.theme === "dark" ? "🌙" : "☀️";
 
 }
 
 
-/* =========================================================
-   RESET
-========================================================= */
+function toggleTheme() {
 
-document
-  .getElementById("resetApp")
+  data.theme =
+    data.theme === "dark"
+      ? "light"
+      : "dark";
+
+  saveData();
+
+  applyTheme();
+
+}
+
+
+document.getElementById("themeBtn")
+  .addEventListener("click", toggleTheme);
+
+
+document.getElementById("settingsTheme")
+  .addEventListener("click", toggleTheme);
+
+
+document.getElementById("soundToggle")
+  .addEventListener("click", () => {
+
+    data.sound = !data.sound;
+
+    saveData();
+
+    updateSettings();
+
+  });
+
+
+document.getElementById("kitchenName")
+  .addEventListener("input", event => {
+
+    data.kitchenName =
+      event.target.value;
+
+    saveData();
+
+  });
+
+
+function updateSettings() {
+
+  document.getElementById("kitchenName")
+    .value = data.kitchenName || "";
+
+  document.getElementById("soundToggle")
+    .classList.toggle(
+      "active",
+      data.sound
+    );
+
+}
+
+
+/* Reset */
+
+document.getElementById("resetApp")
   .addEventListener("click", () => {
 
     const confirmReset =
@@ -2217,29 +1188,20 @@ document
         "Supprimer toutes les données de KitchenFlow ?"
       );
 
+    if (!confirmReset) return;
 
-    if (!confirmReset) {
-      return;
-    }
+    localStorage.removeItem(STORAGE_KEY);
 
-
-    data =
-      structuredClone(defaultData);
-
-    saveData();
-
-    renderAll();
-
-    loadSettingsUI();
+    location.reload();
 
   });
 
 
-/* =========================================================
-   UTILS
-========================================================= */
+/* ---------------------------------------------------------
+   UTILITAIRE
+--------------------------------------------------------- */
 
-function escapeHtml(value) {
+function escapeHTML(value) {
 
   return String(value)
     .replaceAll("&", "&amp;")
@@ -2251,30 +1213,16 @@ function escapeHtml(value) {
 }
 
 
-function escapeAttr(value) {
+/* ---------------------------------------------------------
+   INITIALISATION
+--------------------------------------------------------- */
 
-  return escapeHtml(value);
+loadData();
 
-}
+renderHome();
 
+renderTimers();
 
-/* =========================================================
-   INITIAL RENDER
-========================================================= */
+renderPreparations();
 
-function renderAll() {
-
-  renderTimers();
-
-  renderProducts();
-
-  renderChecklists();
-
-  renderPresets();
-
-}
-
-
-loadSettingsUI();
-
-renderAll();
+renderLists();
