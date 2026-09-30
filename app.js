@@ -1,3 +1,12 @@
+/* =====================================================
+   KITCHENFLOW
+===================================================== */
+
+
+/* =========================
+   OUTILS
+========================= */
+
 const $ = selector =>
   document.querySelector(selector);
 
@@ -6,82 +15,233 @@ const $$ = selector =>
   [...document.querySelectorAll(selector)];
 
 
+function uid() {
+
+  return Date.now() +
+    Math.random()
+      .toString(36)
+      .slice(2);
+
+}
+
+
+function escapeHTML(text) {
+
+  return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
 
 /* =========================
    DONNÉES
 ========================= */
 
 
-const defaultTasks = [
+const defaultPresets = [
 
   {
-    id: 1,
-    title: "Définir ma priorité du jour",
-    tag: "Important",
-    done: false
+    id: "p1",
+    name: "Pâtes",
+    seconds: 8 * 60
   },
 
   {
-    id: 2,
-    title: "Faire une chose qui fait avancer mes projets",
-    tag: "Travail",
-    done: false
+    id: "p2",
+    name: "Œuf mollet",
+    seconds: 6 * 60
   },
 
   {
-    id: 3,
-    title: "Prendre 20 minutes pour moi",
-    tag: "Perso",
-    done: false
+    id: "p3",
+    name: "Frites",
+    seconds: 12 * 60
+  },
+
+  {
+    id: "p4",
+    name: "Steak",
+    seconds: 4 * 60
   }
 
 ];
 
 
-let tasks =
-  JSON.parse(
-    localStorage.getItem("moment_tasks")
-  ) || defaultTasks;
+const defaultProducts = [
+
+  {
+    id: "prod1",
+    name: "Sauce 1",
+    category: "Sauce",
+    quantity: "1 litre",
+    prepTime: "15 min",
+    notes: "Remplacer par tes propres informations."
+  },
+
+  {
+    id: "prod2",
+    name: "Sauce 2",
+    category: "Sauce",
+    quantity: "1 litre",
+    prepTime: "10 min",
+    notes: ""
+  },
+
+  {
+    id: "prod3",
+    name: "Garniture 1",
+    category: "Garniture",
+    quantity: "20 portions",
+    prepTime: "20 min",
+    notes: ""
+  }
+
+];
 
 
-let filter = "all";
+const defaultChecklists = [
+
+  {
+    id: "c1",
+
+    name: "Ouverture",
+
+    items: [
+
+      {
+        id: uid(),
+        text: "Allumer les équipements",
+        done: false
+      },
+
+      {
+        id: uid(),
+        text: "Vérifier les frigos",
+        done: false
+      },
+
+      {
+        id: uid(),
+        text: "Préparer le poste",
+        done: false
+      },
+
+      {
+        id: uid(),
+        text: "Vérifier les sauces",
+        done: false
+      }
+
+    ]
+
+  },
 
 
-let focusId =
-  Number(
-    localStorage.getItem("moment_focus")
-  ) || 0;
+  {
+    id: "c2",
+
+    name: "Fermeture",
+
+    items: [
+
+      {
+        id: uid(),
+        text: "Nettoyer le poste",
+        done: false
+      },
+
+      {
+        id: uid(),
+        text: "Ranger les produits",
+        done: false
+      },
+
+      {
+        id: uid(),
+        text: "Vérifier les frigos",
+        done: false
+      }
+
+    ]
+
+  }
+
+];
 
 
-let seconds =
-  Number(
-    localStorage.getItem("moment_timer")
-  ) || 1500;
+let presets =
+  load(
+    "kf_presets",
+    defaultPresets
+  );
 
 
-let timerRunning = false;
+let products =
+  load(
+    "kf_products",
+    defaultProducts
+  );
 
 
-let timerInterval = null;
+let checklists =
+  load(
+    "kf_checklists",
+    defaultChecklists
+  );
 
 
-let timerPreset = 25;
+let activeTimers = [];
 
 
-let noteTimer;
+let selectedChecklist =
+  checklists[0]?.id || null;
+
+
+let soundEnabled =
+  load(
+    "kf_sound",
+    true
+  );
 
 
 
 /* =========================
-   SAUVEGARDE
+   LOCAL STORAGE
 ========================= */
 
 
-function saveTasks() {
+function load(key, fallback) {
+
+  try {
+
+    const value =
+      localStorage.getItem(key);
+
+    return value
+      ? JSON.parse(value)
+      : fallback;
+
+  }
+
+  catch {
+
+    return fallback;
+
+  }
+
+}
+
+
+function save(key,value) {
 
   localStorage.setItem(
-    "moment_tasks",
-    JSON.stringify(tasks)
+    key,
+    JSON.stringify(value)
   );
 
 }
@@ -89,406 +249,20 @@ function saveTasks() {
 
 
 /* =========================
-   TÂCHES
+   NAVIGATION
 ========================= */
 
 
-function renderTasks() {
-
-  const list =
-    $("#taskList");
-
-
-  const visible =
-    tasks.filter(task => {
-
-      if (filter === "done") {
-
-        return task.done;
-
-      }
-
-
-      if (filter === "open") {
-
-        return !task.done;
-
-      }
-
-
-      return true;
-
-    });
-
-
-  list.innerHTML =
-    visible.map(task => `
-
-      <div
-        class="task ${task.done ? "done" : ""}"
-        data-id="${task.id}"
-      >
-
-        <button class="check">
-
-          ${task.done ? "✓" : ""}
-
-        </button>
-
-
-        <span class="task-title">
-
-          ${escapeHtml(task.title)}
-
-        </span>
-
-
-        <div>
-
-          <span class="tag">
-
-            ${escapeHtml(task.tag)}
-
-          </span>
-
-
-          <button class="delete">
-
-            ×
-
-          </button>
-
-        </div>
-
-      </div>
-
-    `).join("");
-
-
-  $("#emptyState").style.display =
-    visible.length
-      ? "none"
-      : "block";
-
-
-  updateProgress();
-
-  updateFocus();
-
-}
-
-
-
-/* =========================
-   PROGRESSION
-========================= */
-
-
-function updateProgress() {
-
-  const total =
-    tasks.length;
-
-
-  const done =
-    tasks.filter(
-      task => task.done
-    ).length;
-
-
-  const percent =
-    total
-      ? Math.round(
-          done / total * 100
-        )
-      : 0;
-
-
-  $("#doneCount").textContent =
-    done;
-
-
-  $("#totalCount").textContent =
-    total;
-
-
-  $("#progressPercent").textContent =
-    percent + "%";
-
-
-  $("#progressRing").style.background = `
-
-    conic-gradient(
-
-      var(--accent)
-      ${percent * 3.6}deg,
-
-      rgba(255,255,255,.07)
-      ${percent * 3.6}deg
-
-    )
-
-  `;
-
-
-  if (percent === 100) {
-
-    $("#progressMessage").textContent =
-      "Tout est terminé. Profite de ta journée.";
-
-  }
-
-  else if (percent >= 66) {
-
-    $("#progressMessage").textContent =
-      "Tu es dans le dernier tiers. Continue.";
-
-  }
-
-  else if (percent >= 33) {
-
-    $("#progressMessage").textContent =
-      "Ça avance. Garde le rythme.";
-
-  }
-
-  else {
-
-    $("#progressMessage").textContent =
-      "Commence par une petite victoire.";
-
-  }
-
-}
-
-
-
-/* =========================
-   PRIORITÉ
-========================= */
-
-
-function updateFocus() {
-
-  let task =
-    tasks.find(
-      item =>
-        item.id === focusId &&
-        !item.done
-    );
-
-
-  if (!task) {
-
-    task =
-      tasks.find(
-        item => !item.done
-      );
-
-  }
-
-
-  focusId =
-    task
-      ? task.id
-      : 0;
-
-
-  localStorage.setItem(
-    "moment_focus",
-    focusId
-  );
-
-
-  $("#focusText").textContent =
-    task
-      ? task.title
-      : "Tout est fait. Rien ne presse.";
-
-
-  $("#focusBtn").textContent =
-    task
-      ? "Commencer cette priorité →"
-      : "Ajouter une nouvelle tâche";
-
-}
-
-
-
-/* =========================
-   AJOUT TÂCHE
-========================= */
-
-
-function addTask(
-  title,
-  tag
-) {
-
-  tasks.unshift({
-
-    id: Date.now(),
-
-    title: title,
-
-    tag: tag,
-
-    done: false
-
-  });
-
-
-  saveTasks();
-
-  renderTasks();
-
-  toast("Tâche ajoutée");
-
-}
-
-
-
-/* =========================
-   FORMULAIRE
-========================= */
-
-
-$("#taskForm")
-  .addEventListener(
-    "submit",
-    event => {
-
-      event.preventDefault();
-
-
-      const input =
-        $("#taskInput");
-
-
-      const title =
-        input.value.trim();
-
-
-      if (!title) {
-
-        input.focus();
-
-        return;
-
-      }
-
-
-      addTask(
-        title,
-        $("#taskTag").value
-      );
-
-
-      input.value = "";
-
-
-      input.focus();
-
-    }
-  );
-
-
-
-/* =========================
-   CLIQUE TÂCHE
-========================= */
-
-
-$("#taskList")
-  .addEventListener(
-    "click",
-    event => {
-
-      const row =
-        event.target.closest(".task");
-
-
-      if (!row) return;
-
-
-      const id =
-        Number(row.dataset.id);
-
-
-      if (
-        event.target.closest(".check")
-      ) {
-
-        const task =
-          tasks.find(
-            item => item.id === id
-          );
-
-
-        task.done =
-          !task.done;
-
-
-        saveTasks();
-
-        renderTasks();
-
-      }
-
-
-      if (
-        event.target.closest(".delete")
-      ) {
-
-        tasks =
-          tasks.filter(
-            item => item.id !== id
-          );
-
-
-        saveTasks();
-
-        renderTasks();
-
-        toast("Tâche supprimée");
-
-      }
-
-    }
-  );
-
-
-
-/* =========================
-   FILTRES
-========================= */
-
-
-$$(".filter")
+$$(".nav-button")
   .forEach(button => {
 
     button.addEventListener(
       "click",
       () => {
 
-        $$(".filter")
-          .forEach(item =>
-            item.classList.remove(
-              "active"
-            )
-          );
-
-
-        button.classList.add(
-          "active"
+        showPage(
+          button.dataset.page
         );
-
-
-        filter =
-          button.dataset.filter;
-
-
-        renderTasks();
 
       }
     );
@@ -496,60 +270,72 @@ $$(".filter")
   });
 
 
+$$("[data-page-target]")
+  .forEach(button => {
 
-/* =========================
-   BOUTON PRIORITÉ
-========================= */
+    button.addEventListener(
+      "click",
+      () => {
 
-
-$("#focusBtn")
-  .addEventListener(
-    "click",
-    () => {
-
-      const openTasks =
-        tasks.filter(
-          task => !task.done
+        showPage(
+          button.dataset.pageTarget
         );
-
-
-      if (!openTasks.length) {
-
-        $("#taskInput").focus();
-
-        return;
 
       }
+    );
+
+  });
 
 
-      const currentIndex =
-        openTasks.findIndex(
-          task =>
-            task.id === focusId
-        );
+function showPage(page) {
+
+  $$(".page")
+    .forEach(item =>
+      item.classList.remove(
+        "active"
+      )
+    );
 
 
-      const nextIndex =
-        (currentIndex + 1)
-        % openTasks.length;
+  $(`#page-${page}`)
+    ?.classList
+    .add("active");
 
 
-      focusId =
-        openTasks[nextIndex].id;
+  $$(".nav-button")
+    .forEach(item => {
 
-
-      localStorage.setItem(
-        "moment_focus",
-        focusId
+      item.classList.toggle(
+        "active",
+        item.dataset.page === page
       );
 
+    });
 
-      updateFocus();
 
-      toast("Priorité sélectionnée");
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 
-    }
-  );
+
+  if (page === "dashboard")
+    renderDashboard();
+
+  if (page === "timers") {
+
+    renderPresets();
+    renderTimers();
+
+  }
+
+  if (page === "products")
+    renderProducts();
+
+  if (page === "checklists")
+    renderChecklists();
+
+}
 
 
 
@@ -564,7 +350,8 @@ function updateClock() {
     new Date();
 
 
-  $("#clock").textContent =
+  $("#currentTime")
+    .textContent =
     now.toLocaleTimeString(
       "fr-FR",
       {
@@ -574,56 +361,16 @@ function updateClock() {
     );
 
 
-  $("#dateLabel").textContent =
-    now
-      .toLocaleDateString(
-        "fr-FR",
-        {
-          weekday: "long",
-          day: "numeric",
-          month: "long"
-        }
-      )
-      .toUpperCase();
-
-
-  const hour =
-    now.getHours();
-
-
-  if (hour < 5) {
-
-    $("#greeting").textContent =
-      "Bonne nuit.";
-
-  }
-
-  else if (hour < 12) {
-
-    $("#greeting").textContent =
-      "Bonjour.";
-
-  }
-
-  else if (hour < 18) {
-
-    $("#greeting").textContent =
-      "Bon après-midi.";
-
-  }
-
-  else {
-
-    $("#greeting").textContent =
-      "Bonsoir.";
-
-  }
-
-
-  $("#timezone").textContent =
-    Intl.DateTimeFormat()
-      .resolvedOptions()
-      .timeZone;
+  $("#currentDate")
+    .textContent =
+    now.toLocaleDateString(
+      "fr-FR",
+      {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+      }
+    );
 
 }
 
@@ -638,221 +385,2020 @@ updateClock();
 
 
 
-/* =========================
-   MINUTEUR
-========================= */
+/* =====================================================
+   MINUTEURS
+===================================================== */
 
 
-function drawTimer() {
+/* AJOUT */
 
-  const minutes =
-    Math.floor(
-      seconds / 60
-    )
-    .toString()
-    .padStart(2, "0");
-
-
-  const secs =
-    (seconds % 60)
-    .toString()
-    .padStart(2, "0");
-
-
-  $("#timerDisplay").textContent =
-    `${minutes}:${secs}`;
-
-
-  localStorage.setItem(
-    "moment_timer",
-    seconds
-  );
-
-}
-
-
-
-/* DÉMARRER / PAUSE */
-
-
-$("#timerStart")
+$("#timerForm")
   .addEventListener(
-    "click",
-    () => {
+    "submit",
+    event => {
 
-      if (timerRunning) {
+      event.preventDefault();
 
-        clearInterval(
-          timerInterval
+
+      const name =
+        $("#timerName")
+          .value
+          .trim();
+
+
+      const minutes =
+        Number(
+          $("#timerMinutes").value
+        ) || 0;
+
+
+      const seconds =
+        Number(
+          $("#timerSeconds").value
+        ) || 0;
+
+
+      const total =
+        minutes * 60 +
+        seconds;
+
+
+      if (!name) {
+
+        toast(
+          "Donne un nom au minuteur"
         );
-
-
-        timerRunning =
-          false;
-
-
-        $("#timerStart")
-          .textContent =
-          "Reprendre";
-
 
         return;
 
       }
 
 
-      timerRunning =
-        true;
+      if (total <= 0) {
 
-
-      $("#timerStart")
-        .textContent =
-        "Pause";
-
-
-      timerInterval =
-        setInterval(
-          () => {
-
-            if (seconds <= 0) {
-
-              clearInterval(
-                timerInterval
-              );
-
-
-              timerRunning =
-                false;
-
-
-              $("#timerStart")
-                .textContent =
-                "Démarrer";
-
-
-              toast(
-                "Session terminée ✓"
-              );
-
-
-              return;
-
-            }
-
-
-            seconds--;
-
-            drawTimer();
-
-          },
-          1000
+        toast(
+          "Le temps doit être supérieur à zéro"
         );
 
-    }
-  );
+        return;
+
+      }
 
 
-
-/* PASSER */
-
-
-$("#timerSkip")
-  .addEventListener(
-    "click",
-    () => {
-
-      seconds =
-        timerPreset * 60;
-
-
-      drawTimer();
-
-    }
-  );
-
-
-
-/* RESET TIMER */
-
-
-$("#resetTimer")
-  .addEventListener(
-    "click",
-    () => {
-
-      clearInterval(
-        timerInterval
+      createTimer(
+        name,
+        total
       );
 
 
-      timerRunning =
-        false;
+      $("#timerName").value =
+        "";
 
 
-      seconds =
-        timerPreset * 60;
+      $("#timerMinutes").value =
+        5;
 
 
-      $("#timerStart")
-        .textContent =
-        "Démarrer";
-
-
-      drawTimer();
+      $("#timerSeconds").value =
+        0;
 
     }
   );
 
 
 
-/* PRÉRÉGLAGES */
+/* CRÉATION */
+
+function createTimer(
+  name,
+  seconds
+) {
+
+  const timer = {
+
+    id: uid(),
+
+    name,
+
+    total: seconds,
+
+    remaining: seconds,
+
+    finished: false,
+
+    startedAt: Date.now()
+
+  };
 
 
-$$(".presets button")
+  activeTimers.push(
+    timer
+  );
+
+
+  renderTimers();
+
+  renderDashboard();
+
+  toast(
+    `${name} lancé`
+  );
+
+}
+
+
+
+/* TICK GLOBAL */
+
+setInterval(
+  () => {
+
+    let changed = false;
+
+
+    activeTimers
+      .forEach(timer => {
+
+        if (
+          timer.finished
+        )
+          return;
+
+
+        timer.remaining--;
+
+        changed = true;
+
+
+        if (
+          timer.remaining <= 0
+        ) {
+
+          timer.remaining = 0;
+
+          timer.finished = true;
+
+          playAlarm();
+
+          toast(
+            `⏰ ${timer.name} est terminé !`
+          );
+
+        }
+
+      });
+
+
+    if (changed) {
+
+      renderTimers();
+
+      renderDashboard();
+
+    }
+
+  },
+  1000
+);
+
+
+
+/* AFFICHAGE */
+
+function renderTimers() {
+
+  const container =
+    $("#timerList");
+
+
+  const dashboard =
+    $("#dashboardTimers");
+
+
+  if (!activeTimers.length) {
+
+    container.innerHTML =
+      "";
+
+    $("#noTimers")
+      .style.display =
+      "flex";
+
+    dashboard.innerHTML =
+      emptyTimerDashboard();
+
+    updateStats();
+
+    return;
+
+  }
+
+
+  $("#noTimers")
+    .style.display =
+    "none";
+
+
+  container.innerHTML =
+    activeTimers
+      .map(timerHTML)
+      .join("");
+
+
+  dashboard.innerHTML =
+    activeTimers
+      .map(
+        timer =>
+          dashboardTimerHTML(
+            timer
+          )
+      )
+      .join("");
+
+
+  attachTimerEvents();
+
+  updateStats();
+
+}
+
+
+
+/* CARTE MINUTEUR */
+
+function timerHTML(timer) {
+
+  const percent =
+    timer.total
+      ? (
+          timer.remaining /
+          timer.total
+        ) * 100
+      : 0;
+
+
+  return `
+
+    <div
+      class="timer-card ${timer.finished ? "finished" : ""}"
+      data-id="${timer.id}"
+    >
+
+      <div class="timer-top">
+
+        <div>
+
+          <div class="timer-name">
+
+            ${escapeHTML(
+              timer.name
+            )}
+
+          </div>
+
+          <div class="timer-status">
+
+            ${
+              timer.finished
+                ? "TERMINÉ"
+                : "EN COURS"
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="timer-big">
+
+        ${
+          timer.finished
+            ? "00:00"
+            : formatTime(
+                timer.remaining
+              )
+        }
+
+      </div>
+
+
+      <div class="timer-progress">
+
+        <div
+          class="timer-progress-bar"
+          style="width:${percent}%"
+        ></div>
+
+      </div>
+
+
+      <div class="timer-actions">
+
+        ${
+          timer.finished
+            ? `
+              <button
+                data-action="restart"
+              >
+                ↻ Relancer
+              </button>
+            `
+            : `
+              <button
+                data-action="add30"
+              >
+                +30s
+              </button>
+
+              <button
+                data-action="add60"
+              >
+                +1min
+              </button>
+            `
+        }
+
+
+        <button
+          class="danger"
+          data-action="delete"
+        >
+          ✕
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+
+/* DASHBOARD TIMER */
+
+function dashboardTimerHTML(timer) {
+
+  return `
+
+    <div
+      class="timer-card"
+      data-id="${timer.id}"
+    >
+
+      <div class="timer-top">
+
+        <div class="timer-name">
+
+          ${escapeHTML(
+            timer.name
+          )}
+
+        </div>
+
+        <div class="timer-status">
+
+          ${
+            timer.finished
+              ? "TERMINÉ"
+              : "EN COURS"
+          }
+
+        </div>
+
+      </div>
+
+
+      <div class="timer-big">
+
+        ${
+          timer.finished
+            ? "00:00"
+            : formatTime(
+                timer.remaining
+              )
+        }
+
+      </div>
+
+
+      <div class="timer-actions">
+
+        ${
+          timer.finished
+
+          ? `
+
+            <button
+              data-action="restart"
+            >
+              ↻ Relancer
+            </button>
+
+          `
+
+          : `
+
+            <button
+              data-action="add30"
+            >
+              +30s
+            </button>
+
+            <button
+              data-action="add60"
+            >
+              +1min
+            </button>
+
+          `
+
+        }
+
+
+        <button
+          class="danger"
+          data-action="delete"
+        >
+          ✕
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+
+function emptyTimerDashboard() {
+
+  return `
+
+    <div class="empty-state">
+
+      <div>
+        ⏱
+      </div>
+
+      <strong>
+        Aucun minuteur
+      </strong>
+
+      <span>
+        Le prochain est prêt à être lancé.
+      </span>
+
+    </div>
+
+  `;
+
+}
+
+
+
+/* ACTIONS */
+
+function attachTimerEvents() {
+
+  $$("[data-action]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const card =
+            button.closest(
+              "[data-id]"
+            );
+
+
+          const id =
+            card.dataset.id;
+
+
+          const timer =
+            activeTimers.find(
+              item =>
+                item.id === id
+            );
+
+
+          if (!timer)
+            return;
+
+
+          const action =
+            button.dataset.action;
+
+
+          if (
+            action === "add30"
+          ) {
+
+            timer.remaining += 30;
+
+            timer.total =
+              Math.max(
+                timer.total,
+                timer.remaining
+              );
+
+          }
+
+
+          if (
+            action === "add60"
+          ) {
+
+            timer.remaining += 60;
+
+            timer.total =
+              Math.max(
+                timer.total,
+                timer.remaining
+              );
+
+          }
+
+
+          if (
+            action === "restart"
+          ) {
+
+            timer.remaining =
+              timer.total;
+
+            timer.finished =
+              false;
+
+          }
+
+
+          if (
+            action === "delete"
+          ) {
+
+            activeTimers =
+              activeTimers.filter(
+                item =>
+                  item.id !== id
+              );
+
+          }
+
+
+          renderTimers();
+
+          renderDashboard();
+
+        }
+      );
+
+    });
+
+}
+
+
+
+/* FORMAT TEMPS */
+
+function formatTime(seconds) {
+
+  const min =
+    Math.floor(
+      seconds / 60
+    )
+      .toString()
+      .padStart(2,"0");
+
+
+  const sec =
+    Math.floor(
+      seconds % 60
+    )
+      .toString()
+      .padStart(2,"0");
+
+
+  return `${min}:${sec}`;
+
+}
+
+
+
+/* ALARME */
+
+function playAlarm() {
+
+  if (!soundEnabled)
+    return;
+
+
+  try {
+
+    const AudioContext =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+
+    const ctx =
+      new AudioContext();
+
+
+    const oscillator =
+      ctx.createOscillator();
+
+
+    const gain =
+      ctx.createGain();
+
+
+    oscillator.frequency.value =
+      880;
+
+
+    oscillator.connect(
+      gain
+    );
+
+
+    gain.connect(
+      ctx.destination
+    );
+
+
+    gain.gain.value =
+      0.12;
+
+
+    oscillator.start();
+
+
+    setTimeout(
+      () => {
+
+        oscillator.stop();
+
+        ctx.close();
+
+      },
+      700
+    );
+
+  }
+
+  catch {}
+
+}
+
+
+
+/* =====================================================
+   PRÉRÉGLAGES
+===================================================== */
+
+
+function renderPresets() {
+
+  const grid =
+    $("#presetGrid");
+
+
+  grid.innerHTML =
+    presets.map(
+      preset => `
+
+        <div
+          class="preset"
+          data-id="${preset.id}"
+        >
+
+          <button
+            class="preset-main"
+            data-preset-start="${preset.id}"
+          >
+
+            <strong>
+
+              ${escapeHTML(
+                preset.name
+              )}
+
+            </strong>
+
+            <span class="preset-time">
+
+              ${formatTime(
+                preset.seconds
+              )}
+
+            </span>
+
+          </button>
+
+
+          <div class="preset-actions">
+
+            <button
+              data-preset-edit="${preset.id}"
+            >
+              Modifier
+            </button>
+
+
+            <button
+              data-preset-delete="${preset.id}"
+            >
+              Supprimer
+            </button>
+
+          </div>
+
+        </div>
+
+      `
+    )
+    .join("");
+
+
+  $$("[data-preset-start]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const preset =
+            presets.find(
+              item =>
+                item.id ===
+                button.dataset.presetStart
+            );
+
+
+          if (!preset)
+            return;
+
+
+          createTimer(
+            preset.name,
+            preset.seconds
+          );
+
+        }
+      );
+
+    });
+
+
+  $$("[data-preset-delete]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          presets =
+            presets.filter(
+              item =>
+                item.id !==
+                button.dataset.presetDelete
+            );
+
+
+          save(
+            "kf_presets",
+            presets
+          );
+
+
+          renderPresets();
+
+          toast(
+            "Préréglage supprimé"
+          );
+
+        }
+      );
+
+    });
+
+
+  $$("[data-preset-edit]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const preset =
+            presets.find(
+              item =>
+                item.id ===
+                button.dataset.presetEdit
+            );
+
+
+          if (!preset)
+            return;
+
+
+          const name =
+            prompt(
+              "Nom du minuteur",
+              preset.name
+            );
+
+
+          if (!name)
+            return;
+
+
+          const minutes =
+            prompt(
+              "Minutes",
+              Math.floor(
+                preset.seconds / 60
+              )
+            );
+
+
+          const seconds =
+            prompt(
+              "Secondes",
+              preset.seconds % 60
+            );
+
+
+          preset.name =
+            name.trim();
+
+
+          preset.seconds =
+            Number(minutes) * 60 +
+            Number(seconds);
+
+
+          save(
+            "kf_presets",
+            presets
+          );
+
+
+          renderPresets();
+
+          toast(
+            "Préréglage modifié"
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+
+/* MODAL PRÉRÉGLAGE */
+
+$("#addPresetBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      openModal(
+        "presetModal"
+      );
+
+    }
+  );
+
+
+$("#presetForm")
+  .addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+
+      const name =
+        $("#presetName")
+          .value
+          .trim();
+
+
+      const minutes =
+        Number(
+          $("#presetMinutes").value
+        ) || 0;
+
+
+      const seconds =
+        Number(
+          $("#presetSeconds").value
+        ) || 0;
+
+
+      const total =
+        minutes * 60 +
+        seconds;
+
+
+      if (
+        !name ||
+        total <= 0
+      ) {
+
+        toast(
+          "Nom et durée obligatoires"
+        );
+
+        return;
+
+      }
+
+
+      presets.push({
+
+        id: uid(),
+
+        name,
+
+        seconds: total
+
+      });
+
+
+      save(
+        "kf_presets",
+        presets
+      );
+
+
+      renderPresets();
+
+      closeModal(
+        "presetModal"
+      );
+
+
+      event.target.reset();
+
+      toast(
+        "Préréglage créé"
+      );
+
+    }
+  );
+
+
+
+/* =====================================================
+   PRODUITS
+===================================================== */
+
+
+function renderProducts() {
+
+  const search =
+    $("#productSearch")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  const filtered =
+    products.filter(
+      product =>
+        product.name
+          .toLowerCase()
+          .includes(search) ||
+
+        product.category
+          .toLowerCase()
+          .includes(search) ||
+
+        product.notes
+          .toLowerCase()
+          .includes(search)
+    );
+
+
+  $("#productGrid").innerHTML =
+    filtered
+      .map(productHTML)
+      .join("");
+
+
+  $("#noProducts")
+    .style.display =
+      filtered.length
+        ? "none"
+        : "flex";
+
+
+  attachProductEvents();
+
+
+  updateStats();
+
+}
+
+
+function productHTML(product) {
+
+  return `
+
+    <article
+      class="product-card"
+      data-product="${product.id}"
+    >
+
+      <span class="product-category">
+
+        ${escapeHTML(
+          product.category
+        )}
+
+      </span>
+
+
+      <h3>
+
+        ${escapeHTML(
+          product.name
+        )}
+
+      </h3>
+
+
+      <div class="product-meta">
+
+        ${escapeHTML(
+          product.quantity ||
+          "Quantité non définie"
+        )}
+
+        ·
+
+        ${escapeHTML(
+          product.prepTime ||
+          "Temps non défini"
+        )}
+
+      </div>
+
+
+      ${
+        product.notes
+          ? `
+
+            <div class="product-notes">
+
+              ${escapeHTML(
+                product.notes
+              )}
+
+            </div>
+
+          `
+          : ""
+      }
+
+
+      <div class="product-actions">
+
+        <button
+          class="repeat"
+          data-repeat="${product.id}"
+        >
+          ↻ À refaire
+        </button>
+
+
+        <button
+          data-edit-product="${product.id}"
+        >
+          Modifier
+        </button>
+
+
+        <button
+          data-delete-product="${product.id}"
+        >
+          ×
+        </button>
+
+      </div>
+
+    </article>
+
+  `;
+
+}
+
+
+
+/* RECHERCHE */
+
+$("#productSearch")
+  .addEventListener(
+    "input",
+    renderProducts
+  );
+
+
+
+/* AJOUT PRODUIT */
+
+$("#addProductBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      openModal(
+        "productModal"
+      );
+
+    }
+  );
+
+
+$("#productForm")
+  .addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+
+      products.push({
+
+        id: uid(),
+
+        name:
+          $("#productName")
+            .value
+            .trim(),
+
+        category:
+          $("#productCategory")
+            .value,
+
+        quantity:
+          $("#productQuantity")
+            .value
+            .trim(),
+
+        prepTime:
+          $("#productPrepTime")
+            .value
+            .trim(),
+
+        notes:
+          $("#productNotes")
+            .value
+            .trim()
+
+      });
+
+
+      save(
+        "kf_products",
+        products
+      );
+
+
+      renderProducts();
+
+      renderDashboard();
+
+      closeModal(
+        "productModal"
+      );
+
+
+      event.target.reset();
+
+      toast(
+        "Produit créé"
+      );
+
+    }
+  );
+
+
+
+/* ACTIONS PRODUITS */
+
+function attachProductEvents() {
+
+  $$("[data-repeat]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const product =
+            products.find(
+              item =>
+                item.id ===
+                button.dataset.repeat
+            );
+
+
+          if (!product)
+            return;
+
+
+          createTimer(
+            product.name,
+            5 * 60
+          );
+
+
+          toast(
+            `${product.name} relancé`
+          );
+
+        }
+      );
+
+    });
+
+
+  $$("[data-delete-product]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          if (
+            !confirm(
+              "Supprimer ce produit ?"
+            )
+          )
+            return;
+
+
+          products =
+            products.filter(
+              product =>
+                product.id !==
+                button.dataset.deleteProduct
+            );
+
+
+          save(
+            "kf_products",
+            products
+          );
+
+
+          renderProducts();
+
+          renderDashboard();
+
+          toast(
+            "Produit supprimé"
+          );
+
+        }
+      );
+
+    });
+
+
+  $$("[data-edit-product]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const product =
+            products.find(
+              item =>
+                item.id ===
+                button.dataset.editProduct
+            );
+
+
+          if (!product)
+            return;
+
+
+          const name =
+            prompt(
+              "Nom",
+              product.name
+            );
+
+
+          if (!name)
+            return;
+
+
+          product.name =
+            name.trim();
+
+
+          product.quantity =
+            prompt(
+              "Quantité",
+              product.quantity
+            ) || product.quantity;
+
+
+          product.prepTime =
+            prompt(
+              "Temps de préparation",
+              product.prepTime
+            ) || product.prepTime;
+
+
+          product.notes =
+            prompt(
+              "Notes",
+              product.notes
+            ) ?? product.notes;
+
+
+          save(
+            "kf_products",
+            products
+          );
+
+
+          renderProducts();
+
+          renderDashboard();
+
+          toast(
+            "Produit modifié"
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+
+/* =====================================================
+   CHECKLISTS
+===================================================== */
+
+
+function renderChecklists() {
+
+  const tabs =
+    $("#checklistTabs");
+
+
+  tabs.innerHTML =
+    checklists
+      .map(
+        checklist => `
+
+          <button
+            class="checklist-tab ${
+              checklist.id ===
+              selectedChecklist
+                ? "active"
+                : ""
+            }"
+            data-checklist-id="${checklist.id}"
+          >
+
+            ${escapeHTML(
+              checklist.name
+            )}
+
+          </button>
+
+        `
+      )
+      .join("");
+
+
+  $$(".checklist-tab")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          selectedChecklist =
+            button.dataset.checklistId;
+
+
+          renderChecklists();
+
+        }
+      );
+
+    });
+
+
+  renderChecklistContent();
+
+}
+
+
+
+function renderChecklistContent() {
+
+  const checklist =
+    checklists.find(
+      item =>
+        item.id ===
+        selectedChecklist
+    );
+
+
+  if (!checklist) {
+
+    $("#checklistContent")
+      .innerHTML =
+      `
+        <div class="empty-state">
+          <strong>
+            Crée une checklist
+          </strong>
+        </div>
+      `;
+
+    return;
+
+  }
+
+
+  const done =
+    checklist.items
+      .filter(
+        item => item.done
+      ).length;
+
+
+  $("#checklistContent")
+    .innerHTML = `
+
+      <div class="checklist-header">
+
+        <div>
+
+          <div class="eyebrow">
+            LISTE
+          </div>
+
+          <h2>
+            ${escapeHTML(
+              checklist.name
+            )}
+          </h2>
+
+        </div>
+
+
+        <div class="checklist-progress">
+
+          ${done}/${checklist.items.length}
+
+        </div>
+
+      </div>
+
+
+      <div class="check-items">
+
+        ${
+          checklist.items.length
+
+          ? checklist.items
+              .map(
+                item => `
+
+                  <div
+                    class="check-item ${
+                      item.done
+                        ? "done"
+                        : ""
+                    }"
+                    data-check-id="${item.id}"
+                  >
+
+                    <button
+                      class="check-box"
+                    >
+
+                      ${
+                        item.done
+                          ? "✓"
+                          : ""
+                      }
+
+                    </button>
+
+
+                    <span class="check-label">
+
+                      ${escapeHTML(
+                        item.text
+                      )}
+
+                    </span>
+
+
+                    <button
+                      class="remove-item"
+                    >
+                      ×
+                    </button>
+
+                  </div>
+
+                `
+              )
+              .join("")
+
+          : `
+
+            <div class="empty-state">
+
+              <strong>
+                Checklist vide
+              </strong>
+
+              <span>
+                Ajoute ton premier élément.
+              </span>
+
+            </div>
+
+          `
+
+        }
+
+      </div>
+
+
+      <div class="add-check">
+
+        <input
+          id="newCheckItem"
+          placeholder="Ajouter un élément..."
+        >
+
+
+        <button
+          id="addCheckItem"
+        >
+          +
+        </button>
+
+      </div>
+
+    `;
+
+
+  attachChecklistEvents();
+
+}
+
+
+
+/* CHECKLIST ACTIONS */
+
+function attachChecklistEvents() {
+
+  const checklist =
+    checklists.find(
+      item =>
+        item.id ===
+        selectedChecklist
+    );
+
+
+  if (!checklist)
+    return;
+
+
+  $$(".check-item")
+    .forEach(row => {
+
+      row.addEventListener(
+        "click",
+        event => {
+
+          const id =
+            row.dataset.checkId;
+
+
+          const item =
+            checklist.items.find(
+              x =>
+                x.id === id
+            );
+
+
+          if (
+            event.target.closest(
+              ".remove-item"
+            )
+          ) {
+
+            checklist.items =
+              checklist.items.filter(
+                x =>
+                  x.id !== id
+              );
+
+          }
+
+          else {
+
+            item.done =
+              !item.done;
+
+          }
+
+
+          save(
+            "kf_checklists",
+            checklists
+          );
+
+
+          renderChecklistContent();
+
+        }
+      );
+
+    });
+
+
+  $("#addCheckItem")
+    ?.addEventListener(
+      "click",
+      addChecklistItem
+    );
+
+
+  $("#newCheckItem")
+    ?.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key === "Enter"
+        ) {
+
+          event.preventDefault();
+
+          addChecklistItem();
+
+        }
+
+      }
+    );
+
+}
+
+
+
+function addChecklistItem() {
+
+  const input =
+    $("#newCheckItem");
+
+
+  const text =
+    input.value.trim();
+
+
+  if (!text)
+    return;
+
+
+  const checklist =
+    checklists.find(
+      item =>
+        item.id ===
+        selectedChecklist
+    );
+
+
+  checklist.items.push({
+
+    id: uid(),
+
+    text,
+
+    done: false
+
+  });
+
+
+  save(
+    "kf_checklists",
+    checklists
+  );
+
+
+  renderChecklistContent();
+
+  input.focus();
+
+}
+
+
+
+/* NOUVELLE CHECKLIST */
+
+$("#addChecklistBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      openModal(
+        "checklistModal"
+      );
+
+    }
+  );
+
+
+$("#checklistForm")
+  .addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+
+      const name =
+        $("#checklistName")
+          .value
+          .trim();
+
+
+      if (!name)
+        return;
+
+
+      const checklist = {
+
+        id: uid(),
+
+        name,
+
+        items: []
+
+      };
+
+
+      checklists.push(
+        checklist
+      );
+
+
+      selectedChecklist =
+        checklist.id;
+
+
+      save(
+        "kf_checklists",
+        checklists
+      );
+
+
+      renderChecklists();
+
+      closeModal(
+        "checklistModal"
+      );
+
+
+      event.target.reset();
+
+      toast(
+        "Checklist créée"
+      );
+
+    }
+  );
+
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+
+function renderDashboard() {
+
+  renderTimers();
+
+  renderDashboardProducts();
+
+  updateStats();
+
+}
+
+
+function renderDashboardProducts() {
+
+  const container =
+    $("#dashboardProducts");
+
+
+  container.innerHTML =
+    products
+      .slice(0,8)
+      .map(
+        product => `
+
+          <div class="repeat-card">
+
+            <strong>
+              ${escapeHTML(
+                product.name
+              )}
+            </strong>
+
+            <small>
+              ${escapeHTML(
+                product.category
+              )}
+            </small>
+
+
+            <button
+              data-dashboard-repeat="${product.id}"
+            >
+
+              ↻ À refaire
+
+            </button>
+
+          </div>
+
+        `
+      )
+      .join("");
+
+
+  $$("[data-dashboard-repeat]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const product =
+            products.find(
+              item =>
+                item.id ===
+                button.dataset.dashboardRepeat
+            );
+
+
+          if (!product)
+            return;
+
+
+          createTimer(
+            product.name,
+            5 * 60
+          );
+
+          toast(
+            `${product.name} relancé`
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+
+/* STATISTIQUES */
+
+function updateStats() {
+
+  $("#runningCount")
+    .textContent =
+    activeTimers
+      .filter(
+        timer =>
+          !timer.finished
+      ).length;
+
+
+  $("#productCount")
+    .textContent =
+    products.length;
+
+
+  let done = 0;
+
+
+  checklists
+    .forEach(
+      checklist => {
+
+        done +=
+          checklist.items
+            .filter(
+              item =>
+                item.done
+            ).length;
+
+      }
+    );
+
+
+  $("#todayDone")
+    .textContent =
+    done;
+
+}
+
+
+
+/* =====================================================
+   MODALS
+===================================================== */
+
+
+function openModal(id) {
+
+  $("#" + id)
+    .classList
+    .remove("hidden");
+
+}
+
+
+function closeModal(id) {
+
+  $("#" + id)
+    .classList
+    .add("hidden");
+
+}
+
+
+$$("[data-close]")
   .forEach(button => {
 
     button.addEventListener(
       "click",
       () => {
 
-        $$(".presets button")
-          .forEach(item =>
-            item.classList.remove(
-              "selected"
-            )
-          );
-
-
-        button.classList.add(
-          "selected"
+        closeModal(
+          button.dataset.close
         );
 
+      }
+    );
 
-        timerPreset =
-          Number(
-            button.dataset.min
+  });
+
+
+$$(".modal")
+  .forEach(modal => {
+
+    modal.addEventListener(
+      "click",
+      event => {
+
+        if (
+          event.target === modal
+        ) {
+
+          modal.classList.add(
+            "hidden"
           );
 
-
-        clearInterval(
-          timerInterval
-        );
-
-
-        timerRunning =
-          false;
-
-
-        seconds =
-          timerPreset * 60;
-
-
-        $("#timerStart")
-          .textContent =
-          "Démarrer";
-
-
-        drawTimer();
+        }
 
       }
     );
@@ -861,61 +2407,42 @@ $$(".presets button")
 
 
 
-/* =========================
-   NOTES
-========================= */
+/* =====================================================
+   SON / THÈME
+===================================================== */
 
 
-const note =
-  $("#note");
+$("#soundBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      soundEnabled =
+        !soundEnabled;
 
 
-note.value =
-  localStorage.getItem(
-    "moment_note"
-  ) || "";
-
-
-note.addEventListener(
-  "input",
-  () => {
-
-    clearTimeout(
-      noteTimer
-    );
-
-
-    $("#saveState")
-      .textContent =
-      "enregistrement…";
-
-
-    noteTimer =
-      setTimeout(
-        () => {
-
-          localStorage.setItem(
-            "moment_note",
-            note.value
-          );
-
-
-          $("#saveState")
-            .textContent =
-            "sauvegardé";
-
-        },
-        350
+      save(
+        "kf_sound",
+        soundEnabled
       );
 
-  }
-);
+
+      $("#soundBtn")
+        .textContent =
+        soundEnabled
+          ? "🔊"
+          : "🔇";
+
+    }
+  );
 
 
+$("#soundBtn")
+  .textContent =
+  soundEnabled
+    ? "🔊"
+    : "🔇";
 
-/* =========================
-   MODE CLAIR / SOMBRE
-========================= */
 
 
 $("#themeBtn")
@@ -927,91 +2454,17 @@ $("#themeBtn")
         .classList
         .toggle("light");
 
-
-      localStorage.setItem(
-        "moment_theme",
-
-        document.body
-          .classList
-          .contains("light")
-          ? "light"
-          : "dark"
-      );
-
-    }
-  );
-
-
-if (
-  localStorage.getItem(
-    "moment_theme"
-  ) === "light"
-) {
-
-  document.body
-    .classList
-    .add("light");
-
-}
-
-
-
-/* =========================
-   RESET COMPLET
-========================= */
-
-
-$("#resetBtn")
-  .addEventListener(
-    "click",
-    () => {
-
-      const confirmation =
-        confirm(
-          "Réinitialiser les tâches et la note ?"
-        );
-
-
-      if (!confirmation)
-        return;
-
-
-      localStorage.removeItem(
-        "moment_tasks"
-      );
-
-
-      localStorage.removeItem(
-        "moment_note"
-      );
-
-
-      tasks =
-        defaultTasks.map(
-          task => ({
-            ...task
-          })
-        );
-
-
-      note.value = "";
-
-
-      renderTasks();
-
-
-      toast(
-        "Données réinitialisées"
-      );
-
     }
   );
 
 
 
-/* =========================
-   NOTIFICATION
-========================= */
+/* =====================================================
+   TOAST
+===================================================== */
+
+
+let toastTimeout;
 
 
 function toast(message) {
@@ -1029,56 +2482,38 @@ function toast(message) {
   );
 
 
-  setTimeout(
-    () => {
-
-      element.classList.remove(
-        "show"
-      );
-
-    },
-    1800
+  clearTimeout(
+    toastTimeout
   );
+
+
+  toastTimeout =
+    setTimeout(
+      () => {
+
+        element.classList.remove(
+          "show"
+        );
+
+      },
+      2200
+    );
 
 }
 
 
 
-/* =========================
-   SÉCURITÉ HTML
-========================= */
-
-
-function escapeHtml(text) {
-
-  return text.replace(
-    /[&<>"']/g,
-
-    character => ({
-
-      "&": "&amp;",
-
-      "<": "&lt;",
-
-      ">": "&gt;",
-
-      '"': "&quot;",
-
-      "'": "&#039;"
-
-    })[character]
-
-  );
-
-}
-
-
-
-/* =========================
+/* =====================================================
    INITIALISATION
-========================= */
+===================================================== */
 
 
-drawTimer();
+renderDashboard();
 
-renderTasks();
+renderPresets();
+
+renderProducts();
+
+renderChecklists();
+
+updateStats();
