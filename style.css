@@ -24,7 +24,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--warn);outline-o
 input{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:.6em .8em;min-height:44px;min-width:0}
 
 .top{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;
-  gap:12px;padding:12px 16px;background:var(--ink);color:#fff}
+  gap:12px;padding:12px 16px;background:#16324f;color:#fff}
 :root[data-theme="dark"] .top{background:#0a141f}
 .brand{display:flex;align-items:center;gap:12px}
 .brand small{display:block;opacity:.7;font-size:.75rem}
