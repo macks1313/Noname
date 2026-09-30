@@ -7,34 +7,51 @@ html,
 body {
     margin: 0;
     padding: 0;
+
     width: 100%;
     height: 100%;
+
     overflow: hidden;
+
+    background: #050607;
 }
 
 body {
-    background: #050505;
-    color: #eeeeea;
 
     font-family:
         Arial,
         Helvetica,
         sans-serif;
+
+    color: #eeeeeb;
+
+    -webkit-font-smoothing: antialiased;
 }
+
 
 button {
-    appearance: none;
-    -webkit-appearance: none;
 
-    border: 0;
-    outline: 0;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
-    font-family: Arial, Helvetica, sans-serif;
+    border: none;
+
+    outline: none;
 
     cursor: pointer;
+
+    -webkit-appearance: none;
 }
 
+
+/* ================================= */
+/* APP */
+/* ================================= */
+
 #app {
+
     position: relative;
 
     width: 100%;
@@ -45,16 +62,19 @@ button {
     background:
         radial-gradient(
             circle at 50% 45%,
-            #172026 0%,
-            #090d10 42%,
+            #151c20 0%,
+            #090d0f 42%,
             #030405 100%
         );
 }
 
 
+/* ================================= */
 /* HEADER */
+/* ================================= */
 
-.header {
+header {
+
     position: absolute;
 
     top: 0;
@@ -62,298 +82,419 @@ button {
 
     width: 100%;
 
-    padding: 24px;
+    padding:
+        25px
+        28px;
 
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
 
-    z-index: 100;
+    z-index: 50;
 
     pointer-events: none;
 }
 
 .logo {
-    font-size: 12px;
-    font-weight: 800;
 
-    letter-spacing: 4px;
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 5px;
+
+    color: #d5d8d9;
 }
 
 .session {
-    color: #555d63;
 
     font-size: 9px;
 
-    letter-spacing: 2px;
+    letter-spacing: 4px;
+
+    color: #4d5559;
 }
 
 .session span {
-    color: #aaa;
+
+    color: #858c90;
 }
 
 
-/* PAGES */
+/* ================================= */
+/* SCREENS */
+/* ================================= */
 
-.page {
+.screen {
+
     position: absolute;
 
     inset: 0;
 
-    display: none;
-
     width: 100%;
     height: 100%;
+
+    display: none;
+
+    overflow: hidden;
 }
 
-.page-visible {
+.screen.active {
+
     display: flex;
 }
 
 
+/* ================================= */
 /* INTRO */
+/* ================================= */
 
 #intro {
-    align-items: center;
+
     justify-content: center;
+
+    align-items: center;
 
     text-align: center;
 }
 
-.intro {
-    width: 90%;
-    max-width: 700px;
+.intro-content {
+
+    width: 92%;
+
+    max-width: 800px;
+
+    transform:
+        translateY(-15px);
 }
 
-.small-title {
-    margin-bottom: 25px;
+.eyebrow {
 
-    color: #596168;
+    margin-bottom: 28px;
+
+    color: #596267;
 
     font-size: 9px;
 
     font-weight: 700;
 
-    letter-spacing: 4px;
+    letter-spacing: 5px;
 }
 
+
 h1 {
+
     margin: 0;
 
-    font-size: clamp(
-        55px,
-        15vw,
-        145px
-    );
+    font-size:
+        clamp(
+            58px,
+            15vw,
+            150px
+        );
 
     line-height: .78;
 
-    letter-spacing: -6px;
+    letter-spacing: -7px;
 
     font-weight: 900;
 }
 
 h1 span {
+
     color: transparent;
 
     -webkit-text-stroke:
-        1px #70777b;
+        1px #71797d;
 }
 
-.intro p {
-    margin: 35px 0 25px;
+.intro-content p {
 
-    color: #737a7e;
+    margin:
+        40px
+        0
+        28px;
 
-    font-size: 15px;
+    color: #737b7f;
+
+    font-size: 16px;
 
     font-style: italic;
 }
 
+
+/* ================================= */
+/* BUTTONS */
+/* ================================= */
+
 #begin,
 #again {
-    padding: 16px 35px;
 
-    background: transparent;
+    min-width: 220px;
 
-    border: 1px solid #555d61;
+    padding:
+        18px
+        28px;
 
-    color: white;
+    background: #f2f2ef;
 
-    font-size: 10px;
+    color: #050505;
 
-    font-weight: 700;
+    border:
+        1px solid
+        #ffffff;
 
-    letter-spacing: 4px;
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 5px;
 
     transition:
+        transform .15s,
         background .2s,
-        color .2s,
-        transform .2s;
+        color .2s;
 }
 
 #begin:active,
 #again:active {
-    transform: scale(.96);
+
+    transform:
+        scale(.95);
 }
 
 #begin:hover,
 #again:hover {
-    background: white;
-    color: black;
+
+    background: transparent;
+
+    color: white;
 }
 
 
+/* ================================= */
 /* GAME */
+/* ================================= */
 
 #game {
-    flex-direction: column;
+
+    justify-content: center;
 
     align-items: center;
 
-    justify-content: center;
+    text-align: center;
 }
 
+.game-content {
+
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+}
+
+
 .rule-number {
+
     position: absolute;
 
     top: 20%;
 
-    color: #565e63;
+    left: 0;
+
+    width: 100%;
+
+    color: #555e63;
 
     font-size: 9px;
 
-    letter-spacing: 4px;
+    letter-spacing: 5px;
 }
 
+
 .rule {
+
     position: absolute;
 
     top: 25%;
 
+    left: 5%;
+
     width: 90%;
 
-    text-align: center;
+    color: #e5e7e6;
 
-    font-size: clamp(
-        22px,
-        5vw,
-        42px
-    );
+    font-size:
+        clamp(
+            22px,
+            5vw,
+            42px
+        );
 
     font-weight: 700;
 
     letter-spacing: -1px;
 }
 
+
+/* ================================= */
+/* ARENA */
+/* ================================= */
+
 #arena {
+
     position: absolute;
 
-    top: 34%;
     left: 0;
 
+    top: 33%;
+
     width: 100%;
-    height: 45%;
+
+    height: 47%;
 
     overflow: hidden;
 }
 
+
 #actionButton {
+
     position: absolute;
 
     left: 50%;
     top: 50%;
 
     transform:
-        translate(-50%, -50%);
+        translate(
+            -50%,
+            -50%
+        );
 
     width: 190px;
-    height: 68px;
 
-    background: #080a0c;
+    height: 65px;
 
-    border: 1px solid #596166;
+    background: #080a0b;
 
-    color: white;
+    border:
+        1px solid
+        #596267;
+
+    color: #eeeeee;
 
     font-size: 10px;
 
-    letter-spacing: 2px;
+    letter-spacing: 3px;
 
     transition:
         transform .15s,
-        background .2s,
         border .2s;
 }
 
 #actionButton:active {
+
     transform:
-        translate(-50%, -50%)
-        scale(.94);
+        translate(
+            -50%,
+            -50%
+        )
+        scale(.93);
 }
 
 #actionButton:hover {
+
     border-color: white;
 }
 
 
+/* ================================= */
 /* OBJECTS */
+/* ================================= */
 
 .object {
+
     position: absolute;
 
     width: 32px;
+
     height: 32px;
 
     border-radius: 50%;
 
-    background: #12171b;
+    background: #11171a;
 
-    border: 1px solid #596166;
+    border:
+        1px solid
+        #6b7478;
 
-    animation: appear .3s ease;
-
-    transition:
-        transform .2s,
-        opacity .2s;
-}
-
-.object:active {
-    transform: scale(.7);
+    animation:
+        objectAppear .35s ease;
 }
 
 .object.red {
+
     background: #ff4037;
 
     border-color: #ff4037;
+
+    box-shadow:
+        0 0 25px
+        rgba(
+            255,
+            64,
+            55,
+            .4
+        );
 }
 
-.object.green {
-    background: #62f59d;
+@keyframes objectAppear {
 
-    border-color: #62f59d;
+    from {
+
+        opacity: 0;
+
+        transform:
+            scale(.2);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            scale(1);
+    }
 }
 
 
+/* ================================= */
 /* STATS */
+/* ================================= */
 
 .stats {
+
     position: absolute;
 
     bottom: 28px;
 
     left: 50%;
 
-    transform: translateX(-50%);
+    transform:
+        translateX(-50%);
 
-    width: min(
-        500px,
-        calc(100% - 40px)
-    );
+    width:
+        min(
+            500px,
+            calc(100% - 45px)
+        );
 
-    padding-top: 14px;
+    padding-top: 15px;
 
-    border-top: 1px solid #20262a;
+    border-top:
+        1px solid
+        #202629;
 
     display: flex;
 
@@ -362,6 +503,7 @@ h1 span {
 
 .stats div,
 .final-stats div {
+
     display: flex;
 
     flex-direction: column;
@@ -371,7 +513,8 @@ h1 span {
 
 .stats span,
 .final-stats span {
-    color: #4e565b;
+
+    color: #4e575c;
 
     font-size: 7px;
 
@@ -380,7 +523,8 @@ h1 span {
 
 .stats strong,
 .final-stats strong {
-    color: #ddd;
+
+    color: #d7d9d9;
 
     font-size: 18px;
 
@@ -388,27 +532,37 @@ h1 span {
 }
 
 
+/* ================================= */
 /* MESSAGE */
+/* ================================= */
 
 #message {
+
     position: fixed;
 
     left: 50%;
 
-    bottom: 80px;
+    bottom: 85px;
 
     transform:
-        translate(-50%, 20px);
+        translate(
+            -50%,
+            20px
+        );
 
     opacity: 0;
 
-    z-index: 200;
+    z-index: 100;
 
-    padding: 11px 18px;
+    padding:
+        12px
+        18px;
 
-    background: #0b0d0f;
+    background: #080a0c;
 
-    border: 1px solid #333b40;
+    border:
+        1px solid
+        #343c40;
 
     color: white;
 
@@ -424,123 +578,151 @@ h1 span {
 }
 
 #message.visible {
+
     opacity: 1;
 
     transform:
-        translate(-50%, 0);
+        translate(
+            -50%,
+            0
+        );
 }
 
 
+/* ================================= */
 /* END */
+/* ================================= */
 
 #end {
-    align-items: center;
+
     justify-content: center;
+
+    align-items: center;
 
     text-align: center;
 }
 
-.end {
-    width: 90%;
-    max-width: 700px;
+.end-content {
+
+    width: 92%;
+
+    max-width: 800px;
 }
 
-.end h2 {
+.end-content h2 {
+
     margin: 0;
 
-    font-size: clamp(
-        50px,
-        12vw,
-        110px
-    );
+    font-size:
+        clamp(
+            50px,
+            12vw,
+            120px
+        );
 
-    line-height: .82;
+    line-height: .8;
 
-    letter-spacing: -5px;
+    letter-spacing: -6px;
+
+    font-weight: 900;
 }
 
-.end h2 span {
+.end-content h2 span {
+
     color: transparent;
 
     -webkit-text-stroke:
-        1px #70777b;
+        1px #71797d;
 }
 
-.end p {
-    max-width: 480px;
+.end-content p {
 
-    margin: 30px auto;
+    max-width: 500px;
 
-    color: #747c81;
+    margin:
+        35px
+        auto;
+
+    color: #747d81;
 
     font-size: 13px;
 
     line-height: 1.6;
 }
 
+
 .final-stats {
+
     display: flex;
 
     justify-content: center;
 
     gap: 45px;
 
-    margin: 30px 0;
+    margin:
+        30px
+        0
+        35px;
 }
 
 
-/* ANIMATION */
-
-@keyframes appear {
-
-    from {
-        opacity: 0;
-
-        transform: scale(.5);
-    }
-
-    to {
-        opacity: 1;
-
-        transform: scale(1);
-    }
-}
-
-
+/* ================================= */
 /* MOBILE */
+/* ================================= */
 
 @media (max-width: 600px) {
 
-    .header {
-        padding: 18px;
+    header {
+
+        padding:
+            22px
+            18px;
     }
 
     .logo {
+
         font-size: 10px;
-        letter-spacing: 3px;
+
+        letter-spacing: 4px;
     }
 
     .session {
+
         font-size: 8px;
+
+        letter-spacing: 3px;
     }
 
     h1 {
-        font-size: 65px;
+
+        font-size: 64px;
+
         letter-spacing: -4px;
     }
 
-    .rule {
-        padding: 0 15px;
+    .intro-content p {
 
-        font-size: 25px;
+        margin-top: 35px;
     }
 
-    #actionButton {
-        width: 180px;
+    #begin,
+    #again {
+
+        min-width: 220px;
+    }
+
+    .rule {
+
+        font-size: 25px;
+
+        padding:
+            0
+            10px;
     }
 
     .final-stats {
-        gap: 25px;
+
+        gap: 28px;
     }
 
 }
