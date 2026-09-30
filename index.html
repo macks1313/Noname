@@ -1,27 +1,409 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#0b0d1a">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>Immeuble 7B</title>
-<meta name="description" content="Un immeuble en pixel art à explorer : neuf appartements animés, des objets à toucher, du matin à la nuit.">
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header><h1>7B</h1><span id="score"></span></header>
-<div id="view"><canvas id="c" aria-label="Immeuble en pixel art avec neuf appartements"></canvas></div>
-<nav>
-  <button type="button" data-t="matin">Matin</button>
-  <button type="button" data-t="soir">Soir</button>
-  <button type="button" data-t="nuit">Nuit</button>
-  <button type="button" id="fit">Tout voir</button>
-  <button type="button" id="rain">Pluie</button>
-  <button type="button" id="mute" aria-label="Son">🔊</button>
-</nav>
-<div id="toast" role="status"></div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="app.js"></script>
+  <title>MOMENT</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <header class="topbar">
+
+    <div class="brand">
+      <div class="brand-logo">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <span>MOMENT</span>
+    </div>
+
+    <div class="top-actions">
+      <button id="themeBtn" class="icon-btn">◐</button>
+      <button id="resetBtn" class="avatar">M</button>
+    </div>
+
+  </header>
+
+
+  <main class="container">
+
+    <section class="hero">
+
+      <div>
+
+        <div id="dateLabel" class="eyebrow">
+          AUJOURD'HUI
+        </div>
+
+        <h1 id="greeting">
+          Bonjour.
+        </h1>
+
+        <p class="subtitle">
+          Une seule page pour savoir quoi faire,
+          garder le cap et avancer.
+        </p>
+
+      </div>
+
+
+      <div class="clock">
+
+        <strong id="clock">
+          00:00
+        </strong>
+
+        <small>
+          heure locale
+        </small>
+
+      </div>
+
+    </section>
+
+
+
+    <section class="grid">
+
+
+      <!-- PRIORITÉ -->
+
+      <article class="card focus-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <div class="label">
+              FOCUS
+            </div>
+
+            <h2>
+              Le plus important
+            </h2>
+
+          </div>
+
+          <span class="green-dot">
+            ●
+          </span>
+
+        </div>
+
+
+        <div class="focus-content">
+
+          <p id="focusText">
+            Choisis une tâche et transforme-la en priorité.
+          </p>
+
+          <button id="focusBtn" class="primary">
+            Choisir une priorité →
+          </button>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- PROGRESSION -->
+
+      <article class="card progress-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <div class="label">
+              JOUR
+            </div>
+
+            <h2>
+              Progression
+            </h2>
+
+          </div>
+
+          <strong id="progressPercent">
+            0%
+          </strong>
+
+        </div>
+
+
+        <div id="progressRing" class="progress-ring">
+
+          <div>
+
+            <span id="doneCount">
+              0
+            </span>
+
+            <small>
+              /
+              <span id="totalCount">
+                0
+              </span>
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <p id="progressMessage">
+          Commence par une petite victoire.
+        </p>
+
+      </article>
+
+
+
+      <!-- TÂCHES -->
+
+      <article class="card tasks-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <div class="label">
+              À FAIRE
+            </div>
+
+            <h2>
+              Ta journée
+            </h2>
+
+          </div>
+
+
+          <div class="filters">
+
+            <button
+              class="filter active"
+              data-filter="all">
+              Tout
+            </button>
+
+            <button
+              class="filter"
+              data-filter="open">
+              À faire
+            </button>
+
+            <button
+              class="filter"
+              data-filter="done">
+              Fait
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <form id="taskForm" class="add-task">
+
+          <input
+            id="taskInput"
+            type="text"
+            placeholder="Ajouter une tâche..."
+            maxlength="120"
+            autocomplete="off"
+          >
+
+
+          <select id="taskTag">
+
+            <option value="Perso">
+              Perso
+            </option>
+
+            <option value="Travail">
+              Travail
+            </option>
+
+            <option value="Important">
+              Important
+            </option>
+
+          </select>
+
+
+          <button
+            type="submit"
+            class="add-btn">
+            +
+          </button>
+
+        </form>
+
+
+        <div
+          id="taskList"
+          class="task-list">
+        </div>
+
+
+        <div
+          id="emptyState"
+          class="empty">
+          Rien ici pour l'instant.
+        </div>
+
+      </article>
+
+
+
+      <!-- MINUTEUR -->
+
+      <article class="card timer-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <div class="label">
+              MINUTEUR
+            </div>
+
+            <h2>
+              Session focus
+            </h2>
+
+          </div>
+
+
+          <button
+            id="resetTimer"
+            class="mini-btn">
+            ↺
+          </button>
+
+        </div>
+
+
+        <div class="timer">
+
+          <div
+            id="timerDisplay"
+            class="timer-display">
+            25:00
+          </div>
+
+          <div class="timer-mode">
+            FOCUS
+          </div>
+
+        </div>
+
+
+        <div class="timer-buttons">
+
+          <button
+            id="timerStart"
+            class="primary">
+            Démarrer
+          </button>
+
+          <button
+            id="timerSkip"
+            class="secondary">
+            Passer
+          </button>
+
+        </div>
+
+
+        <div class="presets">
+
+          <button data-min="15">
+            15 min
+          </button>
+
+          <button
+            data-min="25"
+            class="selected">
+            25 min
+          </button>
+
+          <button data-min="50">
+            50 min
+          </button>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- NOTE -->
+
+      <article class="card note-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <div class="label">
+              CAPTURE
+            </div>
+
+            <h2>
+              À garder en tête
+            </h2>
+
+          </div>
+
+          <span
+            id="saveState"
+            class="save-state">
+            auto
+          </span>
+
+        </div>
+
+
+        <textarea
+          id="note"
+          placeholder="Une idée, une adresse, quelque chose à ne pas oublier..."
+        ></textarea>
+
+      </article>
+
+    </section>
+
+
+    <footer>
+
+      <span>
+        MOMENT
+      </span>
+
+      <span>
+        Tout reste dans ton navigateur.
+      </span>
+
+    </footer>
+
+  </main>
+
+
+  <div
+    id="toast"
+    class="toast">
+  </div>
+
+
+  <script src="app.js"></script>
+
 </body>
 </html>
