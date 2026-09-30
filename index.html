@@ -10,9 +10,17 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>MOMENT</title>
+  <meta
+    name="theme-color"
+    content="#0b0d0f"
+  >
 
-  <link rel="stylesheet" href="style.css">
+  <title>KitchenFlow</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 
 </head>
 
@@ -20,17 +28,29 @@
 <body>
 
 
+<!-- =========================
+     HEADER
+========================= -->
+
 <header class="topbar">
 
   <div class="brand">
 
-    <div class="brand-logo">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="brand-icon">
+      KF
     </div>
 
-    <span>MOMENT</span>
+    <div>
+
+      <strong>
+        KitchenFlow
+      </strong>
+
+      <small>
+        Kitchen Control Center
+      </small>
+
+    </div>
 
   </div>
 
@@ -38,17 +58,20 @@
   <div class="top-actions">
 
     <button
-      id="themeBtn"
-      class="icon-btn"
+      id="soundBtn"
+      class="top-button"
+      title="Son"
     >
-      ◐
+      🔊
     </button>
 
+
     <button
-      id="resetBtn"
-      class="avatar"
+      id="themeBtn"
+      class="top-button"
+      title="Thème"
     >
-      M
+      ◐
     </button>
 
   </div>
@@ -57,420 +80,968 @@
 
 
 
-<main class="container">
+<!-- =========================
+     NAVIGATION
+========================= -->
+
+<nav class="navigation">
+
+  <button
+    class="nav-button active"
+    data-page="dashboard"
+  >
+    <span>⚡</span>
+    Service
+  </button>
 
 
-  <section class="hero">
+  <button
+    class="nav-button"
+    data-page="timers"
+  >
+    <span>⏱</span>
+    Minuteurs
+  </button>
+
+
+  <button
+    class="nav-button"
+    data-page="products"
+  >
+    <span>🥫</span>
+    Produits
+  </button>
+
+
+  <button
+    class="nav-button"
+    data-page="checklists"
+  >
+    <span>☑</span>
+    Checklists
+  </button>
+
+</nav>
+
+
+
+<main>
+
+
+<!-- ==================================================
+     DASHBOARD
+================================================== -->
+
+<section
+  id="page-dashboard"
+  class="page active"
+>
+
+
+  <div class="page-header">
 
     <div>
 
-      <div
-        id="dateLabel"
-        class="eyebrow"
-      >
-        AUJOURD'HUI
+      <div class="eyebrow">
+        SERVICE
       </div>
 
-
-      <h1 id="greeting">
-        Bonjour.
+      <h1>
+        Poste de travail
       </h1>
 
-
-      <p class="subtitle">
-
-        Une seule page pour savoir quoi faire,
-        garder le cap et avancer.
-
+      <p>
+        Tout ce dont tu as besoin, au même endroit.
       </p>
 
     </div>
 
 
-    <div class="clock">
+    <div class="service-clock">
 
-      <strong id="clock">
+      <strong id="currentTime">
         00:00
       </strong>
 
-      <small>
-        heure locale
-      </small>
+      <span id="currentDate">
+        Aujourd'hui
+      </span>
 
     </div>
 
-  </section>
+  </div>
 
 
 
-  <section class="grid">
+  <!-- STATISTIQUES -->
 
+  <div class="stats-grid">
 
-    <!-- PRIORITÉ -->
+    <div class="stat-card">
 
-    <article class="card focus-card">
+      <span>
+        ⏱
+      </span>
 
-      <div class="card-header">
+      <div>
 
-        <div>
-
-          <div class="label">
-            FOCUS
-          </div>
-
-          <h2>
-            Le plus important
-          </h2>
-
-        </div>
-
-        <span class="green-dot">
-          ●
-        </span>
-
-      </div>
-
-
-      <div class="focus-content">
-
-        <p id="focusText">
-          Choisis une tâche et transforme-la en priorité.
-        </p>
-
-
-        <button
-          id="focusBtn"
-          class="primary"
-        >
-          Choisir une priorité →
-        </button>
-
-      </div>
-
-    </article>
-
-
-
-    <!-- PROGRESSION -->
-
-    <article class="card progress-card">
-
-      <div class="card-header">
-
-        <div>
-
-          <div class="label">
-            JOUR
-          </div>
-
-          <h2>
-            Progression
-          </h2>
-
-        </div>
-
-
-        <strong id="progressPercent">
-          0%
+        <strong id="runningCount">
+          0
         </strong>
 
-      </div>
-
-
-      <div
-        id="progressRing"
-        class="progress-ring"
-      >
-
-        <div>
-
-          <span id="doneCount">
-            0
-          </span>
-
-          <small>
-
-            /
-
-            <span id="totalCount">
-              0
-            </span>
-
-          </small>
-
-        </div>
+        <small>
+          minuteurs actifs
+        </small>
 
       </div>
 
+    </div>
 
-      <p id="progressMessage">
-        Commence par une petite victoire.
+
+    <div class="stat-card">
+
+      <span>
+        ✓
+      </span>
+
+      <div>
+
+        <strong id="todayDone">
+          0
+        </strong>
+
+        <small>
+          tâches terminées
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <span>
+        🥫
+      </span>
+
+      <div>
+
+        <strong id="productCount">
+          0
+        </strong>
+
+        <small>
+          produits enregistrés
+        </small>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- MINUTEURS ACTIFS -->
+
+  <div class="section-title">
+
+    <div>
+
+      <span>
+        MINUTEURS ACTIFS
+      </span>
+
+      <strong>
+        En cours
+      </strong>
+
+    </div>
+
+
+    <button
+      class="small-button"
+      data-page-target="timers"
+    >
+      + Ajouter
+    </button>
+
+  </div>
+
+
+  <div
+    id="dashboardTimers"
+    class="active-timers"
+  >
+  </div>
+
+
+
+  <!-- ACTIONS RAPIDES -->
+
+  <div class="section-title">
+
+    <div>
+
+      <span>
+        ACTIONS RAPIDES
+      </span>
+
+      <strong>
+        Cuisine
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <div class="quick-grid">
+
+    <button
+      class="quick-card"
+      data-page-target="timers"
+    >
+
+      <span class="quick-icon purple">
+        ⏱
+      </span>
+
+      <strong>
+        Nouveau minuteur
+      </strong>
+
+      <small>
+        Lancer une cuisson
+      </small>
+
+    </button>
+
+
+    <button
+      class="quick-card"
+      data-page-target="products"
+    >
+
+      <span class="quick-icon orange">
+        🥫
+      </span>
+
+      <strong>
+        Produits
+      </strong>
+
+      <small>
+        Préparations & sauces
+      </small>
+
+    </button>
+
+
+    <button
+      class="quick-card"
+      data-page-target="checklists"
+    >
+
+      <span class="quick-icon green">
+        ✓
+      </span>
+
+      <strong>
+        Checklist
+      </strong>
+
+      <small>
+        Mise en place
+      </small>
+
+    </button>
+
+  </div>
+
+
+
+  <!-- À REFAIRE -->
+
+  <div class="section-title">
+
+    <div>
+
+      <span>
+        À REFAIRE
+      </span>
+
+      <strong>
+        Accès rapide
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="dashboardProducts"
+    class="repeat-grid"
+  >
+  </div>
+
+
+</section>
+
+
+
+<!-- ==================================================
+     MINUTEURS
+================================================== -->
+
+<section
+  id="page-timers"
+  class="page"
+>
+
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="eyebrow">
+        MINUTEURS
+      </div>
+
+      <h1>
+        Cuissons
+      </h1>
+
+      <p>
+        Lance plusieurs cuissons en même temps.
       </p>
 
-    </article>
+    </div>
 
+  </div>
 
 
-    <!-- TÂCHES -->
 
-    <article class="card tasks-card">
+  <!-- AJOUT MINUTEUR -->
 
-      <div class="card-header">
+  <div class="timer-creator card">
 
-        <div>
+    <div class="creator-header">
 
-          <div class="label">
-            À FAIRE
-          </div>
+      <div>
 
-          <h2>
-            Ta journée
-          </h2>
-
-        </div>
-
-
-        <div class="filters">
-
-          <button
-            class="filter active"
-            data-filter="all"
-          >
-            Tout
-          </button>
-
-
-          <button
-            class="filter"
-            data-filter="open"
-          >
-            À faire
-          </button>
-
-
-          <button
-            class="filter"
-            data-filter="done"
-          >
-            Fait
-          </button>
-
-        </div>
-
-      </div>
-
-
-
-      <form
-        id="taskForm"
-        class="add-task"
-      >
-
-        <input
-          id="taskInput"
-          type="text"
-          placeholder="Ajouter une tâche..."
-          maxlength="120"
-          autocomplete="off"
-        >
-
-
-        <select id="taskTag">
-
-          <option value="Perso">
-            Perso
-          </option>
-
-          <option value="Travail">
-            Travail
-          </option>
-
-          <option value="Important">
-            Important
-          </option>
-
-        </select>
-
-
-        <button
-          type="submit"
-          class="add-btn"
-        >
-          +
-        </button>
-
-      </form>
-
-
-
-      <div
-        id="taskList"
-        class="task-list"
-      >
-      </div>
-
-
-      <div
-        id="emptyState"
-        class="empty"
-      >
-        Rien ici pour l'instant.
-      </div>
-
-    </article>
-
-
-
-    <!-- MINUTEUR -->
-
-    <article class="card timer-card">
-
-      <div class="card-header">
-
-        <div>
-
-          <div class="label">
-            MINUTEUR
-          </div>
-
-          <h2>
-            Session focus
-          </h2>
-
-        </div>
-
-
-        <button
-          id="resetTimer"
-          class="mini-btn"
-        >
-          ↺
-        </button>
-
-      </div>
-
-
-      <div class="timer">
-
-        <div
-          id="timerDisplay"
-          class="timer-display"
-        >
-          25:00
-        </div>
-
-
-        <div class="timer-mode">
-          FOCUS
-        </div>
-
-      </div>
-
-
-
-      <div class="timer-buttons">
-
-        <button
-          id="timerStart"
-          class="primary"
-        >
-          Démarrer
-        </button>
-
-
-        <button
-          id="timerSkip"
-          class="secondary"
-        >
-          Passer
-        </button>
-
-      </div>
-
-
-
-      <div class="presets">
-
-        <button data-min="15">
-          15 min
-        </button>
-
-
-        <button
-          data-min="25"
-          class="selected"
-        >
-          25 min
-        </button>
-
-
-        <button data-min="50">
-          50 min
-        </button>
-
-      </div>
-
-    </article>
-
-
-
-    <!-- NOTES -->
-
-    <article class="card note-card">
-
-      <div class="card-header">
-
-        <div>
-
-          <div class="label">
-            CAPTURE
-          </div>
-
-          <h2>
-            À garder en tête
-          </h2>
-
-        </div>
-
-
-        <span
-          id="saveState"
-          class="save-state"
-        >
-          auto
+        <span class="eyebrow">
+          NOUVEAU
         </span>
 
+        <h2>
+          Lancer un minuteur
+        </h2>
+
       </div>
 
-
-      <textarea
-        id="note"
-        placeholder="Une idée, une adresse, quelque chose à ne pas oublier..."
-      ></textarea>
-
-    </article>
+    </div>
 
 
-  </section>
+    <form id="timerForm">
+
+      <div class="form-row">
+
+        <div class="field large">
+
+          <label>
+            Nom
+          </label>
+
+          <input
+            id="timerName"
+            placeholder="Ex : Pâtes, steak, sauce..."
+            required
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            Minutes
+          </label>
+
+          <input
+            id="timerMinutes"
+            type="number"
+            min="0"
+            max="999"
+            value="5"
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            Secondes
+          </label>
+
+          <input
+            id="timerSeconds"
+            type="number"
+            min="0"
+            max="59"
+            value="0"
+          >
+
+        </div>
+
+
+        <button
+          class="primary-button launch-button"
+          type="submit"
+        >
+          ▶ Lancer
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
 
 
 
-  <footer>
+  <!-- PRÉRÉGLAGES -->
+
+  <div class="section-title">
+
+    <div>
+
+      <span>
+        PRÉRÉGLAGES
+      </span>
+
+      <strong>
+        Tes cuissons
+      </strong>
+
+    </div>
+
+    <button
+      id="addPresetBtn"
+      class="small-button"
+    >
+      + Créer
+    </button>
+
+  </div>
+
+
+  <div
+    id="presetGrid"
+    class="preset-grid"
+  >
+  </div>
+
+
+
+  <!-- MINUTEURS EN COURS -->
+
+  <div class="section-title">
+
+    <div>
+
+      <span>
+        EN COURS
+      </span>
+
+      <strong>
+        Minuteurs actifs
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="timerList"
+    class="timer-list"
+  >
+  </div>
+
+
+  <div
+    id="noTimers"
+    class="empty-state"
+  >
+
+    <div>
+      ⏱
+    </div>
+
+    <strong>
+      Aucun minuteur en cours
+    </strong>
 
     <span>
-      MOMENT
+      Lance une cuisson ci-dessus.
     </span>
+
+  </div>
+
+
+</section>
+
+
+
+<!-- ==================================================
+     PRODUITS
+================================================== -->
+
+<section
+  id="page-products"
+  class="page"
+>
+
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="eyebrow">
+        PRODUITS
+      </div>
+
+      <h1>
+        Préparations
+      </h1>
+
+      <p>
+        Crée tes sauces, garnitures et préparations.
+      </p>
+
+    </div>
+
+
+    <button
+      id="addProductBtn"
+      class="primary-button"
+    >
+      + Nouveau produit
+    </button>
+
+  </div>
+
+
+
+  <!-- RECHERCHE -->
+
+  <div class="search-box">
 
     <span>
-      Tout reste dans ton navigateur.
+      🔎
     </span>
 
-  </footer>
+    <input
+      id="productSearch"
+      placeholder="Rechercher une sauce, une préparation..."
+    >
+
+  </div>
+
+
+
+  <!-- PRODUITS -->
+
+  <div
+    id="productGrid"
+    class="product-grid"
+  >
+  </div>
+
+
+  <div
+    id="noProducts"
+    class="empty-state"
+  >
+
+    <div>
+      🥫
+    </div>
+
+    <strong>
+      Aucun produit
+    </strong>
+
+    <span>
+      Crée ta première préparation.
+    </span>
+
+  </div>
+
+
+</section>
+
+
+
+<!-- ==================================================
+     CHECKLISTS
+================================================== -->
+
+<section
+  id="page-checklists"
+  class="page"
+>
+
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="eyebrow">
+        CHECKLISTS
+      </div>
+
+      <h1>
+        Mise en place
+      </h1>
+
+      <p>
+        Organise tes ouvertures, fermetures et services.
+      </p>
+
+    </div>
+
+
+    <button
+      id="addChecklistBtn"
+      class="primary-button"
+    >
+      + Nouvelle checklist
+    </button>
+
+  </div>
+
+
+
+  <div
+    id="checklistTabs"
+    class="checklist-tabs"
+  >
+  </div>
+
+
+
+  <div
+    id="checklistContent"
+    class="checklist-content"
+  >
+  </div>
+
+
+</section>
 
 
 </main>
 
 
+
+<!-- ==================================================
+     MODAL PRODUIT
+================================================== -->
+
+<div
+  id="productModal"
+  class="modal hidden"
+>
+
+  <div class="modal-box">
+
+    <button
+      class="modal-close"
+      data-close="productModal"
+    >
+      ×
+    </button>
+
+
+    <div class="eyebrow">
+      PRODUIT
+    </div>
+
+    <h2>
+      Nouvelle préparation
+    </h2>
+
+
+    <form id="productForm">
+
+      <div class="field">
+
+        <label>
+          Nom
+        </label>
+
+        <input
+          id="productName"
+          placeholder="Ex : Sauce maison 1"
+          required
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Catégorie
+        </label>
+
+        <select id="productCategory">
+
+          <option>
+            Sauce
+          </option>
+
+          <option>
+            Garniture
+          </option>
+
+          <option>
+            Préparation
+          </option>
+
+          <option>
+            Dessert
+          </option>
+
+          <option>
+            Autre
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Quantité / rendement
+        </label>
+
+        <input
+          id="productQuantity"
+          placeholder="Ex : 2 litres"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Temps de préparation
+        </label>
+
+        <input
+          id="productPrepTime"
+          placeholder="Ex : 20 min"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Notes
+        </label>
+
+        <textarea
+          id="productNotes"
+          placeholder="Ingrédients, astuces, conservation..."
+        ></textarea>
+
+      </div>
+
+
+      <button
+        class="primary-button full"
+        type="submit"
+      >
+        Créer le produit
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+<!-- ==================================================
+     MODAL MINUTEUR
+================================================== -->
+
+<div
+  id="presetModal"
+  class="modal hidden"
+>
+
+  <div class="modal-box">
+
+    <button
+      class="modal-close"
+      data-close="presetModal"
+    >
+      ×
+    </button>
+
+
+    <div class="eyebrow">
+      PRÉRÉGLAGE
+    </div>
+
+    <h2>
+      Créer une cuisson
+    </h2>
+
+
+    <form id="presetForm">
+
+      <div class="field">
+
+        <label>
+          Nom
+        </label>
+
+        <input
+          id="presetName"
+          placeholder="Ex : Frites"
+          required
+        >
+
+      </div>
+
+
+      <div class="form-row">
+
+        <div class="field">
+
+          <label>
+            Minutes
+          </label>
+
+          <input
+            id="presetMinutes"
+            type="number"
+            min="0"
+            value="5"
+          >
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            Secondes
+          </label>
+
+          <input
+            id="presetSeconds"
+            type="number"
+            min="0"
+            max="59"
+            value="0"
+          >
+
+        </div>
+
+      </div>
+
+
+      <button
+        class="primary-button full"
+        type="submit"
+      >
+        Enregistrer
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+<!-- ==================================================
+     MODAL CHECKLIST
+================================================== -->
+
+<div
+  id="checklistModal"
+  class="modal hidden"
+>
+
+  <div class="modal-box">
+
+    <button
+      class="modal-close"
+      data-close="checklistModal"
+    >
+      ×
+    </button>
+
+
+    <div class="eyebrow">
+      CHECKLIST
+    </div>
+
+    <h2>
+      Nouvelle checklist
+    </h2>
+
+
+    <form id="checklistForm">
+
+      <div class="field">
+
+        <label>
+          Nom
+        </label>
+
+        <input
+          id="checklistName"
+          placeholder="Ex : Ouverture"
+          required
+        >
+
+      </div>
+
+
+      <button
+        class="primary-button full"
+        type="submit"
+      >
+        Créer
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+<!-- TOAST -->
 
 <div
   id="toast"
