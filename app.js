@@ -1,6 +1,6 @@
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const KEY = 'kitchenflow:v1';
+const KEY = 'kitchenflow:v2';
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid = () => Math.random().toString(36).slice(2, 9);
 const items = arr => arr.map(t => ({ t, d: false }));
@@ -15,7 +15,8 @@ const DEFAULT = {
 };
 
 let S;
-try { S = { ...DEFAULT, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch { S = structuredClone(DEFAULT); }
+try { S = { ...structuredClone(DEFAULT), ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch { S = structuredClone(DEFAULT); }
+['timers', 'products', 'recent', 'lists'].forEach(k => { if (!Array.isArray(S[k])) S[k] = structuredClone(DEFAULT)[k]; });
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };
 
 /* ---------- Navigation ---------- */
@@ -179,5 +180,5 @@ $('#recent').onclick = e => {
 
 function render() { renderTimers(); renderProducts(); renderLists(); renderHome(); }
 
-applyTheme(); render(); tick(); setInterval(tick, 500);
 show(location.hash.slice(1) || 'service');
+applyTheme(); render(); tick(); setInterval(tick, 500);
