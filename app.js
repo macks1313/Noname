@@ -1,1035 +1,179 @@
 /* =========================================================
-   KITCHENFLOW
-   Application logic
-   ========================================================= */
+   KITCHENFLOW V2
+========================================================= */
 
 
-/* ---------------------------------------------------------
-   DONNÉES
---------------------------------------------------------- */
+/* ---------- DONNÉES DE DÉPART ---------- */
 
-const STORAGE_KEY = "kitchenflow_v1";
+const DEFAULT_CATEGORIES = [
 
-let data = {
-  theme: "light",
-  sound: true,
-  kitchenName: "KitchenFlow",
-  timers: [],
-  preparations: [],
-  lists: []
-};
+  {
+    id: "frites",
+    name: "Frites",
+    emoji: "🍟"
+  },
 
+  {
+    id: "viandes",
+    name: "Viandes",
+    emoji: "🥩"
+  },
 
-/* ---------------------------------------------------------
-   CHARGEMENT / SAUVEGARDE
---------------------------------------------------------- */
+  {
+    id: "escargots",
+    name: "Escargots",
+    emoji: "🐌"
+  },
 
-function loadData() {
-
-  try {
-
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if (saved) {
-      data = {
-        ...data,
-        ...JSON.parse(saved)
-      };
-    }
-
-  } catch (error) {
-    console.log("Impossible de charger les données.");
+  {
+    id: "sauces",
+    name: "Sauces",
+    emoji: "🥫"
   }
 
-  applyTheme();
-  updateSettings();
-}
+];
 
 
-function saveData() {
+const DEFAULT_PRODUCTS = [
 
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
-  );
-}
+  {
+    id: "frites",
+    name: "Frites",
+    emoji: "🍟",
+    category: "frites",
+    type: "timer",
+    minutes: 4,
+    seconds: 0
+  },
 
+  {
+    id: "bleu",
+    name: "Bleu",
+    emoji: "🥩",
+    category: "viandes",
+    type: "timer",
+    minutes: 2,
+    seconds: 0
+  },
 
-/* ---------------------------------------------------------
-   NAVIGATION
---------------------------------------------------------- */
+  {
+    id: "saignant",
+    name: "Saignant",
+    emoji: "🥩",
+    category: "viandes",
+    type: "timer",
+    minutes: 3,
+    seconds: 0
+  },
 
-function showPage(page) {
+  {
+    id: "point",
+    name: "À point",
+    emoji: "🥩",
+    category: "viandes",
+    type: "timer",
+    minutes: 4,
+    seconds: 0
+  },
 
-  document.querySelectorAll(".page").forEach(section => {
-    section.classList.remove("active");
-  });
+  {
+    id: "bien-cuit",
+    name: "Bien cuit",
+    emoji: "🔥",
+    category: "viandes",
+    type: "timer",
+    minutes: 6,
+    seconds: 0
+  },
 
-  const target = document.getElementById(page + "Page");
+  {
+    id: "escargots",
+    name: "Escargots",
+    emoji: "🐌",
+    category: "escargots",
+    type: "timer",
+    minutes: 8,
+    seconds: 0
+  },
 
-  if (target) {
-    target.classList.add("active");
+  {
+    id: "barbecue",
+    name: "Sauce barbecue",
+    emoji: "🥫",
+    category: "sauces",
+    type: "prep",
+    minutes: 0,
+    seconds: 0
+  },
+
+  {
+    id: "maison",
+    name: "Sauce maison",
+    emoji: "🧄",
+    category: "sauces",
+    type: "prep",
+    minutes: 0,
+    seconds: 0
   }
 
-  document.querySelectorAll(".nav-btn").forEach(button => {
-    button.classList.toggle(
-      "active",
-      button.dataset.page === page
-    );
-  });
+];
 
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
 
-  if (page === "home") {
-    renderHome();
-  }
+const EMOJIS = [
 
-  if (page === "timers") {
-    renderTimers();
-  }
+  "🍟","🥩","🍔","🍗","🍖","🌭","🥓","🍳",
+  "🐌","🐟","🍤","🦐","🦑","🐙","🍕","🍝",
+  "🥔","🥕","🌽","🥦","🥬","🍅","🧅","🧄",
+  "🥒","🍆","🫑","🥑","🍚","🍜","🍲","🥣",
+  "🥫","🧀","🥖","🍞","🥐","🧈","🥚","🍰",
+  "🍪","🍩","🍫","🍯","🍎","🍋","🍊","🍓",
+  "🔥","❄️","⚡","⭐","❤️","💥","🌶️","🧂",
+  "👨‍🍳","👩‍🍳","🍽️","⏱️","🔔","🔄","✨","💡"
+];
 
-  if (page === "preparations") {
-    renderPreparations();
-  }
 
-  if (page === "lists") {
-    renderLists();
-  }
-}
+/* ---------- ÉTAT ---------- */
 
+let categories =
+  load("kf_categories", DEFAULT_CATEGORIES);
 
-/* Navigation du menu */
+let products =
+  load("kf_products", DEFAULT_PRODUCTS);
 
-document.querySelectorAll("[data-page]").forEach(button => {
+let timers =
+  load("kf_timers", []);
 
-  button.addEventListener("click", () => {
+let preparations =
+  load("kf_preparations", []);
 
-    showPage(button.dataset.page);
+let editingProduct = null;
 
-  });
+let editingCategory = null;
 
-});
+let selectedProductEmoji = "🍟";
 
+let selectedCategoryEmoji = "🔥";
 
-/* ---------------------------------------------------------
-   MINUTEURS
---------------------------------------------------------- */
 
-function openTimerModal() {
-
-  document.getElementById("timerModal")
-    .classList.add("open");
-
-  document.getElementById("timerName").focus();
-}
-
-
-function closeModal(id) {
-
-  document.getElementById(id)
-    .classList.remove("open");
-
-}
-
-
-document.querySelectorAll("[data-close]").forEach(button => {
-
-  button.addEventListener("click", () => {
-    closeModal(button.dataset.close);
-  });
-
-});
-
-
-document.getElementById("newTimerBtn")
-  .addEventListener("click", openTimerModal);
-
-
-document.getElementById("homeNewTimer")
-  .addEventListener("click", openTimerModal);
-
-
-/* Temps rapides */
-
-document.querySelectorAll(".quick-times button")
-  .forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      const total = Number(button.dataset.time);
-
-      document.getElementById("timerMinutes").value =
-        Math.floor(total / 60);
-
-      document.getElementById("timerSeconds").value =
-        total % 60;
-
-    });
-
-  });
-
-
-/* Création */
-
-document.getElementById("createTimer")
-  .addEventListener("click", createTimer);
-
-
-function createTimer() {
-
-  let name =
-    document.getElementById("timerName").value.trim();
-
-  let minutes =
-    Number(document.getElementById("timerMinutes").value) || 0;
-
-  let seconds =
-    Number(document.getElementById("timerSeconds").value) || 0;
-
-  const totalSeconds =
-    Math.max(1, minutes * 60 + seconds);
-
-  if (!name) {
-    name = "Cuisson";
-  }
-
-  const timer = {
-
-    id: Date.now(),
-
-    name,
-
-    total: totalSeconds,
-
-    remaining: totalSeconds,
-
-    running: true,
-
-    finished: false,
-
-    createdAt: Date.now(),
-
-    lastUpdate: Date.now()
-
-  };
-
-  data.timers.push(timer);
-
-  saveData();
-
-  closeModal("timerModal");
-
-  document.getElementById("timerName").value = "";
-
-  showPage("timers");
-
-  renderTimers();
-
-}
-
-
-/* Mise à jour des minuteurs */
-
-function updateTimers() {
-
-  const now = Date.now();
-
-  let changed = false;
-
-  data.timers.forEach(timer => {
-
-    if (!timer.running || timer.finished) {
-      return;
-    }
-
-    const elapsed =
-      Math.floor((now - timer.lastUpdate) / 1000);
-
-    if (elapsed <= 0) {
-      return;
-    }
-
-    timer.remaining =
-      Math.max(0, timer.remaining - elapsed);
-
-    timer.lastUpdate = now;
-
-    changed = true;
-
-    if (timer.remaining <= 0) {
-
-      timer.remaining = 0;
-      timer.running = false;
-      timer.finished = true;
-
-      playAlarm();
-
-    }
-
-  });
-
-  if (changed) {
-    saveData();
-    renderTimers();
-    renderHome();
-  }
-
-}
-
-
-setInterval(updateTimers, 500);
-
-
-/* Formatage */
-
-function formatTime(seconds) {
-
-  seconds = Math.max(0, seconds);
-
-  const hours =
-    Math.floor(seconds / 3600);
-
-  const minutes =
-    Math.floor((seconds % 3600) / 60);
-
-  const secs =
-    seconds % 60;
-
-  if (hours > 0) {
-
-    return (
-      String(hours).padStart(2, "0") +
-      ":" +
-      String(minutes).padStart(2, "0") +
-      ":" +
-      String(secs).padStart(2, "0")
-    );
-
-  }
-
-  return (
-    String(minutes).padStart(2, "0") +
-    ":" +
-    String(secs).padStart(2, "0")
-  );
-
-}
-
-
-/* Affichage minuteurs */
-
-function renderTimers() {
-
-  const container =
-    document.getElementById("timerList");
-
-  if (!data.timers.length) {
-
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">⏱️</div>
-        <strong>Aucun minuteur</strong>
-        <span>Ajoute ton premier minuteur.</span>
-      </div>
-    `;
-
-    return;
-  }
-
-  container.innerHTML =
-    data.timers
-      .slice()
-      .reverse()
-      .map(timerHTML)
-      .join("");
-
-  attachTimerEvents();
-
-}
-
-
-function timerHTML(timer) {
-
-  const progress =
-    timer.total > 0
-      ? ((timer.total - timer.remaining) / timer.total) * 100
-      : 0;
-
-  let status = "";
-
-  if (timer.finished) {
-    status = "TERMINÉ";
-  } else if (timer.running) {
-    status = "EN COURS";
-  } else {
-    status = "EN PAUSE";
-  }
-
-  return `
-
-    <article
-      class="timer-card ${timer.finished ? "finished" : ""}"
-      data-id="${timer.id}"
-    >
-
-      <div class="timer-top">
-
-        <div>
-          <div class="eyebrow">${status}</div>
-          <div class="timer-name">${escapeHTML(timer.name)}</div>
-        </div>
-
-        <div>${timer.finished ? "🔔" : "⏱️"}</div>
-
-      </div>
-
-      <div class="timer-time">
-        ${formatTime(timer.remaining)}
-      </div>
-
-      <div class="progress">
-        <div
-          class="progress-bar"
-          style="width:${progress}%"
-        ></div>
-      </div>
-
-      <div class="timer-actions">
-
-        ${
-          timer.finished
-
-          ? `
-            <button data-action="restart">
-              ↻ Recommencer
-            </button>
-          `
-
-          : `
-            <button data-action="pause">
-              ${timer.running ? "Ⅱ Pause" : "▶ Reprendre"}
-            </button>
-          `
-        }
-
-        <button
-          class="stop"
-          data-action="delete"
-        >
-          Supprimer
-        </button>
-
-      </div>
-
-    </article>
-  `;
-}
-
-
-function attachTimerEvents() {
-
-  document.querySelectorAll(".timer-card")
-    .forEach(card => {
-
-      const id =
-        Number(card.dataset.id);
-
-      card.querySelectorAll("[data-action]")
-        .forEach(button => {
-
-          button.addEventListener("click", () => {
-
-            const action =
-              button.dataset.action;
-
-            handleTimerAction(id, action);
-
-          });
-
-        });
-
-    });
-
-}
-
-
-function handleTimerAction(id, action) {
-
-  const timer =
-    data.timers.find(t => t.id === id);
-
-  if (!timer) return;
-
-
-  if (action === "pause") {
-
-    timer.running = !timer.running;
-    timer.lastUpdate = Date.now();
-
-  }
-
-
-  if (action === "restart") {
-
-    timer.remaining = timer.total;
-    timer.running = true;
-    timer.finished = false;
-    timer.lastUpdate = Date.now();
-
-  }
-
-
-  if (action === "delete") {
-
-    data.timers =
-      data.timers.filter(t => t.id !== id);
-
-  }
-
-
-  saveData();
-
-  renderTimers();
-  renderHome();
-
-}
-
-
-/* ---------------------------------------------------------
-   PAGE ACCUEIL
---------------------------------------------------------- */
-
-function renderHome() {
-
-  const activeTimers =
-    data.timers.filter(t => !t.finished);
-
-  document.getElementById("timerCount")
-    .textContent = activeTimers.length;
-
-  const container =
-    document.getElementById("homeTimers");
-
-  if (!activeTimers.length) {
-
-    container.classList.add("empty");
-
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">⏱️</div>
-        <strong>Aucun minuteur actif</strong>
-        <span>Lance une cuisson pour la voir apparaître ici.</span>
-      </div>
-    `;
-
-    return;
-  }
-
-  container.classList.remove("empty");
-
-  container.innerHTML =
-    activeTimers
-      .slice()
-      .reverse()
-      .map(timerHTML)
-      .join("");
-
-  attachTimerEvents();
-
-}
-
-
-/* ---------------------------------------------------------
-   PRÉPARATIONS
---------------------------------------------------------- */
-
-document.getElementById("newPrepBtn")
-  .addEventListener("click", () => {
-
-    document.getElementById("prepModal")
-      .classList.add("open");
-
-  });
-
-
-document.getElementById("createPrep")
-  .addEventListener("click", createPreparation);
-
-
-function createPreparation() {
-
-  const name =
-    document.getElementById("prepName")
-      .value.trim();
-
-  const raw =
-    document.getElementById("prepSteps")
-      .value.trim();
-
-  if (!name) {
-    alert("Donne un nom à ta préparation.");
-    return;
-  }
-
-  const steps =
-    raw
-      .split("\n")
-      .map(x => x.trim())
-      .filter(Boolean);
-
-  data.preparations.push({
-
-    id: Date.now(),
-
-    name,
-
-    steps
-
-  });
-
-  saveData();
-
-  document.getElementById("prepName").value = "";
-  document.getElementById("prepSteps").value = "";
-
-  closeModal("prepModal");
-
-  renderPreparations();
-
-}
-
-
-function renderPreparations() {
-
-  const container =
-    document.getElementById("prepList");
-
-  if (!data.preparations.length) {
-
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">📋</div>
-        <strong>Aucune préparation</strong>
-        <span>Crée tes recettes et procédures.</span>
-      </div>
-    `;
-
-    return;
-  }
-
-  container.innerHTML =
-    data.preparations
-      .slice()
-      .reverse()
-      .map(prep => `
-
-        <article class="prep-card">
-
-          <h3>${escapeHTML(prep.name)}</h3>
-
-          ${
-            prep.steps.length
-              ? `
-                <ol>
-                  ${prep.steps
-                    .map(step =>
-                      `<li>${escapeHTML(step)}</li>`
-                    )
-                    .join("")}
-                </ol>
-              `
-              : `
-                <p style="color:var(--muted)">
-                  Aucune étape.
-                </p>
-              `
-          }
-
-          <div class="card-actions">
-
-            <button
-              data-delete-prep="${prep.id}"
-            >
-              Supprimer
-            </button>
-
-          </div>
-
-        </article>
-
-      `)
-      .join("");
-
-
-  document.querySelectorAll("[data-delete-prep]")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        const id =
-          Number(button.dataset.deletePrep);
-
-        data.preparations =
-          data.preparations
-            .filter(x => x.id !== id);
-
-        saveData();
-
-        renderPreparations();
-
-      });
-
-    });
-
-}
-
-
-/* ---------------------------------------------------------
-   LISTES
---------------------------------------------------------- */
-
-document.getElementById("newListBtn")
-  .addEventListener("click", () => {
-
-    document.getElementById("listModal")
-      .classList.add("open");
-
-  });
-
-
-document.getElementById("createList")
-  .addEventListener("click", createList);
-
-
-function createList() {
-
-  const name =
-    document.getElementById("listName")
-      .value.trim();
-
-  const firstTask =
-    document.getElementById("firstTask")
-      .value.trim();
-
-  if (!name) {
-    alert("Donne un nom à ta liste.");
-    return;
-  }
-
-  const tasks = [];
-
-  if (firstTask) {
-
-    tasks.push({
-
-      id: Date.now(),
-
-      text: firstTask,
-
-      done: false
-
-    });
-
-  }
-
-  data.lists.push({
-
-    id: Date.now(),
-
-    name,
-
-    tasks
-
-  });
-
-  saveData();
-
-  document.getElementById("listName").value = "";
-  document.getElementById("firstTask").value = "";
-
-  closeModal("listModal");
-
-  renderLists();
-
-}
-
-
-function renderLists() {
-
-  const container =
-    document.getElementById("listsContainer");
-
-  if (!data.lists.length) {
-
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">✓</div>
-        <strong>Aucune liste</strong>
-        <span>Crée une liste de mise en place.</span>
-      </div>
-    `;
-
-    return;
-  }
-
-  container.innerHTML =
-    data.lists
-      .map(list => `
-
-        <article
-          class="list-card"
-          data-list="${list.id}"
-        >
-
-          <h3>${escapeHTML(list.name)}</h3>
-
-          <div class="tasks">
-
-            ${
-              list.tasks.length
-                ? list.tasks.map(task => `
-
-                    <div class="task ${task.done ? "done" : ""}">
-
-                      <input
-                        type="checkbox"
-                        ${task.done ? "checked" : ""}
-                        data-task-check="${list.id}"
-                        data-task-id="${task.id}"
-                      >
-
-                      <span>
-                        ${escapeHTML(task.text)}
-                      </span>
-
-                      <button
-                        class="delete-task"
-                        data-task-delete="${list.id}"
-                        data-task-id="${task.id}"
-                      >
-                        ×
-                      </button>
-
-                    </div>
-
-                  `).join("")
-
-                : `
-                  <p style="color:var(--muted)">
-                    Aucune tâche.
-                  </p>
-                `
-            }
-
-          </div>
-
-          <div class="task-add">
-
-            <input
-              type="text"
-              placeholder="Ajouter une tâche..."
-              data-task-input="${list.id}"
-            >
-
-            <button
-              data-task-add="${list.id}"
-            >
-              +
-            </button>
-
-          </div>
-
-          <div class="card-actions">
-
-            <button data-delete-list="${list.id}">
-              Supprimer la liste
-            </button>
-
-          </div>
-
-        </article>
-
-      `)
-      .join("");
-
-
-  /* Checkbox */
-
-  document.querySelectorAll("[data-task-check]")
-    .forEach(input => {
-
-      input.addEventListener("change", () => {
-
-        const listId =
-          Number(input.dataset.taskCheck);
-
-        const taskId =
-          Number(input.dataset.taskId);
-
-        const list =
-          data.lists.find(x => x.id === listId);
-
-        if (!list) return;
-
-        const task =
-          list.tasks.find(x => x.id === taskId);
-
-        if (!task) return;
-
-        task.done = input.checked;
-
-        saveData();
-
-        renderLists();
-
-      });
-
-    });
-
-
-  /* Suppression tâche */
-
-  document.querySelectorAll("[data-task-delete]")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        const listId =
-          Number(button.dataset.taskDelete);
-
-        const taskId =
-          Number(button.dataset.taskId);
-
-        const list =
-          data.lists.find(x => x.id === listId);
-
-        if (!list) return;
-
-        list.tasks =
-          list.tasks.filter(
-            task => task.id !== taskId
-          );
-
-        saveData();
-
-        renderLists();
-
-      });
-
-    });
-
-
-  /* Ajouter tâche */
-
-  document.querySelectorAll("[data-task-add]")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        addTask(
-          Number(button.dataset.taskAdd)
-        );
-
-      });
-
-    });
-
-
-  /* Entrée clavier */
-
-  document.querySelectorAll("[data-task-input]")
-    .forEach(input => {
-
-      input.addEventListener("keydown", event => {
-
-        if (event.key === "Enter") {
-
-          addTask(
-            Number(input.dataset.taskInput)
-          );
-
-        }
-
-      });
-
-    });
-
-
-  /* Supprimer liste */
-
-  document.querySelectorAll("[data-delete-list]")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        const id =
-          Number(button.dataset.deleteList);
-
-        data.lists =
-          data.lists.filter(x => x.id !== id);
-
-        saveData();
-
-        renderLists();
-
-      });
-
-    });
-
-}
-
-
-function addTask(listId) {
-
-  const input =
-    document.querySelector(
-      `[data-task-input="${listId}"]`
-    );
-
-  if (!input) return;
-
-  const text =
-    input.value.trim();
-
-  if (!text) return;
-
-  const list =
-    data.lists.find(x => x.id === listId);
-
-  if (!list) return;
-
-  list.tasks.push({
-
-    id: Date.now(),
-
-    text,
-
-    done: false
-
-  });
-
-  saveData();
-
-  renderLists();
-
-}
-
-
-/* ---------------------------------------------------------
-   SONNERIE
---------------------------------------------------------- */
+/* =========================================================
+   AUDIO
+========================================================= */
 
 let audioContext = null;
 
+let soundEnabled = false;
 
-function playAlarm() {
+let alarmInterval = null;
 
-  if (!data.sound) {
-    return;
-  }
+let currentAlarmTimer = null;
+
+
+/*
+  Cette fonction doit être déclenchée par un clic utilisateur.
+  C'est important sur iPhone/iPad.
+*/
+
+async function enableSound() {
 
   try {
 
@@ -1043,186 +187,2159 @@ function playAlarm() {
 
     }
 
-    const now =
-      audioContext.currentTime;
+    if (
+      audioContext.state === "suspended"
+    ) {
 
-    for (let i = 0; i < 4; i++) {
-
-      const oscillator =
-        audioContext.createOscillator();
-
-      const gain =
-        audioContext.createGain();
-
-      oscillator.type = "sine";
-
-      oscillator.frequency.value =
-        i % 2 === 0 ? 880 : 660;
-
-      gain.gain.setValueAtTime(
-        0,
-        now + i * .35
-      );
-
-      gain.gain.linearRampToValueAtTime(
-        .35,
-        now + i * .35 + .03
-      );
-
-      gain.gain.exponentialRampToValueAtTime(
-        .001,
-        now + i * .35 + .3
-      );
-
-      oscillator.connect(gain);
-      gain.connect(audioContext.destination);
-
-      oscillator.start(now + i * .35);
-      oscillator.stop(now + i * .35 + .32);
+      await audioContext.resume();
 
     }
 
-  } catch (error) {
+    soundEnabled = true;
 
-    console.log("Audio non disponible.");
+    updateSoundButton();
+
+    playBeep(880, .12);
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Le navigateur n'a pas autorisé le son."
+    );
 
   }
 
 }
 
 
-/* Test son */
+function updateSoundButton() {
 
-document.getElementById("testSound")
-  .addEventListener("click", () => {
+  const button =
+    document.getElementById("soundButton");
 
-    playAlarm();
+  if (soundEnabled) {
 
-  });
+    button.textContent =
+      "🔊 Son activé";
+
+    button.classList.add("enabled");
+
+  }
+
+  else {
+
+    button.textContent =
+      "🔇 Activer le son";
+
+    button.classList.remove("enabled");
+
+  }
+
+}
 
 
-/* ---------------------------------------------------------
-   RÉGLAGES
---------------------------------------------------------- */
+function playBeep(
+  frequency = 880,
+  duration = .18
+) {
 
-function applyTheme() {
+  if (!soundEnabled) return;
 
-  document.body.classList.toggle(
-    "dark",
-    data.theme === "dark"
+  if (!audioContext) return;
+
+  const oscillator =
+    audioContext.createOscillator();
+
+  const gain =
+    audioContext.createGain();
+
+  oscillator.type = "square";
+
+  oscillator.frequency.value =
+    frequency;
+
+  const now =
+    audioContext.currentTime;
+
+  gain.gain.setValueAtTime(
+    .001,
+    now
   );
 
-  document.getElementById("themeBtn")
-    .textContent =
-      data.theme === "dark" ? "🌙" : "☀️";
+  gain.gain.exponentialRampToValueAtTime(
+    .35,
+    now + .015
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    .001,
+    now + duration
+  );
+
+  oscillator.connect(gain);
+
+  gain.connect(
+    audioContext.destination
+  );
+
+  oscillator.start(now);
+
+  oscillator.stop(
+    now + duration + .02
+  );
 
 }
 
 
-function toggleTheme() {
+function playAlarmSound() {
 
-  data.theme =
-    data.theme === "dark"
-      ? "light"
-      : "dark";
+  if (!soundEnabled) return;
 
-  saveData();
+  playBeep(880,.16);
 
-  applyTheme();
+  setTimeout(
+    () => playBeep(660,.16),
+    180
+  );
+
+  setTimeout(
+    () => playBeep(880,.16),
+    360
+  );
 
 }
 
 
-document.getElementById("themeBtn")
-  .addEventListener("click", toggleTheme);
+function startAlarm(timer) {
 
+  currentAlarmTimer = timer;
 
-document.getElementById("settingsTheme")
-  .addEventListener("click", toggleTheme);
+  const overlay =
+    document.getElementById(
+      "alarmOverlay"
+    );
 
+  document.getElementById(
+    "alarmEmoji"
+  ).textContent =
+    timer.emoji;
 
-document.getElementById("soundToggle")
-  .addEventListener("click", () => {
+  document.getElementById(
+    "alarmName"
+  ).textContent =
+    timer.name;
 
-    data.sound = !data.sound;
+  overlay.classList.add("show");
 
-    saveData();
+  playAlarmSound();
 
-    updateSettings();
+  if (alarmInterval) {
 
-  });
+    clearInterval(
+      alarmInterval
+    );
 
+  }
 
-document.getElementById("kitchenName")
-  .addEventListener("input", event => {
-
-    data.kitchenName =
-      event.target.value;
-
-    saveData();
-
-  });
-
-
-function updateSettings() {
-
-  document.getElementById("kitchenName")
-    .value = data.kitchenName || "";
-
-  document.getElementById("soundToggle")
-    .classList.toggle(
-      "active",
-      data.sound
+  alarmInterval =
+    setInterval(
+      playAlarmSound,
+      900
     );
 
 }
 
 
-/* Reset */
+function stopAlarm() {
 
-document.getElementById("resetApp")
-  .addEventListener("click", () => {
+  if (alarmInterval) {
 
-    const confirmReset =
-      confirm(
-        "Supprimer toutes les données de KitchenFlow ?"
+    clearInterval(
+      alarmInterval
+    );
+
+    alarmInterval = null;
+
+  }
+
+  const overlay =
+    document.getElementById(
+      "alarmOverlay"
+    );
+
+  overlay.classList.remove("show");
+
+  if (currentAlarmTimer) {
+
+    timers =
+      timers.filter(
+        t =>
+          t.id !==
+          currentAlarmTimer.id
       );
 
-    if (!confirmReset) return;
+    save();
 
-    localStorage.removeItem(STORAGE_KEY);
+    currentAlarmTimer = null;
 
-    location.reload();
+    renderAll();
 
-  });
-
-
-/* ---------------------------------------------------------
-   UTILITAIRE
---------------------------------------------------------- */
-
-function escapeHTML(value) {
-
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+  }
 
 }
 
 
-/* ---------------------------------------------------------
-   INITIALISATION
---------------------------------------------------------- */
+document
+  .getElementById("soundButton")
+  .addEventListener(
+    "click",
+    enableSound
+  );
 
-loadData();
 
-renderHome();
+document
+  .getElementById("testSound")
+  .addEventListener(
+    "click",
+    async () => {
 
-renderTimers();
+      if (!soundEnabled) {
 
-renderPreparations();
+        await enableSound();
 
-renderLists();
+      }
+
+      if (soundEnabled) {
+
+        playAlarmSound();
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("stopAlarm")
+  .addEventListener(
+    "click",
+    stopAlarm
+  );
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+document
+  .querySelectorAll(".navButton")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        const target =
+          button.dataset.screen;
+
+        document
+          .querySelectorAll(".screen")
+          .forEach(
+            screen =>
+              screen.classList.remove(
+                "active"
+              )
+          );
+
+        document
+          .getElementById(target)
+          .classList.add("active");
+
+
+        document
+          .querySelectorAll(".navButton")
+          .forEach(
+            b =>
+              b.classList.remove(
+                "active"
+              )
+          );
+
+        button.classList.add("active");
+
+        renderAll();
+
+        window.scrollTo(
+          0,
+          0
+        );
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   RENDU PRODUITS
+========================================================= */
+
+function renderProducts() {
+
+  const container =
+    document.getElementById(
+      "categories"
+    );
+
+  container.innerHTML = "";
+
+
+  categories.forEach(
+    category => {
+
+      const list =
+        products.filter(
+          product =>
+            product.category ===
+            category.id
+        );
+
+
+      if (!list.length) return;
+
+
+      const section =
+        document.createElement("section");
+
+      section.className =
+        "category";
+
+
+      section.innerHTML = `
+
+        <div class="categoryHeader">
+
+          <div class="categoryTitle">
+            ${category.emoji}
+            ${escapeHTML(category.name)}
+          </div>
+
+        </div>
+
+        <div class="productGrid"></div>
+
+      `;
+
+
+      const grid =
+        section.querySelector(
+          ".productGrid"
+        );
+
+
+      list.forEach(
+        product => {
+
+          const button =
+            document.createElement(
+              "button"
+            );
+
+          button.className =
+            "productButton " +
+            (
+              product.type === "prep"
+                ? "prep"
+                : ""
+            );
+
+
+          let info;
+
+
+          if (
+            product.type === "timer"
+          ) {
+
+            info =
+              "⏱️ " +
+              formatTime(
+                product.minutes * 60 +
+                product.seconds
+              );
+
+          }
+
+          else {
+
+            info =
+              "🔄 Ajouter à refaire";
+
+          }
+
+
+          button.innerHTML = `
+
+            <div class="productEmoji">
+              ${product.emoji}
+            </div>
+
+            <div>
+
+              <div class="productName">
+                ${escapeHTML(product.name)}
+              </div>
+
+              <div class="productInfo">
+                ${info}
+              </div>
+
+            </div>
+
+          `;
+
+
+          button.addEventListener(
+            "click",
+            () =>
+              activateProduct(
+                product
+              )
+          );
+
+
+          grid.appendChild(
+            button
+          );
+
+        }
+      );
+
+
+      container.appendChild(
+        section
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   ACTIVATION
+========================================================= */
+
+function activateProduct(
+  product
+) {
+
+  if (
+    product.type === "prep"
+  ) {
+
+    addPreparation(
+      product
+    );
+
+    return;
+
+  }
+
+
+  const duration =
+    product.minutes * 60 +
+    product.seconds;
+
+
+  if (duration <= 0) {
+
+    alert(
+      "Ce bouton n'a pas de durée."
+    );
+
+    return;
+
+  }
+
+
+  /*
+    Si le son n'a pas encore été activé,
+    on avertit clairement.
+  */
+
+  if (!soundEnabled) {
+
+    const activate =
+      confirm(
+        "Le son n'est pas activé.\n\n" +
+        "Active-le maintenant pour être certain " +
+        "d'entendre les alarmes."
+      );
+
+
+    if (activate) {
+
+      enableSound();
+
+    }
+
+  }
+
+
+  const timer = {
+
+    id:
+      Date.now() +
+      Math.random(),
+
+    productId:
+      product.id,
+
+    name:
+      product.name,
+
+    emoji:
+      product.emoji,
+
+    total:
+      duration,
+
+    remaining:
+      duration,
+
+    endTime:
+      Date.now() +
+      duration * 1000,
+
+    finished:
+      false
+
+  };
+
+
+  timers.push(
+    timer
+  );
+
+  save();
+
+  renderAll();
+
+}
+
+
+/* =========================================================
+   MINUTEURS
+========================================================= */
+
+function updateTimers() {
+
+  let changed = false;
+
+
+  timers.forEach(
+    timer => {
+
+      if (
+        timer.finished
+      ) return;
+
+
+      const remaining =
+        Math.max(
+          0,
+          Math.ceil(
+            (
+              timer.endTime -
+              Date.now()
+            ) / 1000
+          )
+        );
+
+
+      if (
+        remaining !==
+        timer.remaining
+      ) {
+
+        timer.remaining =
+          remaining;
+
+        changed = true;
+
+      }
+
+
+      if (
+        remaining <= 0 &&
+        !timer.finished
+      ) {
+
+        timer.finished = true;
+
+        changed = true;
+
+        startAlarm(
+          timer
+        );
+
+        if (
+          navigator.vibrate
+        ) {
+
+          navigator.vibrate(
+            [
+              400,
+              150,
+              400,
+              150,
+              700
+            ]
+          );
+
+        }
+
+      }
+
+    }
+  );
+
+
+  if (changed) {
+
+    save();
+
+    renderTimers();
+
+  }
+
+}
+
+
+setInterval(
+  updateTimers,
+  250
+);
+
+
+/* =========================================================
+   AFFICHAGE DES MINUTEURS
+========================================================= */
+
+function renderTimers() {
+
+  const container =
+    document.getElementById(
+      "timers"
+    );
+
+
+  const count =
+    timers.filter(
+      timer =>
+        !timer.finished
+    ).length;
+
+
+  document.getElementById(
+    "activeCount"
+  ).textContent =
+    count;
+
+
+  if (!timers.length) {
+
+    container.innerHTML = `
+
+      <div class="noTimers">
+        Aucun minuteur en cours.
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  container.innerHTML = "";
+
+
+  timers
+    .slice()
+    .reverse()
+    .forEach(
+      timer => {
+
+        const card =
+          document.createElement(
+            "div"
+          );
+
+
+        let className =
+          "timerCard";
+
+
+        if (
+          timer.finished
+        ) {
+
+          className +=
+            " finished";
+
+        }
+
+        else if (
+          timer.remaining <= 30
+        ) {
+
+          className +=
+            " warning";
+
+        }
+
+
+        card.className =
+          className;
+
+
+        const progress =
+          timer.finished
+            ? 100
+            : Math.min(
+                100,
+                (
+                  (
+                    timer.total -
+                    timer.remaining
+                  ) /
+                  timer.total
+                ) * 100
+              );
+
+
+        card.innerHTML = `
+
+          <div class="timerEmoji">
+            ${timer.emoji}
+          </div>
+
+          <div>
+
+            <div class="timerName">
+              ${escapeHTML(timer.name)}
+            </div>
+
+            <div class="timerValue">
+
+              ${
+                timer.finished
+                  ? "🔔 FINI"
+                  : formatTime(
+                      timer.remaining
+                    )
+              }
+
+            </div>
+
+            <div class="progressTrack">
+
+              <div
+                class="progress"
+                style="width:${progress}%"
+              ></div>
+
+            </div>
+
+          </div>
+
+          <button class="timerStop">
+            ${
+              timer.finished
+                ? "✓"
+                : "×"
+            }
+          </button>
+
+        `;
+
+
+        card
+          .querySelector(
+            ".timerStop"
+          )
+          .addEventListener(
+            "click",
+            () => {
+
+              if (
+                timer.finished
+              ) {
+
+                if (
+                  currentAlarmTimer &&
+                  currentAlarmTimer.id ===
+                    timer.id
+                ) {
+
+                  stopAlarm();
+
+                }
+
+                else {
+
+                  removeTimer(
+                    timer.id
+                  );
+
+                }
+
+              }
+
+              else {
+
+                removeTimer(
+                  timer.id
+                );
+
+              }
+
+            }
+          );
+
+
+        container.appendChild(
+          card
+        );
+
+      }
+    );
+
+}
+
+
+function removeTimer(
+  id
+) {
+
+  timers =
+    timers.filter(
+      timer =>
+        timer.id !== id
+    );
+
+  save();
+
+  renderAll();
+
+}
+
+
+/* =========================================================
+   PREPARATIONS
+========================================================= */
+
+function addPreparation(
+  product
+) {
+
+  const existing =
+    preparations.find(
+      item =>
+        item.productId ===
+        product.id
+    );
+
+
+  if (existing) {
+
+    existing.quantity++;
+
+  }
+
+  else {
+
+    preparations.push({
+
+      id:
+        Date.now() +
+        Math.random(),
+
+      productId:
+        product.id,
+
+      name:
+        product.name,
+
+      emoji:
+        product.emoji,
+
+      quantity: 1
+
+    });
+
+  }
+
+
+  save();
+
+  renderAll();
+
+}
+
+
+function removePreparation(
+  id
+) {
+
+  preparations =
+    preparations.filter(
+      item =>
+        item.id !== id
+    );
+
+  save();
+
+  renderAll();
+
+}
+
+
+function renderPreparations() {
+
+  const list =
+    document.getElementById(
+      "prepList"
+    );
+
+  const full =
+    document.getElementById(
+      "prepFullList"
+    );
+
+
+  document.getElementById(
+    "prepCount"
+  ).textContent =
+    preparations.reduce(
+      (
+        total,
+        item
+      ) =>
+        total +
+        item.quantity,
+      0
+    );
+
+
+  if (!preparations.length) {
+
+    const empty = `
+
+      <div class="noTimers">
+        ✅ Rien à refaire pour le moment.
+      </div>
+
+    `;
+
+    list.innerHTML =
+      empty;
+
+    full.innerHTML =
+      empty;
+
+    return;
+
+  }
+
+
+  const createHTML =
+    item => `
+
+      <div class="prepItem">
+
+        <div class="prepEmoji">
+          ${item.emoji}
+        </div>
+
+        <div class="prepName">
+          ${escapeHTML(item.name)}
+        </div>
+
+        ${
+          item.quantity > 1
+            ? `
+              <div class="prepQuantity">
+                ×${item.quantity}
+              </div>
+            `
+            : ""
+        }
+
+        <button
+          class="doneButton"
+          data-id="${item.id}"
+        >
+          ✓ Fait
+        </button>
+
+      </div>
+
+    `;
+
+
+  list.innerHTML =
+    preparations
+      .map(createHTML)
+      .join("");
+
+
+  full.innerHTML =
+    preparations
+      .map(createHTML)
+      .join("");
+
+
+  document
+    .querySelectorAll(
+      ".doneButton"
+    )
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          () =>
+            removePreparation(
+              Number(
+                button.dataset.id
+              )
+            )
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+function renderSettings() {
+
+  renderCategorySettings();
+
+  renderProductSettings();
+
+}
+
+
+function renderCategorySettings() {
+
+  const container =
+    document.getElementById(
+      "categorySettings"
+    );
+
+
+  container.innerHTML = "";
+
+
+  categories.forEach(
+    category => {
+
+      const count =
+        products.filter(
+          product =>
+            product.category ===
+            category.id
+        ).length;
+
+
+      const row =
+        document.createElement(
+          "div"
+        );
+
+
+      row.className =
+        "settingRow";
+
+
+      row.innerHTML = `
+
+        <div class="settingEmoji">
+          ${category.emoji}
+        </div>
+
+        <div class="settingInfo">
+
+          <strong>
+            ${escapeHTML(category.name)}
+          </strong>
+
+          <small>
+            ${count} bouton(s)
+          </small>
+
+        </div>
+
+        <button
+          class="iconButton editCategory"
+        >
+          ✏️
+        </button>
+
+        <button
+          class="iconButton deleteButton deleteCategory"
+        >
+          🗑️
+        </button>
+
+      `;
+
+
+      row
+        .querySelector(
+          ".editCategory"
+        )
+        .addEventListener(
+          "click",
+          () =>
+            openEditCategory(
+              category
+            )
+        );
+
+
+      row
+        .querySelector(
+          ".deleteCategory"
+        )
+        .addEventListener(
+          "click",
+          () =>
+            deleteCategory(
+              category
+            )
+        );
+
+
+      container.appendChild(
+        row
+      );
+
+    }
+  );
+
+}
+
+
+function renderProductSettings() {
+
+  const container =
+    document.getElementById(
+      "productSettings"
+    );
+
+
+  container.innerHTML = "";
+
+
+  products.forEach(
+    product => {
+
+      const category =
+        categories.find(
+          category =>
+            category.id ===
+            product.category
+        );
+
+
+      const info =
+        product.type === "timer"
+          ? "⏱️ " +
+            formatTime(
+              product.minutes * 60 +
+              product.seconds
+            )
+          : "🔄 À refaire";
+
+
+      const row =
+        document.createElement(
+          "div"
+        );
+
+
+      row.className =
+        "settingRow";
+
+
+      row.innerHTML = `
+
+        <div class="settingEmoji">
+          ${product.emoji}
+        </div>
+
+        <div class="settingInfo">
+
+          <strong>
+            ${escapeHTML(product.name)}
+          </strong>
+
+          <small>
+
+            ${
+              category
+                ? category.emoji +
+                  " " +
+                  escapeHTML(
+                    category.name
+                  )
+                : ""
+            }
+
+            •
+            ${info}
+
+          </small>
+
+        </div>
+
+        <button
+          class="iconButton editProduct"
+        >
+          ✏️
+        </button>
+
+        <button
+          class="iconButton deleteButton deleteProduct"
+        >
+          🗑️
+        </button>
+
+      `;
+
+
+      row
+        .querySelector(
+          ".editProduct"
+        )
+        .addEventListener(
+          "click",
+          () =>
+            openEditProduct(
+              product
+            )
+        );
+
+
+      row
+        .querySelector(
+          ".deleteProduct"
+        )
+        .addEventListener(
+          "click",
+          () =>
+            deleteProduct(
+              product
+            )
+        );
+
+
+      container.appendChild(
+        row
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   PRODUIT — MODALE
+========================================================= */
+
+document
+  .getElementById("addProduct")
+  .addEventListener(
+    "click",
+    () =>
+      openProductModal()
+  );
+
+
+document
+  .getElementById("productType")
+  .addEventListener(
+    "change",
+    updateDurationVisibility
+  );
+
+
+function openProductModal(
+  product = null
+) {
+
+  editingProduct =
+    product;
+
+
+  document.getElementById(
+    "productModalTitle"
+  ).textContent =
+    product
+      ? "Modifier le bouton"
+      : "Nouveau bouton";
+
+
+  document.getElementById(
+    "productName"
+  ).value =
+    product
+      ? product.name
+      : "";
+
+
+  document.getElementById(
+    "productMinutes"
+  ).value =
+    product
+      ? product.minutes
+      : 4;
+
+
+  document.getElementById(
+    "productSeconds"
+  ).value =
+    product
+      ? product.seconds
+      : 0;
+
+
+  document.getElementById(
+    "productType"
+  ).value =
+    product
+      ? product.type
+      : "timer";
+
+
+  selectedProductEmoji =
+    product
+      ? product.emoji
+      : "🍟";
+
+
+  fillCategorySelect(
+    product
+      ? product.category
+      : categories[0]?.id
+  );
+
+
+  renderEmojiPicker();
+
+  updateDurationVisibility();
+
+  openModal(
+    "productModal"
+  );
+
+}
+
+
+function openEditProduct(
+  product
+) {
+
+  openProductModal(
+    product
+  );
+
+}
+
+
+function fillCategorySelect(
+  selected
+) {
+
+  const select =
+    document.getElementById(
+      "productCategory"
+    );
+
+
+  select.innerHTML =
+    categories
+      .map(
+        category => `
+
+          <option
+            value="${category.id}"
+            ${
+              category.id === selected
+                ? "selected"
+                : ""
+            }
+          >
+            ${category.emoji}
+            ${escapeHTML(category.name)}
+          </option>
+
+        `
+      )
+      .join("");
+
+}
+
+
+function updateDurationVisibility() {
+
+  const type =
+    document.getElementById(
+      "productType"
+    ).value;
+
+
+  document.getElementById(
+    "durationFields"
+  ).style.display =
+    type === "timer"
+      ? "block"
+      : "none";
+
+}
+
+
+document
+  .getElementById("saveProduct")
+  .addEventListener(
+    "click",
+    saveProduct
+  );
+
+
+function saveProduct() {
+
+  const name =
+    document.getElementById(
+      "productName"
+    ).value.trim();
+
+
+  if (!name) {
+
+    alert(
+      "Donne un nom au bouton."
+    );
+
+    return;
+
+  }
+
+
+  let minutes =
+    Number(
+      document.getElementById(
+        "productMinutes"
+      ).value
+    ) || 0;
+
+
+  let seconds =
+    Number(
+      document.getElementById(
+        "productSeconds"
+      ).value
+    ) || 0;
+
+
+  minutes +=
+    Math.floor(
+      seconds / 60
+    );
+
+
+  seconds =
+    seconds % 60;
+
+
+  const category =
+    document.getElementById(
+      "productCategory"
+    ).value;
+
+
+  const type =
+    document.getElementById(
+      "productType"
+    ).value;
+
+
+  if (editingProduct) {
+
+    editingProduct.name =
+      name;
+
+    editingProduct.category =
+      category;
+
+    editingProduct.type =
+      type;
+
+    editingProduct.emoji =
+      selectedProductEmoji;
+
+    editingProduct.minutes =
+      minutes;
+
+    editingProduct.seconds =
+      seconds;
+
+  }
+
+  else {
+
+    products.push({
+
+      id:
+        "product-" +
+        Date.now(),
+
+      name,
+
+      category,
+
+      type,
+
+      emoji:
+        selectedProductEmoji,
+
+      minutes,
+
+      seconds
+
+    });
+
+  }
+
+
+  save();
+
+  closeModal(
+    "productModal"
+  );
+
+  renderAll();
+
+}
+
+
+/* =========================================================
+   CATEGORIES
+========================================================= */
+
+document
+  .getElementById("addCategory")
+  .addEventListener(
+    "click",
+    () =>
+      openCategoryModal()
+  );
+
+
+function openCategoryModal(
+  category = null
+) {
+
+  editingCategory =
+    category;
+
+
+  document.getElementById(
+    "categoryModalTitle"
+  ).textContent =
+    category
+      ? "Modifier la catégorie"
+      : "Nouvelle catégorie";
+
+
+  document.getElementById(
+    "categoryName"
+  ).value =
+    category
+      ? category.name
+      : "";
+
+
+  selectedCategoryEmoji =
+    category
+      ? category.emoji
+      : "🔥";
+
+
+  renderCategoryEmojiPicker();
+
+  openModal(
+    "categoryModal"
+  );
+
+}
+
+
+function openEditCategory(
+  category
+) {
+
+  openCategoryModal(
+    category
+  );
+
+}
+
+
+document
+  .getElementById("saveCategory")
+  .addEventListener(
+    "click",
+    saveCategory
+  );
+
+
+function saveCategory() {
+
+  const name =
+    document.getElementById(
+      "categoryName"
+    ).value.trim();
+
+
+  if (!name) {
+
+    alert(
+      "Donne un nom à la catégorie."
+    );
+
+    return;
+
+  }
+
+
+  if (editingCategory) {
+
+    editingCategory.name =
+      name;
+
+    editingCategory.emoji =
+      selectedCategoryEmoji;
+
+  }
+
+  else {
+
+    categories.push({
+
+      id:
+        "category-" +
+        Date.now(),
+
+      name,
+
+      emoji:
+        selectedCategoryEmoji
+
+    });
+
+  }
+
+
+  save();
+
+  closeModal(
+    "categoryModal"
+  );
+
+  renderAll();
+
+}
+
+
+function deleteCategory(
+  category
+) {
+
+  const productsInCategory =
+    products.filter(
+      product =>
+        product.category ===
+        category.id
+    );
+
+
+  if (
+    productsInCategory.length
+  ) {
+
+    alert(
+      "Impossible de supprimer cette catégorie tant qu'elle contient des boutons."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    confirm(
+      "Supprimer " +
+      category.name +
+      " ?"
+    )
+  ) {
+
+    categories =
+      categories.filter(
+        c =>
+          c.id !== category.id
+      );
+
+    save();
+
+    renderAll();
+
+  }
+
+}
+
+
+/* =========================================================
+   SUPPRESSION PRODUIT
+========================================================= */
+
+function deleteProduct(
+  product
+) {
+
+  if (
+    !confirm(
+      "Supprimer « " +
+      product.name +
+      " » ?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  products =
+    products.filter(
+      p =>
+        p.id !== product.id
+    );
+
+
+  save();
+
+  renderAll();
+
+}
+
+
+/* =========================================================
+   EMOJIS
+========================================================= */
+
+function renderEmojiPicker() {
+
+  const container =
+    document.getElementById(
+      "emojiPicker"
+    );
+
+
+  container.innerHTML = "";
+
+
+  EMOJIS.forEach(
+    emoji => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.className =
+        "emojiChoice" +
+        (
+          emoji ===
+          selectedProductEmoji
+            ? " selected"
+            : ""
+        );
+
+
+      button.textContent =
+        emoji;
+
+
+      button.type =
+        "button";
+
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          selectedProductEmoji =
+            emoji;
+
+          renderEmojiPicker();
+
+        }
+      );
+
+
+      container.appendChild(
+        button
+      );
+
+    }
+  );
+
+}
+
+
+function renderCategoryEmojiPicker() {
+
+  const container =
+    document.getElementById(
+      "categoryEmojiPicker"
+    );
+
+
+  container.innerHTML = "";
+
+
+  EMOJIS.forEach(
+    emoji => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.className =
+        "emojiChoice" +
+        (
+          emoji ===
+          selectedCategoryEmoji
+            ? " selected"
+            : ""
+        );
+
+
+      button.textContent =
+        emoji;
+
+      button.type =
+        "button";
+
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          selectedCategoryEmoji =
+            emoji;
+
+          renderCategoryEmojiPicker();
+
+        }
+      );
+
+
+      container.appendChild(
+        button
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   MODALES
+========================================================= */
+
+document
+  .querySelectorAll(
+    "[data-close]"
+  )
+  .forEach(
+    button => {
+
+      button.addEventListener(
+        "click",
+        () =>
+          closeModal(
+            button.dataset.close
+          )
+      );
+
+    }
+  );
+
+
+function openModal(id) {
+
+  document
+    .getElementById(id)
+    .classList.add(
+      "open"
+    );
+
+}
+
+
+function closeModal(id) {
+
+  document
+    .getElementById(id)
+    .classList.remove(
+      "open"
+    );
+
+}
+
+
+document
+  .querySelectorAll(".modal")
+  .forEach(
+    modal => {
+
+      modal.addEventListener(
+        "click",
+        event => {
+
+          if (
+            event.target ===
+            modal
+          ) {
+
+            closeModal(
+              modal.id
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   OUTILS
+========================================================= */
+
+function formatTime(
+  seconds
+) {
+
+  seconds =
+    Math.max(
+      0,
+      Math.floor(seconds)
+    );
+
+
+  const minutes =
+    Math.floor(
+      seconds / 60
+    );
+
+
+  const secs =
+    seconds % 60;
+
+
+  return (
+    String(minutes)
+      .padStart(2,"0")
+    +
+    ":"
+    +
+    String(secs)
+      .padStart(2,"0")
+  );
+
+}
+
+
+function escapeHTML(
+  value
+) {
+
+  return String(value)
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
+}
+
+
+function load(
+  key,
+  fallback
+) {
+
+  try {
+
+    const data =
+      localStorage.getItem(
+        key
+      );
+
+
+    return data
+      ? JSON.parse(data)
+      : structuredClone(
+          fallback
+        );
+
+  }
+
+  catch {
+
+    return structuredClone(
+      fallback
+    );
+
+  }
+
+}
+
+
+function save() {
+
+  localStorage.setItem(
+    "kf_categories",
+    JSON.stringify(
+      categories
+    )
+  );
+
+  localStorage.setItem(
+    "kf_products",
+    JSON.stringify(
+      products
+    )
+  );
+
+  localStorage.setItem(
+    "kf_timers",
+    JSON.stringify(
+      timers
+    )
+  );
+
+  localStorage.setItem(
+    "kf_preparations",
+    JSON.stringify(
+      preparations
+    )
+  );
+
+}
+
+
+/* =========================================================
+   RENDU GLOBAL
+========================================================= */
+
+function renderAll() {
+
+  renderProducts();
+
+  renderTimers();
+
+  renderPreparations();
+
+  renderSettings();
+
+}
+
+
+/* =========================================================
+   MODE SOMBRE
+========================================================= */
+
+function initDarkMode() {
+
+  const saved =
+    localStorage.getItem(
+      "kf_dark"
+    );
+
+
+  if (
+    saved === "true"
+  ) {
+
+    document.body.classList.add(
+      "dark"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LANCEMENT
+========================================================= */
+
+initDarkMode();
+
+renderEmojiPicker();
+
+renderCategoryEmojiPicker();
+
+renderAll();
+
+updateSoundButton();
