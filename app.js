@@ -1,343 +1,150 @@
-const intro = document.getElementById("intro");
-const game = document.getElementById("game");
-const end = document.getElementById("end");
+document.addEventListener("DOMContentLoaded", function () {
 
-const begin = document.getElementById("begin");
-const again = document.getElementById("again");
-
-const actionButton =
-    document.getElementById("actionButton");
-
-const ruleNumber =
-    document.getElementById("ruleNumber");
-
-const rule =
-    document.getElementById("rule");
-
-const arena =
-    document.getElementById("arena");
-
-const message =
-    document.getElementById("message");
+    console.log("THE RULES : JavaScript loaded");
 
 
-let actions = 0;
-let discoveries = 0;
-let ruleCount = 1;
+    /* ================================= */
+    /* ÉLÉMENTS */
+    /* ================================= */
 
-let buttonClicks = 0;
-let objectClicks = 0;
+    const intro =
+        document.getElementById("intro");
 
-let started = false;
-let finished = false;
+    const game =
+        document.getElementById("game");
 
-let fastClicks = 0;
-let lastClick = 0;
+    const end =
+        document.getElementById("end");
+
+    const begin =
+        document.getElementById("begin");
+
+    const again =
+        document.getElementById("again");
+
+    const actionButton =
+        document.getElementById("actionButton");
+
+    const ruleNumber =
+        document.getElementById("ruleNumber");
+
+    const rule =
+        document.getElementById("rule");
+
+    const arena =
+        document.getElementById("arena");
+
+    const message =
+        document.getElementById("message");
 
 
-/* SESSION */
+    /* ================================= */
+    /* VARIABLES */
+    /* ================================= */
 
-let session =
-    Number(
-        localStorage.getItem(
-            "the_rules_session"
-        ) || 0
+    let actions = 0;
+
+    let discoveries = 0;
+
+    let ruleCount = 1;
+
+    let buttonClicks = 0;
+
+    let objectClicks = 0;
+
+    let fastClicks = 0;
+
+    let lastClick = 0;
+
+    let finished = false;
+
+
+    /* ================================= */
+    /* SESSION */
+    /* ================================= */
+
+    let session =
+        Number(
+            localStorage.getItem(
+                "theRulesSession"
+            ) || 0
+        );
+
+    session++;
+
+    localStorage.setItem(
+        "theRulesSession",
+        session
     );
 
-session++;
-
-localStorage.setItem(
-    "the_rules_session",
-    session
-);
-
-document.getElementById("session")
-    .textContent =
-    String(session).padStart(3, "0");
+    document.getElementById(
+        "session"
+    ).textContent =
+        String(session).padStart(3, "0");
 
 
-/* CHANGER D'ÉCRAN */
+    /* ================================= */
+    /* CHANGER D'ÉCRAN */
+    /* ================================= */
 
-function showPage(page) {
+    function showScreen(screen) {
 
-    intro.classList.remove("page-visible");
-    game.classList.remove("page-visible");
-    end.classList.remove("page-visible");
+        intro.classList.remove("active");
 
-    page.classList.add("page-visible");
-}
+        game.classList.remove("active");
 
+        end.classList.remove("active");
 
-/* COMMENCER */
-
-begin.addEventListener(
-    "click",
-    start
-);
-
-
-function start() {
-
-    if (started) return;
-
-    started = true;
-
-    showPage(game);
-
-    setRule(
-        1,
-        "There are no rules."
-    );
-
-    notify(
-        "THE EXPERIMENT HAS BEGUN."
-    );
-}
-
-
-/* ACTION */
-
-actionButton.addEventListener(
-    "click",
-    () => {
-
-        if (!started || finished) return;
-
-        actions++;
-
-        buttonClicks++;
-
-        updateStats();
-
-        detectSpeed();
-
-        reactToButton();
-
-        checkProgress();
-
-    }
-);
-
-
-/* VITESSE */
-
-function detectSpeed() {
-
-    const now = Date.now();
-
-    if (
-        lastClick !== 0 &&
-        now - lastClick < 700
-    ) {
-        fastClicks++;
-    }
-
-    lastClick = now;
-}
-
-
-/* RÉACTION DU BOUTON */
-
-function reactToButton() {
-
-    const texts = [
-        "DO SOMETHING",
-        "INTERESTING.",
-        "AGAIN?",
-        "I SAW THAT.",
-        "NOTED.",
-        "WHY?",
-        "KEEP GOING.",
-        "REALLY?",
-        "OKAY.",
-        "YOU'RE STILL HERE."
-    ];
-
-    const index =
-        Math.min(
-            buttonClicks,
-            texts.length - 1
-        );
-
-    actionButton.textContent =
-        texts[index];
-
-
-    if (buttonClicks === 2) {
-
-        discoveries++;
-
-        setRule(
-            2,
-            "You are allowed to press the button."
-        );
-
-        notify(
-            "DISCOVERY +1"
-        );
+        screen.classList.add("active");
     }
 
 
-    if (buttonClicks === 4) {
+    /* ================================= */
+    /* BEGIN */
+    /* ================================= */
 
-        discoveries++;
-
-        setRule(
-            3,
-            "Not everything here is a button."
-        );
-
-        createObjects(4);
-    }
-
-
-    if (buttonClicks === 7) {
-
-        discoveries++;
-
-        setRule(
-            4,
-            "Something is hiding here."
-        );
-
-        createObjects(5);
-    }
-}
-
-
-/* CRÉER DES OBJETS */
-
-function createObjects(amount) {
-
-    for (
-        let i = 0;
-        i < amount;
-        i++
-    ) {
-
-        const object =
-            document.createElement("div");
-
-        object.className =
-            "object";
-
-        object.style.left =
-            random(5, 95) + "%";
-
-        object.style.top =
-            random(5, 90) + "%";
-
-
-        object.addEventListener(
-            "click",
-            () => {
-
-                if (
-                    object.dataset.clicked
-                ) return;
-
-                object.dataset.clicked =
-                    "yes";
-
-                object.style.opacity =
-                    "0";
-
-                object.style.transform =
-                    "scale(.2)";
-
-                objectClicks++;
-
-                discoveries++;
-
-                actions++;
-
-                updateStats();
-
-                notify(
-                    "YOU FOUND SOMETHING."
-                );
-
-
-                if (objectClicks === 1) {
-
-                    setRule(
-                        5,
-                        "You found something."
-                    );
-                }
-
-
-                if (objectClicks === 2) {
-
-                    setRule(
-                        6,
-                        "There are more."
-                    );
-                }
-
-
-                if (objectClicks === 3) {
-
-                    setRule(
-                        7,
-                        "You were never told to find them."
-                    );
-
-                    createRedObject();
-                }
-
-
-                setTimeout(
-                    () => object.remove(),
-                    250
-                );
-
-            }
-        );
-
-
-        arena.appendChild(object);
-    }
-}
-
-
-/* OBJET ROUGE */
-
-function createRedObject() {
-
-    const object =
-        document.createElement("div");
-
-    object.className =
-        "object red";
-
-    object.style.left =
-        random(10, 90) + "%";
-
-    object.style.top =
-        random(10, 90) + "%";
-
-
-    object.addEventListener(
+    begin.addEventListener(
         "click",
-        () => {
+        function () {
 
-            discoveries++;
+            console.log("BEGIN clicked");
 
-            actions++;
-
-            updateStats();
+            showScreen(game);
 
             setRule(
-                8,
-                "You weren't supposed to touch that."
+                1,
+                "There are no rules."
             );
 
             notify(
-                "THAT WAS A MISTAKE."
+                "THE EXPERIMENT HAS BEGUN."
             );
 
-            object.remove();
+        }
+    );
+
+
+    /* ================================= */
+    /* BOUTON */
+    /* ================================= */
+
+    actionButton.addEventListener(
+        "click",
+        function () {
+
+            if (finished) {
+                return;
+            }
+
+            actions++;
+
+            buttonClicks++;
+
+            updateStats();
+
+            detectSpeed();
+
+            buttonReaction();
 
             checkProgress();
 
@@ -345,186 +152,558 @@ function createRedObject() {
     );
 
 
-    arena.appendChild(object);
-}
+    /* ================================= */
+    /* RÉACTION DU BOUTON */
+    /* ================================= */
+
+    function buttonReaction() {
+
+        const texts = [
+
+            "DO SOMETHING",
+
+            "INTERESTING.",
+
+            "AGAIN?",
+
+            "I SAW THAT.",
+
+            "NOTED.",
+
+            "WHY?",
+
+            "KEEP GOING.",
+
+            "REALLY?",
+
+            "OKAY.",
+
+            "YOU'RE STILL HERE."
+
+        ];
 
 
-/* RÈGLES */
-
-function checkProgress() {
-
-    if (
-        fastClicks >= 4 &&
-        ruleCount < 9
-    ) {
-
-        setRule(
-            9,
-            "You click faster when you're uncertain."
-        );
-
-        notify(
-            "THE SITE NOTICED."
-        );
-    }
+        const index =
+            Math.min(
+                buttonClicks,
+                texts.length - 1
+            );
 
 
-    if (
-        actions >= 12 &&
-        ruleCount < 10
-    ) {
-
-        setRule(
-            10,
-            "There is something you haven't found."
-        );
-
-        createObjects(5);
-    }
+        actionButton.textContent =
+            texts[index];
 
 
-    if (
-        discoveries >= 8 &&
-        actions >= 18
-    ) {
+        /* PREMIÈRE DÉCOUVERTE */
 
-        finish();
+        if (
+            buttonClicks === 2
+        ) {
 
-    }
-}
+            discoveries++;
 
+            setRule(
+                2,
+                "You are allowed to press the button."
+            );
 
-/* CHANGER LA RÈGLE */
-
-function setRule(number, text) {
-
-    ruleCount =
-        Math.max(
-            ruleCount,
-            number
-        );
-
-    ruleNumber.textContent =
-        "RULE #" +
-        String(number).padStart(2, "0");
-
-    rule.textContent = text;
-
-    document.getElementById("rules")
-        .textContent = ruleCount;
-}
+            notify(
+                "DISCOVERY +1"
+            );
+        }
 
 
-/* STATS */
+        /* APPARITION DES OBJETS */
 
-function updateStats() {
+        if (
+            buttonClicks === 4
+        ) {
 
-    document.getElementById(
-        "actions"
-    ).textContent = actions;
+            discoveries++;
 
-    document.getElementById(
-        "discoveries"
-    ).textContent = discoveries;
+            setRule(
+                3,
+                "Not everything here is a button."
+            );
 
-    document.getElementById(
-        "rules"
-    ).textContent = ruleCount;
-}
-
-
-/* FIN */
-
-function finish() {
-
-    if (finished) return;
-
-    finished = true;
-
-    document.getElementById(
-        "finalActions"
-    ).textContent = actions;
-
-    document.getElementById(
-        "finalDiscoveries"
-    ).textContent = discoveries;
-
-    document.getElementById(
-        "finalRules"
-    ).textContent = ruleCount;
+            createObjects(4);
+        }
 
 
-    let text =
-        "You interacted with the experiment long enough for it to start reacting to you.";
+        /* ENCORE PLUS D'OBJETS */
 
+        if (
+            buttonClicks === 7
+        ) {
 
-    if (fastClicks >= 5) {
+            discoveries++;
 
-        text =
-            "You kept clicking faster and faster. The experiment noticed your behavior.";
+            setRule(
+                4,
+                "Something is hiding here."
+            );
 
-    } else if (objectClicks >= 3) {
-
-        text =
-            "You explored instead of simply following the obvious path.";
+            createObjects(5);
+        }
 
     }
 
 
-    document.getElementById(
-        "endText"
-    ).textContent = text;
+    /* ================================= */
+    /* VITESSE */
+    /* ================================= */
+
+    function detectSpeed() {
+
+        const now =
+            Date.now();
 
 
-    showPage(end);
-}
+        if (
+            lastClick !== 0 &&
+            now - lastClick < 700
+        ) {
+
+            fastClicks++;
+
+        }
 
 
-/* AGAIN */
+        lastClick = now;
+    }
 
-again.addEventListener(
-    "click",
-    () => {
 
-        location.reload();
+    /* ================================= */
+    /* CRÉER DES OBJETS */
+    /* ================================= */
+
+    function createObjects(amount) {
+
+        for (
+            let i = 0;
+            i < amount;
+            i++
+        ) {
+
+            const object =
+                document.createElement("div");
+
+
+            object.className =
+                "object";
+
+
+            object.style.left =
+                random(5, 95) + "%";
+
+
+            object.style.top =
+                random(5, 90) + "%";
+
+
+            object.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        object.dataset.clicked
+                    ) {
+                        return;
+                    }
+
+
+                    object.dataset.clicked =
+                        "true";
+
+
+                    object.style.opacity =
+                        "0";
+
+
+                    object.style.transform =
+                        "scale(.2)";
+
+
+                    objectClicks++;
+
+                    discoveries++;
+
+                    actions++;
+
+                    updateStats();
+
+
+                    notify(
+                        "YOU FOUND SOMETHING."
+                    );
+
+
+                    if (
+                        objectClicks === 1
+                    ) {
+
+                        setRule(
+                            5,
+                            "You found something."
+                        );
+
+                    }
+
+
+                    if (
+                        objectClicks === 2
+                    ) {
+
+                        setRule(
+                            6,
+                            "There are more."
+                        );
+
+                    }
+
+
+                    if (
+                        objectClicks === 3
+                    ) {
+
+                        setRule(
+                            7,
+                            "You were never told to find them."
+                        );
+
+                        createRedObject();
+
+                    }
+
+
+                    setTimeout(
+                        function () {
+
+                            object.remove();
+
+                        },
+                        250
+                    );
+
+                }
+            );
+
+
+            arena.appendChild(
+                object
+            );
+
+        }
 
     }
-);
 
 
-/* MESSAGE */
+    /* ================================= */
+    /* OBJET ROUGE */
+    /* ================================= */
 
-let messageTimeout;
+    function createRedObject() {
+
+        const object =
+            document.createElement("div");
 
 
-function notify(text) {
+        object.className =
+            "object red";
 
-    message.textContent = text;
 
-    message.classList.add("visible");
+        object.style.left =
+            random(10, 90) + "%";
 
-    clearTimeout(messageTimeout);
 
-    messageTimeout =
-        setTimeout(
-            () => {
+        object.style.top =
+            random(10, 90) + "%";
 
-                message.classList.remove(
-                    "visible"
+
+        object.addEventListener(
+            "click",
+            function () {
+
+                discoveries++;
+
+                actions++;
+
+                updateStats();
+
+
+                setRule(
+                    8,
+                    "You weren't supposed to touch that."
                 );
 
-            },
-            1600
+
+                notify(
+                    "THAT WAS A MISTAKE."
+                );
+
+
+                object.remove();
+
+            }
         );
-}
 
 
-/* RANDOM */
+        arena.appendChild(
+            object
+        );
 
-function random(min, max) {
+    }
 
-    return Math.floor(
-        Math.random() *
-        (max - min + 1)
-    ) + min;
-}
+
+    /* ================================= */
+    /* PROGRESSION */
+    /* ================================= */
+
+    function checkProgress() {
+
+
+        if (
+            fastClicks >= 4 &&
+            ruleCount < 9
+        ) {
+
+            setRule(
+                9,
+                "You click faster when you're uncertain."
+            );
+
+            notify(
+                "THE SITE NOTICED."
+            );
+
+        }
+
+
+        if (
+            actions >= 12 &&
+            ruleCount < 10
+        ) {
+
+            setRule(
+                10,
+                "There is something you haven't found."
+            );
+
+            createObjects(5);
+
+        }
+
+
+        if (
+            discoveries >= 8 &&
+            actions >= 18
+        ) {
+
+            finish();
+
+        }
+
+    }
+
+
+    /* ================================= */
+    /* RÈGLE */
+    /* ================================= */
+
+    function setRule(
+        number,
+        text
+    ) {
+
+        ruleCount =
+            Math.max(
+                ruleCount,
+                number
+            );
+
+
+        ruleNumber.textContent =
+            "RULE #" +
+            String(number).padStart(
+                2,
+                "0"
+            );
+
+
+        rule.textContent =
+            text;
+
+
+        document.getElementById(
+            "rules"
+        ).textContent =
+            ruleCount;
+
+    }
+
+
+    /* ================================= */
+    /* STATS */
+    /* ================================= */
+
+    function updateStats() {
+
+        document.getElementById(
+            "actions"
+        ).textContent =
+            actions;
+
+
+        document.getElementById(
+            "discoveries"
+        ).textContent =
+            discoveries;
+
+
+        document.getElementById(
+            "rules"
+        ).textContent =
+            ruleCount;
+
+    }
+
+
+    /* ================================= */
+    /* FIN */
+    /* ================================= */
+
+    function finish() {
+
+        if (finished) {
+            return;
+        }
+
+
+        finished = true;
+
+
+        document.getElementById(
+            "finalActions"
+        ).textContent =
+            actions;
+
+
+        document.getElementById(
+            "finalDiscoveries"
+        ).textContent =
+            discoveries;
+
+
+        document.getElementById(
+            "finalRules"
+        ).textContent =
+            ruleCount;
+
+
+        let text =
+            "You interacted with the experiment long enough for it to start reacting to you.";
+
+
+        if (
+            fastClicks >= 5
+        ) {
+
+            text =
+                "You kept clicking faster and faster. The experiment noticed your behavior.";
+
+        }
+        else if (
+            objectClicks >= 3
+        ) {
+
+            text =
+                "You explored instead of simply following the obvious path.";
+
+        }
+
+
+        document.getElementById(
+            "endText"
+        ).textContent =
+            text;
+
+
+        showScreen(end);
+
+    }
+
+
+    /* ================================= */
+    /* AGAIN */
+    /* ================================= */
+
+    again.addEventListener(
+        "click",
+        function () {
+
+            location.reload();
+
+        }
+    );
+
+
+    /* ================================= */
+    /* MESSAGE */
+    /* ================================= */
+
+    let messageTimer;
+
+
+    function notify(text) {
+
+        message.textContent =
+            text;
+
+
+        message.classList.add(
+            "visible"
+        );
+
+
+        clearTimeout(
+            messageTimer
+        );
+
+
+        messageTimer =
+            setTimeout(
+                function () {
+
+                    message.classList.remove(
+                        "visible"
+                    );
+
+                },
+                1600
+            );
+
+    }
+
+
+    /* ================================= */
+    /* RANDOM */
+    /* ================================= */
+
+    function random(
+        min,
+        max
+    ) {
+
+        return Math.floor(
+            Math.random() *
+            (max - min + 1)
+        ) + min;
+
+    }
+
+
+    console.log(
+        "THE RULES : READY"
+    );
+
+});
