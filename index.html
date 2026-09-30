@@ -1,1058 +1,359 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="theme-color"
-    content="#0b0d0f"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0d12">
   <title>KitchenFlow</title>
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
+  <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
+  <div class="app">
 
-<!-- =========================
-     HEADER
-========================= -->
-
-<header class="topbar">
-
-  <div class="brand">
-
-    <div class="brand-icon">
-      KF
-    </div>
-
-    <div>
-
-      <strong>
-        KitchenFlow
-      </strong>
-
-      <small>
-        Kitchen Control Center
-      </small>
-
-    </div>
-
-  </div>
-
-
-  <div class="top-actions">
-
-    <button
-      id="soundBtn"
-      class="top-button"
-      title="Son"
-    >
-      🔊
-    </button>
-
-
-    <button
-      id="themeBtn"
-      class="top-button"
-      title="Thème"
-    >
-      ◐
-    </button>
-
-  </div>
-
-</header>
-
-
-
-<!-- =========================
-     NAVIGATION
-========================= -->
-
-<nav class="navigation">
-
-  <button
-    class="nav-button active"
-    data-page="dashboard"
-  >
-    <span>⚡</span>
-    Service
-  </button>
-
-
-  <button
-    class="nav-button"
-    data-page="timers"
-  >
-    <span>⏱</span>
-    Minuteurs
-  </button>
-
-
-  <button
-    class="nav-button"
-    data-page="products"
-  >
-    <span>🥫</span>
-    Produits
-  </button>
-
-
-  <button
-    class="nav-button"
-    data-page="checklists"
-  >
-    <span>☑</span>
-    Checklists
-  </button>
-
-</nav>
-
-
-
-<main>
-
-
-<!-- ==================================================
-     DASHBOARD
-================================================== -->
-
-<section
-  id="page-dashboard"
-  class="page active"
->
-
-
-  <div class="page-header">
-
-    <div>
-
-      <div class="eyebrow">
-        SERVICE
-      </div>
-
-      <h1>
-        Poste de travail
-      </h1>
-
-      <p>
-        Tout ce dont tu as besoin, au même endroit.
-      </p>
-
-    </div>
-
-
-    <div class="service-clock">
-
-      <strong id="currentTime">
-        00:00
-      </strong>
-
-      <span id="currentDate">
-        Aujourd'hui
-      </span>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- STATISTIQUES -->
-
-  <div class="stats-grid">
-
-    <div class="stat-card">
-
-      <span>
-        ⏱
-      </span>
-
+    <!-- HEADER -->
+    <header class="topbar">
       <div>
-
-        <strong id="runningCount">
-          0
-        </strong>
-
-        <small>
-          minuteurs actifs
-        </small>
-
+        <div class="brand">Kitchen<span>Flow</span></div>
+        <div class="subtitle">Kitchen control</div>
       </div>
 
-    </div>
-
-
-    <div class="stat-card">
-
-      <span>
-        ✓
-      </span>
-
-      <div>
-
-        <strong id="todayDone">
-          0
-        </strong>
-
-        <small>
-          tâches terminées
-        </small>
-
-      </div>
-
-    </div>
-
-
-    <div class="stat-card">
-
-      <span>
-        🥫
-      </span>
-
-      <div>
-
-        <strong id="productCount">
-          0
-        </strong>
-
-        <small>
-          produits enregistrés
-        </small>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- MINUTEURS ACTIFS -->
-
-  <div class="section-title">
-
-    <div>
-
-      <span>
-        MINUTEURS ACTIFS
-      </span>
-
-      <strong>
-        En cours
-      </strong>
-
-    </div>
-
-
-    <button
-      class="small-button"
-      data-page-target="timers"
-    >
-      + Ajouter
-    </button>
-
-  </div>
-
-
-  <div
-    id="dashboardTimers"
-    class="active-timers"
-  >
-  </div>
-
-
-
-  <!-- ACTIONS RAPIDES -->
-
-  <div class="section-title">
-
-    <div>
-
-      <span>
-        ACTIONS RAPIDES
-      </span>
-
-      <strong>
-        Cuisine
-      </strong>
-
-    </div>
-
-  </div>
-
-
-  <div class="quick-grid">
-
-    <button
-      class="quick-card"
-      data-page-target="timers"
-    >
-
-      <span class="quick-icon purple">
-        ⏱
-      </span>
-
-      <strong>
-        Nouveau minuteur
-      </strong>
-
-      <small>
-        Lancer une cuisson
-      </small>
-
-    </button>
-
-
-    <button
-      class="quick-card"
-      data-page-target="products"
-    >
-
-      <span class="quick-icon orange">
-        🥫
-      </span>
-
-      <strong>
-        Produits
-      </strong>
-
-      <small>
-        Préparations & sauces
-      </small>
-
-    </button>
-
-
-    <button
-      class="quick-card"
-      data-page-target="checklists"
-    >
-
-      <span class="quick-icon green">
-        ✓
-      </span>
-
-      <strong>
-        Checklist
-      </strong>
-
-      <small>
-        Mise en place
-      </small>
-
-    </button>
-
-  </div>
-
-
-
-  <!-- À REFAIRE -->
-
-  <div class="section-title">
-
-    <div>
-
-      <span>
-        À REFAIRE
-      </span>
-
-      <strong>
-        Accès rapide
-      </strong>
-
-    </div>
-
-  </div>
-
-
-  <div
-    id="dashboardProducts"
-    class="repeat-grid"
-  >
-  </div>
-
-
-</section>
-
-
-
-<!-- ==================================================
-     MINUTEURS
-================================================== -->
-
-<section
-  id="page-timers"
-  class="page"
->
-
-
-  <div class="page-header">
-
-    <div>
-
-      <div class="eyebrow">
-        MINUTEURS
-      </div>
-
-      <h1>
-        Cuissons
-      </h1>
-
-      <p>
-        Lance plusieurs cuissons en même temps.
-      </p>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- AJOUT MINUTEUR -->
-
-  <div class="timer-creator card">
-
-    <div class="creator-header">
-
-      <div>
-
-        <span class="eyebrow">
-          NOUVEAU
-        </span>
-
-        <h2>
-          Lancer un minuteur
-        </h2>
-
-      </div>
-
-    </div>
-
-
-    <form id="timerForm">
-
-      <div class="form-row">
-
-        <div class="field large">
-
-          <label>
-            Nom
-          </label>
-
-          <input
-            id="timerName"
-            placeholder="Ex : Pâtes, steak, sauce..."
-            required
-          >
-
+      <button class="icon-btn" id="themeBtn" aria-label="Changer le thème">
+        ☼
+      </button>
+    </header>
+
+
+    <!-- MAIN -->
+    <main>
+
+      <!-- ================= DASHBOARD ================= -->
+      <section class="screen active" id="screen-home">
+
+        <div class="hero">
+          <p class="eyebrow">TABLEAU DE BORD</p>
+          <h1>Prêt pour le service ?</h1>
+          <p class="hero-text">
+            Tout ce dont tu as besoin pour garder ta cuisine sous contrôle.
+          </p>
         </div>
 
-
-        <div class="field">
-
-          <label>
-            Minutes
-          </label>
-
-          <input
-            id="timerMinutes"
-            type="number"
-            min="0"
-            max="999"
-            value="5"
-          >
-
-        </div>
-
-
-        <div class="field">
-
-          <label>
-            Secondes
-          </label>
-
-          <input
-            id="timerSeconds"
-            type="number"
-            min="0"
-            max="59"
-            value="0"
-          >
-
-        </div>
-
-
-        <button
-          class="primary-button launch-button"
-          type="submit"
-        >
-          ▶ Lancer
+        <button class="primary-btn big-btn" id="quickTimerBtn">
+          <span>＋</span>
+          Nouveau minuteur
         </button>
 
-      </div>
 
-    </form>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">EN COURS</p>
+            <h2>Minuteurs</h2>
+          </div>
+          <span class="counter" id="timerCount">0</span>
+        </div>
 
-  </div>
+        <div id="homeTimers" class="timer-list"></div>
 
 
+        <div class="section-head spaced">
+          <div>
+            <p class="eyebrow">ACCÈS RAPIDE</p>
+            <h2>Mes outils</h2>
+          </div>
+        </div>
 
-  <!-- PRÉRÉGLAGES -->
+        <div class="quick-grid">
 
-  <div class="section-title">
+          <button class="tool-card" data-screen="timers">
+            <div class="tool-icon">⏱</div>
+            <strong>Minuteurs</strong>
+            <span>Cuissons & temps</span>
+          </button>
 
-    <div>
+          <button class="tool-card" data-screen="products">
+            <div class="tool-icon">▣</div>
+            <strong>Préparations</strong>
+            <span>Recettes & procédures</span>
+          </button>
 
-      <span>
-        PRÉRÉGLAGES
-      </span>
+          <button class="tool-card" data-screen="checklists">
+            <div class="tool-icon">✓</div>
+            <strong>Checklists</strong>
+            <span>Mise en place & service</span>
+          </button>
 
-      <strong>
-        Tes cuissons
-      </strong>
+          <button class="tool-card" data-screen="settings">
+            <div class="tool-icon">⚙</div>
+            <strong>Réglages</strong>
+            <span>Personnaliser KitchenFlow</span>
+          </button>
 
-    </div>
+        </div>
 
-    <button
-      id="addPresetBtn"
-      class="small-button"
-    >
-      + Créer
-    </button>
+      </section>
 
-  </div>
 
+      <!-- ================= TIMERS ================= -->
+      <section class="screen" id="screen-timers">
 
-  <div
-    id="presetGrid"
-    class="preset-grid"
-  >
-  </div>
+        <div class="page-header">
+          <div>
+            <p class="eyebrow">TEMPS</p>
+            <h1>Minuteurs</h1>
+          </div>
 
+          <button class="small-primary" id="addTimerBtn">＋ Ajouter</button>
+        </div>
 
 
-  <!-- MINUTEURS EN COURS -->
+        <div id="timersContainer" class="timer-list"></div>
 
-  <div class="section-title">
 
-    <div>
+        <div id="emptyTimers" class="empty-state">
+          <div class="empty-icon">⏱</div>
+          <h3>Aucun minuteur</h3>
+          <p>
+            Lance une cuisson ou crée un minuteur personnalisé.
+          </p>
+          <button class="primary-btn" id="emptyAddTimer">
+            Nouveau minuteur
+          </button>
+        </div>
 
-      <span>
-        EN COURS
-      </span>
 
-      <strong>
-        Minuteurs actifs
-      </strong>
+        <div class="subsection">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">PRÉRÉGLAGES</p>
+              <h2>Mes cuissons</h2>
+            </div>
 
-    </div>
+            <button class="text-btn" id="managePresetsBtn">
+              Gérer
+            </button>
+          </div>
 
-  </div>
+          <div id="presetList" class="preset-list"></div>
+        </div>
 
+      </section>
 
-  <div
-    id="timerList"
-    class="timer-list"
-  >
-  </div>
 
+      <!-- ================= PRODUCTS ================= -->
+      <section class="screen" id="screen-products">
 
-  <div
-    id="noTimers"
-    class="empty-state"
-  >
+        <div class="page-header">
+          <div>
+            <p class="eyebrow">PROCÉDURES</p>
+            <h1>Préparations</h1>
+          </div>
 
-    <div>
-      ⏱
-    </div>
+          <button class="small-primary" id="addProductBtn">＋ Ajouter</button>
+        </div>
 
-    <strong>
-      Aucun minuteur en cours
-    </strong>
+        <p class="page-description">
+          Enregistre tes sauces, préparations, recettes et procédures
+          pour pouvoir les refaire rapidement.
+        </p>
 
-    <span>
-      Lance une cuisson ci-dessus.
-    </span>
+        <div id="productsContainer" class="product-grid"></div>
+
+        <div id="emptyProducts" class="empty-state">
+          <div class="empty-icon">▣</div>
+          <h3>Aucune préparation</h3>
+          <p>
+            Crée ta première préparation personnalisée.
+          </p>
+          <button class="primary-btn" id="emptyAddProduct">
+            Ajouter une préparation
+          </button>
+        </div>
 
-  </div>
+      </section>
 
 
-</section>
+      <!-- ================= CHECKLISTS ================= -->
+      <section class="screen" id="screen-checklists">
 
+        <div class="page-header">
+          <div>
+            <p class="eyebrow">ORGANISATION</p>
+            <h1>Checklists</h1>
+          </div>
 
+          <button class="small-primary" id="addChecklistBtn">＋ Ajouter</button>
+        </div>
 
-<!-- ==================================================
-     PRODUITS
-================================================== -->
+        <div id="checklistsContainer" class="checklist-grid"></div>
 
-<section
-  id="page-products"
-  class="page"
->
+        <div id="emptyChecklists" class="empty-state">
+          <div class="empty-icon">✓</div>
+          <h3>Aucune checklist</h3>
+          <p>
+            Crée une liste pour ton ouverture, ton service ou ta fermeture.
+          </p>
+          <button class="primary-btn" id="emptyAddChecklist">
+            Nouvelle checklist
+          </button>
+        </div>
 
+      </section>
 
-  <div class="page-header">
 
-    <div>
+      <!-- ================= SETTINGS ================= -->
+      <section class="screen" id="screen-settings">
 
-      <div class="eyebrow">
-        PRODUITS
-      </div>
+        <div class="page-header">
+          <div>
+            <p class="eyebrow">PERSONNALISATION</p>
+            <h1>Réglages</h1>
+          </div>
+        </div>
 
-      <h1>
-        Préparations
-      </h1>
 
-      <p>
-        Crée tes sauces, garnitures et préparations.
-      </p>
+        <div class="settings-card">
 
-    </div>
+          <div class="setting-row">
+            <div>
+              <strong>Son des minuteurs</strong>
+              <span>Son joué lorsqu'un minuteur arrive à zéro.</span>
+            </div>
 
+            <select id="soundSelect">
+              <option value="bell">Cloche</option>
+              <option value="beep">Bip</option>
+              <option value="double">Double bip</option>
+              <option value="alarm">Alarme</option>
+            </select>
+          </div>
 
-    <button
-      id="addProductBtn"
-      class="primary-button"
-    >
-      + Nouveau produit
-    </button>
 
-  </div>
+          <div class="setting-row column">
 
+            <div>
+              <strong>Volume</strong>
+              <span id="volumeLabel">70%</span>
+            </div>
 
+            <input
+              type="range"
+              id="volumeSlider"
+              min="0"
+              max="100"
+              value="70"
+            >
 
-  <!-- RECHERCHE -->
+          </div>
 
-  <div class="search-box">
 
-    <span>
-      🔎
-    </span>
+          <div class="setting-row">
 
-    <input
-      id="productSearch"
-      placeholder="Rechercher une sauce, une préparation..."
-    >
+            <div>
+              <strong>Sonnerie répétée</strong>
+              <span>Répète la sonnerie jusqu'à ton arrêt.</span>
+            </div>
 
-  </div>
+            <label class="switch">
+              <input type="checkbox" id="repeatSound">
+              <span></span>
+            </label>
 
+          </div>
 
 
-  <!-- PRODUITS -->
+          <div class="setting-row">
 
-  <div
-    id="productGrid"
-    class="product-grid"
-  >
-  </div>
+            <div>
+              <strong>Thème sombre</strong>
+              <span>Adapter l'apparence de l'application.</span>
+            </div>
 
+            <label class="switch">
+              <input type="checkbox" id="darkMode">
+              <span></span>
+            </label>
 
-  <div
-    id="noProducts"
-    class="empty-state"
-  >
-
-    <div>
-      🥫
-    </div>
-
-    <strong>
-      Aucun produit
-    </strong>
-
-    <span>
-      Crée ta première préparation.
-    </span>
-
-  </div>
-
-
-</section>
-
-
-
-<!-- ==================================================
-     CHECKLISTS
-================================================== -->
-
-<section
-  id="page-checklists"
-  class="page"
->
-
-
-  <div class="page-header">
-
-    <div>
-
-      <div class="eyebrow">
-        CHECKLISTS
-      </div>
-
-      <h1>
-        Mise en place
-      </h1>
-
-      <p>
-        Organise tes ouvertures, fermetures et services.
-      </p>
-
-    </div>
-
-
-    <button
-      id="addChecklistBtn"
-      class="primary-button"
-    >
-      + Nouvelle checklist
-    </button>
-
-  </div>
-
-
-
-  <div
-    id="checklistTabs"
-    class="checklist-tabs"
-  >
-  </div>
-
-
-
-  <div
-    id="checklistContent"
-    class="checklist-content"
-  >
-  </div>
-
-
-</section>
-
-
-</main>
-
-
-
-<!-- ==================================================
-     MODAL PRODUIT
-================================================== -->
-
-<div
-  id="productModal"
-  class="modal hidden"
->
-
-  <div class="modal-box">
-
-    <button
-      class="modal-close"
-      data-close="productModal"
-    >
-      ×
-    </button>
-
-
-    <div class="eyebrow">
-      PRODUIT
-    </div>
-
-    <h2>
-      Nouvelle préparation
-    </h2>
-
-
-    <form id="productForm">
-
-      <div class="field">
-
-        <label>
-          Nom
-        </label>
-
-        <input
-          id="productName"
-          placeholder="Ex : Sauce maison 1"
-          required
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Catégorie
-        </label>
-
-        <select id="productCategory">
-
-          <option>
-            Sauce
-          </option>
-
-          <option>
-            Garniture
-          </option>
-
-          <option>
-            Préparation
-          </option>
-
-          <option>
-            Dessert
-          </option>
-
-          <option>
-            Autre
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Quantité / rendement
-        </label>
-
-        <input
-          id="productQuantity"
-          placeholder="Ex : 2 litres"
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Temps de préparation
-        </label>
-
-        <input
-          id="productPrepTime"
-          placeholder="Ex : 20 min"
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Notes
-        </label>
-
-        <textarea
-          id="productNotes"
-          placeholder="Ingrédients, astuces, conservation..."
-        ></textarea>
-
-      </div>
-
-
-      <button
-        class="primary-button full"
-        type="submit"
-      >
-        Créer le produit
-      </button>
-
-    </form>
-
-  </div>
-
-</div>
-
-
-
-<!-- ==================================================
-     MODAL MINUTEUR
-================================================== -->
-
-<div
-  id="presetModal"
-  class="modal hidden"
->
-
-  <div class="modal-box">
-
-    <button
-      class="modal-close"
-      data-close="presetModal"
-    >
-      ×
-    </button>
-
-
-    <div class="eyebrow">
-      PRÉRÉGLAGE
-    </div>
-
-    <h2>
-      Créer une cuisson
-    </h2>
-
-
-    <form id="presetForm">
-
-      <div class="field">
-
-        <label>
-          Nom
-        </label>
-
-        <input
-          id="presetName"
-          placeholder="Ex : Frites"
-          required
-        >
-
-      </div>
-
-
-      <div class="form-row">
-
-        <div class="field">
-
-          <label>
-            Minutes
-          </label>
-
-          <input
-            id="presetMinutes"
-            type="number"
-            min="0"
-            value="5"
-          >
+          </div>
 
         </div>
 
 
-        <div class="field">
+        <div class="settings-card danger-zone">
 
-          <label>
-            Secondes
-          </label>
+          <div class="setting-row column">
+            <strong>Réinitialisation</strong>
+            <span>
+              Supprime toutes les données enregistrées sur cet appareil.
+            </span>
 
-          <input
-            id="presetSeconds"
-            type="number"
-            min="0"
-            max="59"
-            value="0"
-          >
+            <button class="danger-btn" id="resetApp">
+              Réinitialiser KitchenFlow
+            </button>
+          </div>
 
         </div>
 
-      </div>
+      </section>
+
+    </main>
 
 
-      <button
-        class="primary-button full"
-        type="submit"
-      >
-        Enregistrer
+    <!-- ================= BOTTOM NAV ================= -->
+    <nav class="bottom-nav">
+
+      <button class="nav-btn active" data-screen="home">
+        <span>⌂</span>
+        <small>Accueil</small>
       </button>
 
-    </form>
+      <button class="nav-btn" data-screen="timers">
+        <span>⏱</span>
+        <small>Minuteurs</small>
+      </button>
+
+      <button class="nav-btn" data-screen="products">
+        <span>▣</span>
+        <small>Préparations</small>
+      </button>
+
+      <button class="nav-btn" data-screen="checklists">
+        <span>✓</span>
+        <small>Listes</small>
+      </button>
+
+      <button class="nav-btn" data-screen="settings">
+        <span>⚙</span>
+        <small>Réglages</small>
+      </button>
+
+    </nav>
 
   </div>
 
-</div>
 
+  <!-- ================= MODAL ================= -->
+  <div class="modal-backdrop" id="modalBackdrop">
 
+    <div class="modal">
 
-<!-- ==================================================
-     MODAL CHECKLIST
-================================================== -->
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow" id="modalEyebrow">NOUVEAU</p>
+          <h2 id="modalTitle">Créer</h2>
+        </div>
 
-<div
-  id="checklistModal"
-  class="modal hidden"
->
+        <button class="close-btn" id="closeModal">×</button>
+      </div>
 
-  <div class="modal-box">
+      <div id="modalContent"></div>
 
-    <button
-      class="modal-close"
-      data-close="checklistModal"
-    >
-      ×
-    </button>
-
-
-    <div class="eyebrow">
-      CHECKLIST
     </div>
 
-    <h2>
-      Nouvelle checklist
-    </h2>
-
-
-    <form id="checklistForm">
-
-      <div class="field">
-
-        <label>
-          Nom
-        </label>
-
-        <input
-          id="checklistName"
-          placeholder="Ex : Ouverture"
-          required
-        >
-
-      </div>
-
-
-      <button
-        class="primary-button full"
-        type="submit"
-      >
-        Créer
-      </button>
-
-    </form>
-
   </div>
 
-</div>
 
-
-
-<!-- TOAST -->
-
-<div
-  id="toast"
-  class="toast"
->
-</div>
-
-
-
-<script src="app.js"></script>
+  <script src="app.js"></script>
 
 </body>
-
 </html>
