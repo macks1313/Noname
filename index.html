@@ -1,109 +1,137 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    >
-
-    <title>Le Journal du Capitaine</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>THE RULES</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <main class="app">
+    <div id="flash"></div>
+
+    <main id="game">
 
         <header>
-            <div>
-                <span class="eyebrow">JOURNAL DE BORD</span>
-                <h1>Le Capitaine</h1>
-            </div>
-
-            <div class="gold">
-                🪙 <span id="coins">0</span>
+            <div class="logo">THE RULES</div>
+            <div class="session">
+                SESSION <span id="sessionNumber">001</span>
             </div>
         </header>
 
 
-        <section class="compass-card">
+        <section id="intro" class="screen active">
 
-            <div class="compass" id="compass">
+            <div class="intro-content">
 
-                <div class="direction north">N</div>
-                <div class="direction east">E</div>
-                <div class="direction south">S</div>
-                <div class="direction west">O</div>
+                <div class="tiny">AN INTERACTIVE EXPERIMENT</div>
 
-                <div class="needle"></div>
+                <h1>
+                    THERE<br>
+                    ARE<br>
+                    <span>NO RULES.</span>
+                </h1>
 
-                <div class="compass-center">
-                    ⚓
-                </div>
+                <p>
+                    Or maybe there are.
+                </p>
 
-            </div>
-
-            <div class="heading">
-                CAP <strong id="heading">000°</strong>
-            </div>
-
-        </section>
-
-
-        <section class="map-card">
-
-            <div class="map-title">
-                <span>CARTE DES MERS</span>
-                <span id="coordinates">X 042 · Y 087</span>
-            </div>
-
-            <div class="map" id="map">
-
-                <div class="island island-one">☠️</div>
-                <div class="island island-two">🏝️</div>
-                <div class="island island-three">🏝️</div>
-
-                <div class="ship" id="ship">
-                    ⛵
-                </div>
-
-                <div class="treasure" id="treasure">
-                    ✕
-                </div>
+                <button id="startButton">
+                    BEGIN
+                </button>
 
             </div>
 
         </section>
 
 
-        <section class="message-card">
+        <section id="gameScreen" class="screen">
 
-            <span class="eyebrow">MESSAGE DU JOUR</span>
+            <div id="ruleNumber">
+                RULE #01
+            </div>
 
-            <p id="message">
-                La mer est calme...
-                mais quelque chose approche.
-            </p>
+            <div id="ruleText">
+                There are no rules.
+            </div>
 
-            <button id="discover">
-                🔭 Explorer les environs
-            </button>
+
+            <div id="arena">
+
+                <button id="mysteryButton">
+                    <span id="buttonText">DO SOMETHING</span>
+                </button>
+
+                <div id="objects"></div>
+
+            </div>
+
+
+            <div class="bottom">
+
+                <div>
+                    <span class="label">DISCOVERED</span>
+                    <strong id="discovered">0</strong>
+                </div>
+
+                <div>
+                    <span class="label">ACTIONS</span>
+                    <strong id="actions">0</strong>
+                </div>
+
+                <div>
+                    <span class="label">RULES</span>
+                    <strong id="rulesFound">1</strong>
+                </div>
+
+            </div>
 
         </section>
 
 
-        <footer>
-            JOUR <span id="day">01</span>
-            ·
-            MISSION <span id="mission">INCONNUE</span>
-        </footer>
+        <section id="ending" class="screen">
+
+            <div class="ending-content">
+
+                <div class="tiny">EXPERIMENT COMPLETE</div>
+
+                <h2 id="endingTitle">
+                    YOU FOUND<br>
+                    SOMETHING.
+                </h2>
+
+                <p id="endingText"></p>
+
+                <div class="stats">
+                    <div>
+                        <span>ACTIONS</span>
+                        <strong id="finalActions">0</strong>
+                    </div>
+
+                    <div>
+                        <span>RULES</span>
+                        <strong id="finalRules">0</strong>
+                    </div>
+
+                    <div>
+                        <span>DISCOVERIES</span>
+                        <strong id="finalDiscoveries">0</strong>
+                    </div>
+                </div>
+
+                <button id="restartButton">
+                    AGAIN
+                </button>
+
+            </div>
+
+        </section>
 
     </main>
 
+
+    <div id="notification"></div>
 
     <script src="app.js"></script>
 
