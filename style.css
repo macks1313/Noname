@@ -167,3 +167,5 @@ body[data-theme="night"] .profile-head p{color:#d3c7da}
 body[data-theme="night"] .profile-cover{background:linear-gradient(120deg,#755267,#5b527d 55%,#42665e)}
 body[data-theme="night"] .toast{background:#40394f;border-color:#74617a;color:#f5edf6}
 @media(max-width:700px){.sidebar{background:color-mix(in srgb,var(--bg) 94%,transparent);border-top:1px solid var(--line)}.main-column{border:0}.topbar{background:var(--bg)}.composer,.post{background:var(--panel)}.topbar-actions{gap:8px}.theme-toggle{padding:7px 10px;font-size:10px}}
+
+.auth-panel{position:relative}.auth-theme-toggle{position:absolute;top:22px;right:24px}@media(max-width:700px){.auth-theme-toggle{top:18px;right:18px}}
