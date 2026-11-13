@@ -188,3 +188,17 @@ body[data-theme="night"] .profile-edit-form{background:#353246;border-color:#514
 body[data-theme="night"] .profile-edit-form h3,body[data-theme="night"] .profile-edit-form label{color:#f1e7f3}
 body[data-theme="night"] .profile-edit-form input,body[data-theme="night"] .profile-edit-form textarea{background:#292637;border-color:#514a61;color:#f4eaf5}
 body[data-theme="night"] .profile-empty-bio{color:#b6aabd}
+
+/* Always-visible profile editor and avatar picker */
+.profile-edit-form{margin:20px 24px 26px;padding:18px;background:#fff;border:1px solid #eee5ed;border-radius:18px;display:grid;gap:10px}
+.profile-edit-form.hidden{display:none}
+.avatar-upload-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.avatar-upload-row .avatar{width:56px;height:56px;flex:0 0 56px;overflow:hidden}
+.avatar-upload-row .avatar img{width:100%;height:100%;object-fit:cover}
+.avatar-upload-row input[type=file]{max-width:100%;font-size:11px;color:#887b91}
+.profile-edit-actions{display:flex;justify-content:flex-end;margin-top:6px}
+.profile-edit-actions .primary-btn{padding:11px 16px}
+body[data-theme="night"] .profile-edit-form{background:#353246;border-color:#514a61}
+body[data-theme="night"] .profile-edit-form h3,body[data-theme="night"] .profile-edit-form label{color:#f1e7f3}
+body[data-theme="night"] .profile-edit-form input,body[data-theme="night"] .profile-edit-form textarea{background:#292637;border-color:#514a61;color:#f4eaf5}
+@media(max-width:700px){.profile-edit-form{margin:16px 14px;padding:15px}.avatar-upload-row input[type=file]{width:100%}}
