@@ -1,65 +1,46 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#10121c">
-<title>Le Bureau des choses improbables</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4ead8"><title>Le Chêne qui croustille — Boulangerie presque sérieuse</title>
 <style>
-:root{--bg:#10121c;--panel:#1b1e2b;--ink:#f5f0e8;--muted:#a9a8b8;--gold:#ffd36e;--pink:#ff8eb4;--mint:#8de0c0}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#35304d 0,#10121c 55%);color:var(--ink);font-family:ui-rounded,"SF Pro Rounded",system-ui,sans-serif;min-height:100vh}
-main{max-width:760px;margin:auto;padding:28px 18px 60px}.top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;letter-spacing:.14em;text-transform:uppercase}.stamp{border:1px solid #56536a;border-radius:99px;padding:8px 12px}
-header{text-align:center;padding:42px 0 24px} .eyebrow{color:var(--gold);font-size:12px;letter-spacing:.2em;text-transform:uppercase}
-h1{font-size:clamp(38px,9vw,68px);line-height:.98;letter-spacing:-.055em;margin:16px 0}.sub{color:var(--muted);font-size:16px;line-height:1.5;max-width:480px;margin:0 auto}
-.card{background:linear-gradient(145deg,#25283a,#191c29);border:1px solid #3a3c50;border-radius:26px;padding:24px;box-shadow:0 20px 60px #0005}
-.object{text-align:center;min-height:285px;display:flex;flex-direction:column;align-items:center;justify-content:center}.emoji{font-size:86px;filter:drop-shadow(0 12px 16px #0006);margin-bottom:12px;animation:float 3s ease-in-out infinite}
-@keyframes float{50%{transform:translateY(-9px) rotate(3deg)}}.tag{color:var(--mint);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
-h2{font-size:29px;letter-spacing:-.04em;margin:9px 0}.desc{color:#c5c3d0;line-height:1.55;max-width:430px;margin:0 auto}
-button{border:0;border-radius:16px;padding:15px 19px;font:700 15px inherit;cursor:pointer;transition:transform .15s,filter .15s}button:active{transform:scale(.97)}.primary{background:var(--gold);color:#282033;box-shadow:0 8px 24px #ffd36e30}.secondary{background:#303346;color:var(--ink);border:1px solid #4a4d63}
-.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}.section{margin-top:26px}.section h3{font-size:13px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
-.meter{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#1a1d2a;border:1px solid #34374b;border-radius:17px;padding:14px;text-align:center}.stat strong{display:block;font-size:24px;color:var(--gold)}.stat span{font-size:11px;color:var(--muted)}
-.note{color:var(--muted);font-size:12px;text-align:center;margin:22px 0 0}.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;background:#f5f0e8;color:#171827;border-radius:99px;padding:12px 18px;font-weight:700;transition:.25s;pointer-events:none;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
-footer{text-align:center;color:#77798d;font-size:12px;margin-top:34px}
-@media(min-width:600px){main{padding-top:38px}.card{padding:32px}}
-</style>
-</head>
+:root{--cream:#f4ead8;--paper:#fffaf0;--ink:#29271f;--red:#a63e2e;--green:#455b42;--muted:#766f62;--line:#ded1bc}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Georgia,'Times New Roman',serif}
+a{color:inherit;text-decoration:none}.wrap{max-width:1160px;margin:auto;padding:0 22px}
+.topline{background:var(--green);color:#fff7e8;text-align:center;padding:9px 12px;font:11px system-ui;letter-spacing:.13em;text-transform:uppercase}
+nav{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{font-size:23px;font-weight:bold;line-height:.9}.brand small{display:block;font:9px system-ui;letter-spacing:.22em;margin-top:7px;color:var(--red)}.links{display:flex;gap:26px;font:12px system-ui;text-transform:uppercase;letter-spacing:.1em}.links a:hover{color:var(--red)}.pill{background:var(--red);color:white;padding:13px 18px;border-radius:2px;font:11px system-ui;letter-spacing:.1em;text-transform:uppercase}
+.hero{display:grid;grid-template-columns:1.02fr .98fr;gap:5%;align-items:center;padding:65px 0 76px}.kicker{color:var(--red);font:11px system-ui;letter-spacing:.22em;text-transform:uppercase}.hero h1{font-size:clamp(48px,7vw,88px);line-height:.94;letter-spacing:-.055em;font-weight:normal;margin:20px 0}.hero h1 em{color:var(--red);font-weight:normal}.hero p{font-size:18px;line-height:1.65;color:#5e594e;max-width:510px}.hero .pill{display:inline-block;margin-top:17px}.visual{height:440px;background:#d8c2a0;position:relative;overflow:hidden;display:grid;place-items:center;border-radius:48% 48% 3px 3px/40% 40% 3px 3px}.visual:before{content:"";position:absolute;width:72%;height:72%;border:1px solid #f7e9ce;border-radius:50%}.bread{font-size:clamp(120px,22vw,220px);filter:drop-shadow(0 22px 18px #59442b55);transform:rotate(-13deg);z-index:1}.seal{position:absolute;bottom:25px;right:25px;border:1px solid #fff4df;color:#fff4df;border-radius:50%;width:92px;height:92px;display:grid;place-items:center;text-align:center;font:10px system-ui;letter-spacing:.1em;transform:rotate(10deg);z-index:2}
+.marquee{background:var(--red);color:#fff4df;padding:15px 0;overflow:hidden;font:12px system-ui;letter-spacing:.18em;text-align:center;text-transform:uppercase}
+.section{padding:76px 0}.sectionhead{text-align:center;max-width:650px;margin:0 auto 36px}.sectionhead h2{font-weight:normal;font-size:clamp(35px,5vw,55px);margin:13px 0}.sectionhead p{color:var(--muted);font-size:16px;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.product{background:var(--paper);padding:25px;border:1px solid var(--line);min-height:250px;display:flex;flex-direction:column}.product .emoji{font-size:42px}.product h3{font-size:24px;font-weight:normal;margin:17px 0 8px}.product p{font-size:14px;line-height:1.55;color:var(--muted);margin:0}.price{margin-top:auto;padding-top:20px;color:var(--red);font:12px system-ui;letter-spacing:.08em}
+.quote{background:var(--green);color:#fff4df;padding:70px 25px;text-align:center}.quote blockquote{font-size:clamp(28px,4vw,44px);line-height:1.2;max-width:850px;margin:15px auto}.quote small{font:11px system-ui;letter-spacing:.15em;text-transform:uppercase;color:#d9d4bc}
+.story{display:grid;grid-template-columns:1fr 1fr;gap:8%;align-items:center}.storybox{background:#e2d0b4;padding:42px;min-height:330px;display:grid;place-items:center;text-align:center}.storybox span{font-size:110px}.story h2{font-size:clamp(38px,5vw,57px);font-weight:normal;line-height:1;margin:14px 0}.story p{font-size:16px;color:var(--muted);line-height:1.7}
+.visit{background:var(--paper);padding:35px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;border:1px solid var(--line)}.visit h2{font-size:35px;font-weight:normal;margin:8px 0}.visit p{color:var(--muted);line-height:1.5}
+footer{background:#24291f;color:#f4ead8;padding:44px 0;margin-top:75px}.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.foot small{color:#c4bba8;font:11px system-ui;line-height:1.8}.disclaimer{border-top:1px solid #59604f;margin-top:30px;padding-top:18px;color:#c4bba8;font:10px system-ui;line-height:1.6}
+.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;background:var(--green);color:white;padding:13px 20px;font:13px system-ui;transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:720px){.links{display:none}.hero{grid-template-columns:1fr;padding:48px 0}.visual{height:310px;grid-row:1}.hero h1{font-size:59px}.grid{grid-template-columns:1fr 1fr}.story{grid-template-columns:1fr}.visit{grid-template-columns:1fr}.section{padding:55px 0}}
+@media(max-width:430px){.grid{grid-template-columns:1fr}.product{min-height:210px}.brand{font-size:20px}}
+</style></head>
 <body>
-<main>
- <div class="top"><span>Édition confidentielle · Nº 001</span><span class="stamp">Depuis 2026</span></div>
- <header><div class="eyebrow">Une institution parfaitement inutile</div><h1>Le Bureau des<br><span style="color:var(--gold)">choses improbables.</span></h1><p class="sub">Nous avons étudié l'inutile avec un sérieux absolument déraisonnable. Voici votre découverte du jour.</p></header>
- <section class="card">
-  <div class="object"><div class="emoji" id="emoji">🧦</div><div class="tag" id="category">Département des petits mystères</div><h2 id="name">La chaussette solitaire</h2><p class="desc" id="desc">Elle a quitté le panier un mardi. Depuis, elle prétend mener une carrière indépendante.</p></div>
-  <div class="actions"><button class="primary" id="next">Découvrir une autre absurdité ↗</button><button class="secondary" id="save">♡ Garder dans ma collection</button></div>
- </section>
- <section class="section"><h3>Votre dossier personnel</h3><div class="meter"><div class="stat"><strong id="seen">1</strong><span>Curiosités vues</span></div><div class="stat"><strong id="saved">0</strong><span>Objets collectionnés</span></div><div class="stat"><strong id="rank">Novice</strong><span>Grade officiel</span></div></div></section>
- <section class="section card" style="text-align:center"><div class="tag">Le conseil du bureau</div><h2 style="font-size:22px">Prenez cinq secondes.</h2><p class="desc">Inspirez. Expirez. Rappelez-vous que quelque part, un pigeon est probablement en train de juger votre démarche.</p><div class="actions"><button class="secondary" id="mood">J'ai besoin d'un conseil</button></div></section>
- <p class="note">Aucune absurdité n'a été blessée pendant la rédaction de ce site.</p>
- <footer>LE BUREAU DES CHOSES IMPROBABLES · Service public de l'inattendu</footer>
-</main><div class="toast" id="toast">Ajouté à votre collection ✨</div>
-<script>
-const items=[
- ['🧦','La chaussette solitaire','Département des petits mystères','Elle a quitté le panier un mardi. Depuis, elle prétend mener une carrière indépendante.'],
- ['🥒','Le cornichon philosophe','Institut des questions croquantes','Il se demande si le bocal est à moitié vide ou si c’est simplement une mauvaise journée.'],
- ['🪨','Le caillou de compagnie','Service des relations minérales','Il ne parle pas beaucoup, mais il est toujours là. Sauf quand on le lance.'],
- ['🦆','Le canard consultant','Direction de la stratégie aquatique','Il facture à la minute et répond à toutes les questions par un coin-coin très assuré.'],
- ['🧀','Le fromage diplomate','Ambassade des produits laitiers','Il cherche à rétablir la paix entre le pain et le couteau. Négociations en cours.'],
- ['🪴','La plante susceptible','Bureau des émotions végétales','Elle a entendu que vous aviez oublié de l’arroser. Elle n’a pas oublié.'],
- ['🧃','La brique de jus mystérieuse','Cellule des phénomènes de cuisine','Personne ne sait qui l’a ouverte. Tout le monde sait qu’elle est là depuis jeudi.'],
- ['🕶️','Les lunettes du lundi','Division du camouflage social','Elles donnent l’impression d’avoir un plan. Elles n’en ont absolument aucun.'],
- ['🧻','Le rouleau prévoyant','Agence de gestion des imprévus','Il sait que le moment critique arrivera toujours quand il ne reste que deux feuilles.'],
- ['🐌','L’escargot pressé','Unité de mobilité douce','Il est en retard depuis 2019, mais refuse catégoriquement de prendre l’autoroute.'],
- ['🍞','La tartine optimiste','Observatoire des petits-déjeuners','Même tombée du mauvais côté, elle croit encore en ses chances.'],
- ['🧤','Le gant sans partenaire','Bureau des disparitions textiles','Il cherche son jumeau. Il a envisagé de refaire sa vie avec une manique.']
-];
-let index=0,seen=1,saved=0,collection=new Set();
-const $=id=>document.getElementById(id);
-function show(i){index=i;$('emoji').textContent=items[i][0];$('name').textContent=items[i][1];$('category').textContent=items[i][2];$('desc').textContent=items[i][3];$('save').textContent=collection.has(i)?'✓ Déjà collectionné':'♡ Garder dans ma collection';}
-function rank(){ $('rank').textContent=saved>=8?'Archiviste':saved>=4?'Conservateur':saved>=1?'Curieux':'Novice';}
-$('next').addEventListener('click',()=>{let n;do{n=Math.floor(Math.random()*items.length)}while(n===index);show(n);seen++;$('seen').textContent=seen;});
-$('save').addEventListener('click',()=>{if(collection.has(index)){toast('Déjà classé dans vos archives.');return}collection.add(index);saved++;$('saved').textContent=saved;rank();$('save').textContent='✓ Déjà collectionné';toast('Ajouté à votre collection ✨');});
-function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1900)}
-const tips=['Votre mission aujourd’hui : ne pas sous-estimer le pouvoir d’une bonne pause.','Un petit pas reste un pas. Sauf pour l’escargot, qui appelle ça une journée productive.','Vous n’avez pas besoin d’avoir tout compris pour avancer. Les canards non plus.','Hydratez-vous. Même les cactus ont leurs limites.','Si tout semble compliqué, faites comme le caillou : restez solide.'];
-$('mood').addEventListener('click',()=>toast(tips[Math.floor(Math.random()*tips.length)]));
-show(0);
-</script>
+<div class="topline">Ouvert quand le four est chaud · Fermé quand il n'y a plus de croissants (donc parfois tôt)</div>
+<div class="wrap">
+<nav><a class="brand" href="#">LE CHÊNE QUI CROUSTILLE<small>BOULANGERIE · TEA ROOM · MAUVAISE FOI</small></a><div class="links"><a href="#carte">La carte</a><a href="#fournil">Le fournil</a><a href="#visite">Nous trouver</a></div><a class="pill" href="#carte">Voir les gourmandises</a></nav>
+<section class="hero"><div><div class="kicker">Artisan du presque parfait</div><h1>Du bon pain.<br><em>Et pas de miettes</em><br>sur le tapis.</h1><p>Du croustillant, du fondant et une quantité déraisonnable de beurre. Notre équipe travaille avec passion, farine et une légère dépendance au café.</p><a class="pill" href="#carte">Explorer la carte ↓</a></div><div class="visual"><div class="bread">🥐</div><div class="seal">PÉTRI<br>AVEC<br>AMOUR*</div></div></section>
+</div>
+<div class="marquee">Farine sur le tablier · Fierté dans la mie · Zéro promesse de régime · ★</div>
+<section class="section wrap" id="carte"><div class="sectionhead"><div class="kicker">La carte des tentations</div><h2>On vous garde une petite place ?</h2><p>Une sélection de spécialités imaginaires, préparées avec un sérieux tout à fait discutable. Les prix sont fictifs, les calories aussi — enfin, on espère.</p></div>
+<div class="grid">
+<article class="product"><div class="emoji">🥖</div><h3>La tradition qui se la raconte</h3><p>Une baguette avec une croûte si fière qu'elle a demandé son propre compte Instagram.</p><div class="price">CHF 3.90 · EGO INCLUS</div></article>
+<article class="product"><div class="emoji">🥐</div><h3>Le croissant du dimanche</h3><p>Feuilletage délicat, beurre généreux et promesse de ne pas compter les couches.</p><div class="price">CHF 2.80 · BONHEUR PUR</div></article>
+<article class="product"><div class="emoji">🍰</div><h3>Le gâteau très important</h3><p>Il arrive dans l'assiette avec l'assurance d'un dessert qui connaît le propriétaire.</p><div class="price">CHF 6.50 · COSTUME NON FOURNI</div></article>
+<article class="product"><div class="emoji">☕</div><h3>Le café qui réveille</h3><p>Assez corsé pour vous rappeler que vous avez répondu « présent » à la réunion de 8 h.</p><div class="price">CHF 4.20 · YEUX OUVERTS</div></article>
+<article class="product"><div class="emoji">🥪</div><h3>Le sandwich diplomate</h3><p>Il réunit salade, fromage et jambon dans un accord de paix entre deux tranches de pain.</p><div class="price">CHF 9.90 · TRAITÉ SIGNÉ</div></article>
+<article class="product"><div class="emoji">🍵</div><h3>Le thé qui prend son temps</h3><p>Infusé lentement. Contrairement à vous, qui êtes déjà en retard.</p><div class="price">CHF 4.80 · ZENITUDE</div></article>
+</div></section>
+<section class="quote"><small>Notre philosophie maison</small><blockquote>« La vie est trop courte pour choisir entre le croissant et le pain au chocolat. Prenez les deux. »</blockquote><small>— Le comité scientifique du petit-déjeuner</small></section>
+<section class="section wrap story" id="fournil"><div class="storybox"><span>🌾</span><div class="kicker">Le fournil presque secret</div></div><div><div class="kicker">Là où la magie colle aux doigts</div><h2>Un savoir-faire pétri de conviction.</h2><p>À l'aube, nos artisans se réunissent autour du pétrin. Ils parlent levain, température et météo. Parfois même de la vie. Puis le four sonne et tout le monde redevient très professionnel.</p><p>Notre secret ? Une pincée de savoir-faire, trois poignées de bonne humeur et un minuteur qu'on n'écoute pas toujours.</p><a class="pill" href="#visite">Passer nous voir</a></div></section>
+<section class="wrap" id="visite"><div class="visit"><div><div class="kicker">La porte est presque toujours ouverte</div><h2>On se retrouve autour d'un café ?</h2><p>Adresse, horaires et téléphone : volontairement non renseignés. Cette parodie n'est pas une vraie boutique et ne prend aucune commande.</p></div><button class="pill" id="coffee">Oui, je mérite un café</button></div></section>
+<footer><div class="wrap"><div class="foot"><div><div class="brand">LE CHÊNE QUI CROUSTILLE<small style="color:#d6b98e">BOULANGERIE DE FICTION</small></div></div><small>Du pain, du second degré<br>et beaucoup trop de beurre.</small></div><div class="disclaimer">SITE PARODIQUE ET FICTIF — Création humoristique inspirée de l'univers et de la structure générale d'un site de boulangerie artisanale. Sans affiliation avec la Boulangerie de Chêne. Nom, textes, prix et offres présentés ici sont fictifs. © Le Chêne qui croustille.</div></div></footer>
+<div class="toast" id="toast">Café imaginaire en préparation ☕</div>
+<script>document.getElementById('coffee').addEventListener('click',()=>{const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)});</script>
 </body></html>
