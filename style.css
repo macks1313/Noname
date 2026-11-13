@@ -202,3 +202,5 @@ body[data-theme="night"] .profile-edit-form{background:#353246;border-color:#514
 body[data-theme="night"] .profile-edit-form h3,body[data-theme="night"] .profile-edit-form label{color:#f1e7f3}
 body[data-theme="night"] .profile-edit-form input,body[data-theme="night"] .profile-edit-form textarea{background:#292637;border-color:#514a61;color:#f4eaf5}
 @media(max-width:700px){.profile-edit-form{margin:16px 14px;padding:15px}.avatar-upload-row input[type=file]{width:100%}}
+
+.refresh-feed{margin-left:auto;font-size:20px!important;padding:4px 12px!important;color:#a28bad!important}.refresh-feed:hover{color:#d58fac!important;transform:rotate(30deg)}body[data-theme="night"] .refresh-feed{color:#d3b8e0!important}
