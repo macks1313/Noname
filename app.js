@@ -125,6 +125,7 @@ function openView(view) {
   document.querySelectorAll("[data-view]").forEach(b => b.classList.toggle("active", b.dataset.view === view));
   ["home","explore","profile"].forEach(v => $(v+"-view").classList.toggle("hidden", v !== view));
   $("view-title").textContent = view === "home" ? "Accueil" : view === "explore" ? "Explorer" : "Mon profil";
+  if (view === "home") loadFeed();
   if (view === "profile") loadProfile(currentUser.id, true);
   if (view === "explore") loadExplore();
 }
@@ -233,7 +234,7 @@ async function loadSuggestedMembers() {
 async function loadProfile(userId, own) {
   const {data:profile,error}=await db.from("profiles").select("*").eq("id",userId).maybeSingle();
   if(error||!profile){$("profile-content").innerHTML=emptyMarkup("Profil introuvable.","Ce membre n'est peut-être plus disponible.");return;}
-  const [{count:postsCount},{count:followerCount},{count:followingCount},{data:posts},{data:follow}] = await Promise.all([
+  const [{count:postsCount},{count:followerCount},{count:followingCount},{data:posts,error:postsError},{data:follow}] = await Promise.all([
     db.from("posts").select("*",{count:"exact",head:true}).eq("user_id",userId),
     db.from("follows").select("*",{count:"exact",head:true}).eq("following_id",userId),
     db.from("follows").select("*",{count:"exact",head:true}).eq("follower_id",userId),
@@ -241,7 +242,8 @@ async function loadProfile(userId, own) {
     own?Promise.resolve({data:null}):db.from("follows").select("following_id").eq("follower_id",currentUser.id).eq("following_id",userId).maybeSingle()
   ]);
   $("profile-content").innerHTML='<div class="profile-cover"></div><div class="profile-head">'+avatarMarkup(profile)+'<div class="profile-heading-row"><div><h2>'+escapeHtml(profile.display_name)+'</h2><span class="handle">'+escapeHtml(handleFor(profile))+'</span></div>'+(own?'<button class="edit-profile-btn" id="edit-profile-button">✏️ Modifier le profil</button>':'<button class="primary-btn follow-btn" id="follow-toggle">'+(follow.data?'Abonné ✓':'Suivre ＋')+'</button>')+'</div>'+(profile.bio?'<p>'+escapeHtml(profile.bio)+'</p>':'<p class="profile-empty-bio">Pas encore de petite bio. ☁️</p>')+'<div class="profile-stats"><span><strong>'+(postsCount||0)+'</strong> publications</span><span><strong>'+(followerCount||0)+'</strong> abonnés</span><span><strong>'+(followingCount||0)+'</strong> abonnements</span></div></div>'+(own?'<form id="profile-edit-form" class="profile-edit-form"><h3>✏️ Modifier mon profil</h3><label for="edit-avatar">Photo de profil</label><div class="avatar-upload-row">'+avatarMarkup(profile,'edit-avatar-preview')+'<input id="edit-avatar" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><small>JPG, PNG, WEBP ou GIF · 5 Mo maximum</small></div><label for="edit-display-name">Nom affiché</label><input id="edit-display-name" maxlength="30" required value="'+escapeHtml(profile.display_name||'')+'"><label for="edit-username">Nom d’utilisateur</label><input id="edit-username" maxlength="24" pattern="[a-zA-Z0-9_]+" required value="'+escapeHtml(profile.username||'')+'"><small>3 à 24 caractères : lettres, chiffres et _.</small><label for="edit-bio">Petite bio</label><textarea id="edit-bio" maxlength="160" placeholder="Quelques mots sur vous...">'+escapeHtml(profile.bio||'')+'</textarea><div class="profile-edit-actions"><button type="submit" class="primary-btn" id="save-profile-button">Enregistrer les changements</button></div><p id="profile-edit-error" class="auth-error"></p></form>':'')+'<h3 class="profile-title">Publications</h3><div id="profile-posts" class="feed"></div>';
-  renderPosts($("profile-posts"),await enrichPosts(posts||[]));
+  if(postsError) $("profile-posts").innerHTML='<div class="empty-state"><strong>Impossible de charger tes publications.</strong><p>'+escapeHtml(postsError.message)+'</p></div>';
+  else renderPosts($("profile-posts"),await enrichPosts(posts||[]));
   if(!own)$("follow-toggle").addEventListener("click",()=>toggleFollow(userId,!!follow.data));
 
   if(own) {
