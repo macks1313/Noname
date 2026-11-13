@@ -169,3 +169,22 @@ body[data-theme="night"] .toast{background:#40394f;border-color:#74617a;color:#f
 @media(max-width:700px){.sidebar{background:color-mix(in srgb,var(--bg) 94%,transparent);border-top:1px solid var(--line)}.main-column{border:0}.topbar{background:var(--bg)}.composer,.post{background:var(--panel)}.topbar-actions{gap:8px}.theme-toggle{padding:7px 10px;font-size:10px}}
 
 .auth-panel{position:relative}.auth-theme-toggle{position:absolute;top:22px;right:24px}@media(max-width:700px){.auth-theme-toggle{top:18px;right:18px}}
+
+/* Profile editing controls */
+.profile-heading-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:8px}
+.profile-heading-row h2{margin:0 0 3px}
+.edit-profile-btn{border:1px solid #e5d8e5;background:#fff8fc;color:#79627d;border-radius:999px;padding:9px 13px;font-size:11px;font-weight:700}
+.profile-empty-bio{color:#aaa0b0;font-size:12px;font-style:italic}
+.profile-edit-form{margin:18px 24px;padding:18px;background:#fff;border:1px solid #eee5ed;border-radius:17px;display:grid;gap:9px}
+.profile-edit-form h3{font:600 16px 'Space Grotesk';margin:0 0 5px;color:#51485e}
+.profile-edit-form label{font-size:11px;font-weight:700;color:#7b7186;margin-top:5px}
+.profile-edit-form input,.profile-edit-form textarea{width:100%;border:1px solid #eee5e8;border-radius:11px;background:#fff;color:#51485e;padding:11px 12px;font:inherit;font-size:13px;outline:none}
+.profile-edit-form textarea{min-height:75px;resize:vertical}
+.profile-edit-form small{font-size:10px;color:#a39aaa}
+.profile-edit-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:6px}
+.profile-edit-actions .primary-btn{font-size:11px;padding:10px 14px}
+body[data-theme="night"] .edit-profile-btn{background:#40394f;border-color:#62566b;color:#f0dff0}
+body[data-theme="night"] .profile-edit-form{background:#353246;border-color:#514a61}
+body[data-theme="night"] .profile-edit-form h3,body[data-theme="night"] .profile-edit-form label{color:#f1e7f3}
+body[data-theme="night"] .profile-edit-form input,body[data-theme="night"] .profile-edit-form textarea{background:#292637;border-color:#514a61;color:#f4eaf5}
+body[data-theme="night"] .profile-empty-bio{color:#b6aabd}
