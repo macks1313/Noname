@@ -149,7 +149,7 @@ document.querySelectorAll("[data-feed]").forEach(b => b.addEventListener("click"
 async function loadFeed(target = "feed", mode = activeFeed) {
   const container = $(target); if (!container) return;
   container.innerHTML = '<div class="loading-state"><span class="spinner"></span> Chargement...</div>';
-  let query = db.from("posts").select("id,user_id,content,created_at,profiles(id,display_name,username,avatar_url),likes(user_id)").order("created_at",{ascending:false}).limit(60);
+  let query = db.from("posts").select("id,user_id,content,created_at").order("created_at",{ascending:false}).limit(60);
   if (mode === "following") {
     const { data: follows, error: followError } = await db.from("follows").select("following_id").eq("follower_id",currentUser.id);
     if (followError) { container.innerHTML = '<div class="empty-state">Impossible de charger les abonnements.</div>'; return; }
@@ -159,8 +159,26 @@ async function loadFeed(target = "feed", mode = activeFeed) {
   }
   const { data, error } = await query;
   if (error) { container.innerHTML = '<div class="empty-state">Erreur de chargement. Vérifiez les tables et les règles RLS dans Supabase.</div>'; return; }
-  renderPosts(container,data || []);
+  renderPosts(container,await enrichPosts(data || []));
 }
+
+async function enrichPosts(posts) {
+  if (!posts.length) return [];
+  const userIds = [...new Set(posts.map(p => p.user_id))];
+  const postIds = posts.map(p => p.id);
+  const [{data:profiles},{data:likes}] = await Promise.all([
+    db.from("profiles").select("id,display_name,username,avatar_url").in("id",userIds),
+    db.from("likes").select("post_id,user_id").in("post_id",postIds)
+  ]);
+  const profileMap = new Map((profiles || []).map(p => [p.id,p]));
+  const likesMap = new Map();
+  (likes || []).forEach(l => {
+    if (!likesMap.has(l.post_id)) likesMap.set(l.post_id,[]);
+    likesMap.get(l.post_id).push({user_id:l.user_id});
+  });
+  return posts.map(p => ({...p,profiles:profileMap.get(p.user_id) || {display_name:"Membre",username:"membre"},likes:likesMap.get(p.id) || []}));
+}
+
 function emptyMarkup(title, detail) { return '<div class="empty-state"><div class="empty-icon">✳</div><strong>'+escapeHtml(title)+'</strong><p>'+escapeHtml(detail)+'</p></div>'; }
 function renderPosts(container, posts) {
   if (!posts.length) { container.innerHTML = emptyMarkup("Le fil est encore calme.","Soyez le premier à lancer une conversation."); return; }
@@ -219,13 +237,45 @@ async function loadProfile(userId, own) {
     db.from("posts").select("*",{count:"exact",head:true}).eq("user_id",userId),
     db.from("follows").select("*",{count:"exact",head:true}).eq("following_id",userId),
     db.from("follows").select("*",{count:"exact",head:true}).eq("follower_id",userId),
-    db.from("posts").select("id,user_id,content,created_at,profiles(id,display_name,username,avatar_url),likes(user_id)").eq("user_id",userId).order("created_at",{ascending:false}).limit(40),
+    db.from("posts").select("id,user_id,content,created_at").eq("user_id",userId).order("created_at",{ascending:false}).limit(40),
     own?Promise.resolve({data:null}):db.from("follows").select("following_id").eq("follower_id",currentUser.id).eq("following_id",userId).maybeSingle()
   ]);
-  $("profile-content").innerHTML='<div class="profile-cover"></div><div class="profile-head">'+avatarMarkup(profile)+'<h2>'+escapeHtml(profile.display_name)+'</h2><span class="handle">'+escapeHtml(handleFor(profile))+'</span>'+(profile.bio?'<p>'+escapeHtml(profile.bio)+'</p>':'')+'<div class="profile-stats"><span><strong>'+(postsCount||0)+'</strong> publications</span><span><strong>'+(followerCount||0)+'</strong> abonnés</span><span><strong>'+(followingCount||0)+'</strong> abonnements</span></div>'+(!own?'<button class="primary-btn follow-btn" id="follow-toggle">'+(follow.data?'Abonné ✓':'Suivre ＋')+'</button>':'')+'</div><h3 class="profile-title">Publications</h3><div id="profile-posts" class="feed"></div>';
-  renderPosts($("profile-posts"),posts||[]);
+  $("profile-content").innerHTML='<div class="profile-cover"></div><div class="profile-head">'+avatarMarkup(profile)+'<div class="profile-heading-row"><div><h2>'+escapeHtml(profile.display_name)+'</h2><span class="handle">'+escapeHtml(handleFor(profile))+'</span></div>'+(own?'<button class="edit-profile-btn" id="edit-profile-button">✏️ Modifier le profil</button>':'<button class="primary-btn follow-btn" id="follow-toggle">'+(follow.data?'Abonné ✓':'Suivre ＋')+'</button>')+'</div>'+(profile.bio?'<p>'+escapeHtml(profile.bio)+'</p>':'<p class="profile-empty-bio">Pas encore de petite bio. ☁️</p>')+'<div class="profile-stats"><span><strong>'+(postsCount||0)+'</strong> publications</span><span><strong>'+(followerCount||0)+'</strong> abonnés</span><span><strong>'+(followingCount||0)+'</strong> abonnements</span></div></div>'+(own?'<form id="profile-edit-form" class="profile-edit-form hidden"><h3>Modifier mon profil ✨</h3><label for="edit-display-name">Nom affiché</label><input id="edit-display-name" maxlength="30" required value="'+escapeHtml(profile.display_name||'')+'"><label for="edit-username">Nom d’utilisateur</label><input id="edit-username" maxlength="24" pattern="[a-zA-Z0-9_]+" required value="'+escapeHtml(profile.username||'')+'"><small>Uniquement lettres, chiffres et tirets bas.</small><label for="edit-bio">Petite bio</label><textarea id="edit-bio" maxlength="160" placeholder="Quelques mots sur vous...">'+escapeHtml(profile.bio||'')+'</textarea><div class="profile-edit-actions"><button type="button" class="edit-profile-btn" id="cancel-profile-edit">Annuler</button><button type="submit" class="primary-btn" id="save-profile-button">Enregistrer</button></div><p id="profile-edit-error" class="auth-error"></p></form>':'')+'<h3 class="profile-title">Publications</h3><div id="profile-posts" class="feed"></div>';
+  renderPosts($("profile-posts"),await enrichPosts(posts||[]));
   if(!own)$("follow-toggle").addEventListener("click",()=>toggleFollow(userId,!!follow.data));
+
+  if(own) {
+    $("edit-profile-button").addEventListener("click",()=> $("profile-edit-form").classList.toggle("hidden"));
+    $("cancel-profile-edit").addEventListener("click",()=> $("profile-edit-form").classList.add("hidden"));
+    $("profile-edit-form").addEventListener("submit",saveProfile);
+  }
+
 }
+
+async function saveProfile(event) {
+  event.preventDefault();
+  const display_name=$("edit-display-name").value.trim();
+  const username=$("edit-username").value.trim().toLowerCase();
+  const bio=$("edit-bio").value.trim();
+  const errorBox=$("profile-edit-error");
+  errorBox.textContent="";
+  if(!display_name || !/^[a-z0-9_]{3,24}$/.test(username)) {
+    errorBox.textContent="Choisis un nom affiché et un identifiant de 3 à 24 caractères (lettres, chiffres, _).";
+    return;
+  }
+  const button=$("save-profile-button"); button.disabled=true; button.textContent="Enregistrement...";
+  const {error}=await db.from("profiles").update({display_name,username,bio}).eq("id",currentUser.id);
+  button.disabled=false; button.textContent="Enregistrer";
+  if(error) {
+    errorBox.textContent=error.code==="23505"?"Ce nom d’utilisateur est déjà pris.":error.message;
+    return;
+  }
+  showToast("Profil mis à jour ✨");
+  currentProfile={...currentProfile,display_name,username,bio};
+  await loadMyProfile();
+  await loadProfile(currentUser.id,true);
+}
+
 async function toggleFollow(userId,following) {
   const result=following?await db.from("follows").delete().eq("follower_id",currentUser.id).eq("following_id",userId):await db.from("follows").insert({follower_id:currentUser.id,following_id:userId});
   if(result.error)showToast(result.error.message,true);else{showToast(following?"Vous ne suivez plus ce membre.":"Vous suivez maintenant ce membre.");loadProfile(userId,false);}
