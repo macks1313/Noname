@@ -7,6 +7,7 @@ let activeFeed = "all";
 let activeView = "home";
 let toastTimer;
 
+const $ = (id) => document.getElementById(id);
 function getPreferredTheme() {
   const saved = localStorage.getItem("pip-theme");
   if (saved === "day" || saved === "night") return saved;
@@ -28,8 +29,6 @@ $("theme-toggle").addEventListener("click", () => {
   applyTheme(next);
 });
 
-
-const $ = (id) => document.getElementById(id);
 const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const initials = (name = "P") => name.trim().split(/\s+/).slice(0,2).map(x => x[0] || "").join("").toUpperCase() || "P";
 const handleFor = (profile) => "@" + (profile?.username || "membre");
