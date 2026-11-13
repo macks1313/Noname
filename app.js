@@ -7,6 +7,28 @@ let activeFeed = "all";
 let activeView = "home";
 let toastTimer;
 
+function getPreferredTheme() {
+  const saved = localStorage.getItem("pip-theme");
+  if (saved === "day" || saved === "night") return saved;
+  const hour = new Date().getHours();
+  return hour >= 19 || hour < 7 ? "night" : "day";
+}
+function applyTheme(theme) {
+  document.body.dataset.theme = theme;
+  const night = theme === "night";
+  $("theme-icon").textContent = night ? "☀️" : "🌙";
+  $("theme-label").textContent = night ? "Mode jour" : "Mode nuit";
+  $("theme-toggle").setAttribute("aria-label", night ? "Activer le mode jour" : "Activer le mode nuit");
+  document.querySelector('meta[name="theme-color"]').setAttribute("content", night ? "#292536" : "#fffaf5");
+}
+applyTheme(getPreferredTheme());
+$("theme-toggle").addEventListener("click", () => {
+  const next = document.body.dataset.theme === "night" ? "day" : "night";
+  localStorage.setItem("pip-theme", next);
+  applyTheme(next);
+});
+
+
 const $ = (id) => document.getElementById(id);
 const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const initials = (name = "P") => name.trim().split(/\s+/).slice(0,2).map(x => x[0] || "").join("").toUpperCase() || "P";
@@ -45,10 +67,10 @@ $("signup-button").addEventListener("click", async () => {
   if (!name || !email || password.length < 8) return showAuthError("Indiquez un nom, un e-mail valide et un mot de passe d'au moins 8 caractères.");
   setBusy("signup-button", true, "Création...");
   const username = makeUsername(name);
-  const { data, error } = await db.auth.signUp({ email, password, options: { data: { display_name: name, username } } });
+  const { data, error } = await db.auth.signUp({ email, password, options: { data: { display_name: name, username }, emailRedirectTo: location.origin + location.pathname } });
   setBusy("signup-button", false, "Créer mon compte");
   if (error) return showAuthError(authMessage(error));
-  if (data.session) showToast("Compte créé. Bienvenue sur PULSE !");
+  if (data.session) showToast("Compte créé. Bienvenue chez PIP !");
   else showAuthError("Compte créé. Vérifiez votre boîte e-mail pour confirmer votre inscription, puis connectez-vous.");
 });
 $("forgot-button").addEventListener("click", async () => {
@@ -206,4 +228,4 @@ async function toggleFollow(userId,following) {
   const result=following?await db.from("follows").delete().eq("follower_id",currentUser.id).eq("following_id",userId):await db.from("follows").insert({follower_id:currentUser.id,following_id:userId});
   if(result.error)showToast(result.error.message,true);else{showToast(following?"Vous ne suivez plus ce membre.":"Vous suivez maintenant ce membre.");loadProfile(userId,false);}
 }
-$("member-results").innerHTML='<p class="muted small">Recherchez un membre de PULSE.</p>';
+$("member-results").innerHTML='<p class="muted small">Recherchez un membre de PIP.</p>';
