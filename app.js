@@ -142,6 +142,7 @@ $("publish-button").addEventListener("click", async () => {
   $("post-input").value = ""; $("char-count").textContent = "0 / 500"; showToast("Votre publication est en ligne.");
   await loadFeed();
 });
+$("refresh-feed").addEventListener("click",()=>loadFeed());
 document.querySelectorAll("[data-feed]").forEach(b => b.addEventListener("click", () => {
   activeFeed = b.dataset.feed;
   document.querySelectorAll("[data-feed]").forEach(x => x.classList.toggle("active", x === b));
