@@ -3,540 +3,539 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#17152b">
-<title>Tamagotchi Chaos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101820">
+<title>GTA V Companion</title>
+
 <style>
-:root{
-  --bg:#17152b;--shell:#d9d3b7;--shell2:#bcb69c;--ink:#27243b;
-  --screen:#9bbc0f;--screen-dark:#306230;--screen-mid:#8bac0f;
-  --pink:#ff6b9d;--cyan:#67e8f9;--yellow:#f9d65c;--purple:#9b8cff;
-  --pixel:"Courier New",monospace;
+:root {
+  --bg:#101820;
+  --panel:#202c36;
+  --panel2:#293844;
+  --gold:#e5bd45;
+  --green:#78c66d;
+  --text:#f1f3f4;
+  --muted:#a2afb8;
 }
-*{box-sizing:border-box}
-body{
- margin:0;min-height:100vh;
- background:radial-gradient(circle at 50% 10%,#37305b 0,#17152b 55%,#100f1d 100%);
- color:#f7f2d9;font-family:var(--pixel);
- display:flex;justify-content:center;align-items:center;
- padding:18px 12px 30px
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
 }
-button{font:inherit;cursor:pointer;touch-action:manipulation}
-.console{
- width:min(100%,470px);
- background:linear-gradient(145deg,#eee8ca,#c8c1a5);
- border:5px solid #fff8dd;border-right-color:#8e896f;
- border-bottom-color:#817c65;border-radius:34px 34px 48px 48px;
- padding:20px 18px 25px;
- box-shadow:0 18px 0 #090916,0 30px 60px #0009,inset 0 3px 5px #fff;
- position:relative;color:var(--ink)
+header {
+  background:#17232d;
+  padding:20px;
+  text-align:center;
+  border-bottom:3px solid var(--gold);
 }
-.brand{
- display:flex;justify-content:space-between;align-items:center;
- margin:0 7px 14px;font-size:11px;font-weight:bold;
- letter-spacing:2px;color:#635d4d
+header h1 {
+  margin:0;
+  font-size:23px;
+  letter-spacing:2px;
 }
-.brand strong{font-size:16px;letter-spacing:1px;color:#342e4d;text-shadow:1px 1px #fff}
-.led{width:9px;height:9px;border-radius:50%;background:#fa4d62;box-shadow:0 0 9px #fa4d62;display:inline-block;margin-right:5px}
-.screen-frame{background:#47445a;padding:13px;border-radius:18px;border:3px solid #777267;box-shadow:inset 0 4px 9px #171526,0 2px 0 #fff8}
-.screen{
- background:var(--screen);color:var(--screen-dark);
- min-height:395px;border:3px solid #273e24;
- box-shadow:inset 0 0 0 3px #b5d64c;
- position:relative;padding:13px 12px 11px;overflow:hidden
+header p {
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:3px;
 }
-.screen:after{
- content:"";pointer-events:none;position:absolute;inset:0;
- background:repeating-linear-gradient(0deg,#ffffff08 0 1px,transparent 1px 4px);
- mix-blend-mode:soft-light
+main {
+  max-width:1100px;
+  margin:auto;
+  padding:15px;
 }
-.topline{display:flex;justify-content:space-between;gap:8px;font-size:10px;font-weight:bold;border-bottom:2px dashed #527a2b;padding-bottom:7px}
-.name-line{display:flex;align-items:center;gap:7px}
-.pet-name{font-weight:bold;font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.stage{font-size:9px;background:#306230;color:#d8f080;padding:4px 5px}
-.mood{font-size:10px;text-align:center;margin-top:9px;min-height:14px;font-weight:bold}
-.pet-stage{height:154px;display:flex;align-items:center;justify-content:center;position:relative}
-.pet{font-size:92px;line-height:1;filter:drop-shadow(3px 4px 0 #426c18);animation:bob 1.8s steps(2,end) infinite;user-select:none}
-.pet.sick{filter:grayscale(.7) drop-shadow(3px 4px 0 #426c18)}
-.pet.sleep{filter:brightness(.65);animation:none}
-@keyframes bob{0%,100%{transform:translateY(2px)}50%{transform:translateY(-5px)}}
-.particle{position:absolute;font-size:18px;animation:float 2s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-.bubble{position:absolute;top:5px;right:5px;background:#d8f080;border:2px solid #306230;padding:5px 7px;font-size:9px;max-width:125px;transform:rotate(2deg)}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px;margin:0 2px 10px}
-.stat{font-size:9px;font-weight:bold}
-.stat-head{display:flex;justify-content:space-between;margin-bottom:3px}
-.track{height:9px;border:2px solid #306230;background:#d8e98a;padding:1px}
-.fill{height:100%;background:#306230;width:50%;transition:width .25s}
-.fill.bad{background:#b13d42}
-.bottomline{display:flex;justify-content:space-between;border-top:2px dashed #527a2b;padding-top:7px;font-size:9px;font-weight:bold}
-.message{min-height:43px;margin-top:9px;background:#d8e98a;border:2px solid #527a2b;padding:7px;font-size:10px;line-height:1.35}
-.message b{color:#254b27}
-.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 2px 12px}
-.action{border:0;border-radius:10px;padding:12px 5px 10px;background:linear-gradient(#fff8dd,#bdb69a);box-shadow:0 4px 0 #827b64,0 5px 0 #fff,inset 0 1px #fff;color:#29263d;font-weight:bold;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:5px;min-height:69px}
-.action:active{transform:translateY(3px);box-shadow:0 1px 0 #827b64,0 2px 0 #fff}
-.action .emoji{font-size:23px}
-.action:disabled{opacity:.4;filter:grayscale(1)}
-.utility{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
-.small-btn{border:2px solid #77715d;border-radius:20px;background:#d2cbb0;color:#3a354b;padding:8px 12px;font-size:9px;font-weight:bold;box-shadow:0 3px 0 #8c856e}
-.small-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #8c856e}
-.footer{text-align:center;color:#625c4a;font-size:8px;letter-spacing:1px;margin-top:18px}
-.modal-back{position:fixed;inset:0;background:#090817d9;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}
-.modal-back.show{display:flex}
-.modal{width:min(100%,390px);background:#e2dcc0;color:#28243c;border:4px solid #fff4cf;border-right-color:#817b66;border-bottom-color:#817b66;border-radius:18px;padding:18px;box-shadow:0 12px 0 #080711}
-.modal h2{font-size:17px;margin:0 0 12px}
-.modal p{font-size:11px;line-height:1.5}
-.modal input{width:100%;font:bold 16px var(--pixel);padding:12px;border:3px solid #77715d;background:#fffbe9;color:#29243b;border-radius:7px}
-.modal-actions{display:flex;gap:9px;margin-top:14px}
-.modal-actions button{flex:1}
-.log{max-height:210px;overflow:auto;font-size:10px;line-height:1.5}
-.toast{position:fixed;left:50%;bottom:18px;transform:translate(-50%,20px);background:#f9d65c;color:#29243b;padding:10px 14px;border:3px solid #29243b;box-shadow:4px 4px 0 #0008;font-size:10px;font-weight:bold;opacity:0;pointer-events:none;transition:.2s;z-index:20;text-align:center;width:max-content;max-width:90vw}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:360px){
- .console{padding:15px 12px 20px}
- .screen{min-height:375px;padding:10px 8px}
- .pet{font-size:78px}
- .controls{gap:7px}
- .action{font-size:9px}
+button {
+  cursor:pointer;
+  font-weight:bold;
+}
+.modes {
+  display:flex;
+  gap:8px;
+  margin:15px 0;
+}
+.modes button {
+  flex:1;
+  padding:13px;
+  border:0;
+  border-radius:8px;
+  background:var(--panel);
+  color:white;
+}
+.modes button.active {
+  background:var(--gold);
+  color:#111;
+}
+.hero {
+  background:linear-gradient(135deg,#344b54,#17212a);
+  padding:20px;
+  border-radius:13px;
+  margin-bottom:15px;
+}
+.hero h2 { margin-top:0; }
+.hero p {
+  font-size:13px;
+  color:#c5d0d5;
+  line-height:1.5;
+}
+.progress {
+  height:12px;
+  background:#34434e;
+  border-radius:20px;
+  overflow:hidden;
+  margin:12px 0;
+}
+.progress div {
+  height:100%;
+  background:var(--green);
+  width:0;
+  transition:width .3s;
+}
+.search {
+  width:100%;
+  padding:14px;
+  background:var(--panel);
+  border:1px solid #46535e;
+  color:white;
+  border-radius:8px;
+  margin:12px 0;
+  font-size:14px;
+}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:12px;
+}
+.card {
+  background:var(--panel);
+  border:1px solid #35434e;
+  border-radius:12px;
+  padding:15px;
+  cursor:pointer;
+  transition:.2s;
+}
+.card:hover {
+  border-color:var(--gold);
+  background:var(--panel2);
+}
+.icon { font-size:28px; }
+.card h3 { font-size:14px; }
+.card p {
+  font-size:11px;
+  color:var(--muted);
+}
+.card small { color:var(--gold); }
+.section {
+  background:var(--panel);
+  border-radius:12px;
+  padding:15px;
+  margin-top:18px;
+}
+.section-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.section-head button {
+  background:#34434e;
+  color:white;
+  border:0;
+  border-radius:6px;
+  padding:9px;
+}
+.check-item {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding:12px 3px;
+  border-bottom:1px solid #35434e;
+  font-size:13px;
+}
+.check-item input {
+  width:19px;
+  height:19px;
+  accent-color:var(--green);
+  flex-shrink:0;
+}
+.check-item.done span {
+  text-decoration:line-through;
+  color:#82918c;
+}
+.mapbox {
+  background:var(--panel);
+  padding:15px;
+  border-radius:12px;
+  margin-top:18px;
+}
+.mapbox a { color:var(--gold); }
+.mapbox iframe {
+  width:100%;
+  height:420px;
+  border:0;
+  border-radius:8px;
+  margin-top:12px;
+}
+footer {
+  text-align:center;
+  color:var(--muted);
+  padding:25px;
+  font-size:10px;
+}
+@media(max-width:500px) {
+  header h1 { font-size:19px; }
+  .mapbox iframe { height:350px; }
 }
 </style>
 </head>
+
 <body>
-<main class="console" aria-label="Tamagotchi Chaos">
- <div class="brand">
-  <span><i class="led"></i>POCKET MONSTER LAB</span>
-  <strong>CHAOS™</strong>
-  <span>NO. 0097</span>
- </div>
- <section class="screen-frame">
-  <div class="screen">
-   <div class="topline">
-    <div class="name-line">
-     <span class="pet-name" id="petName">BIDULE</span>
-     <span class="stage" id="stage">BÉBÉ</span>
-    </div>
-    <span>₵ <span id="coins">10</span></span>
-   </div>
-   <div class="mood" id="mood">HUMEUR : CURIEUX</div>
-   <div class="pet-stage">
-    <div class="bubble" id="bubble">Tu as des snacks ?</div>
-    <span class="particle" style="left:13%;top:28%">✦</span>
-    <span class="particle" style="right:15%;bottom:22%;animation-delay:.7s">♥</span>
-    <div class="pet" id="pet" role="img" aria-label="Ton animal virtuel">👾</div>
-   </div>
-   <div class="stats" id="stats"></div>
-   <div class="bottomline">
-    <span>ÂGE : <span id="age">0</span> J</span>
-    <span>ÉTAT : <span id="condition">VIVANT</span></span>
-    <span>LVL <span id="level">1</span></span>
-   </div>
-   <div class="message" id="message"><b>SYSTÈME :</b> Bienvenue, humain. Je te juge déjà.</div>
+
+<header>
+  <h1>GTA V COMPANION</h1>
+  <p>LOS SANTOS FIELD GUIDE</p>
+</header>
+
+<main>
+
+<div class="modes">
+  <button id="storyBtn" class="active">🎬 HISTOIRE</button>
+  <button id="onlineBtn">🌐 ONLINE</button>
+</div>
+
+<div class="hero">
+  <h2 id="welcome">Bienvenue à Los Santos</h2>
+  <p id="description">
+    Ton guide personnel pour GTA V.
+    Découvre les secrets, les collectibles et les lieux cachés.
+  </p>
+
+  <strong>PROGRESSION</strong>
+  <div class="progress">
+    <div id="progressBar"></div>
   </div>
- </section>
- <section class="controls" aria-label="Actions">
-  <button class="action" data-action="feed"><span class="emoji">🍕</span>NOURRIR</button>
-  <button class="action" data-action="play"><span class="emoji">🕹️</span>JOUER</button>
-  <button class="action" data-action="clean"><span class="emoji">🧽</span>NETTOYER</button>
-  <button class="action" data-action="sleep"><span class="emoji">💤</span>DODO</button>
-  <button class="action" data-action="heal"><span class="emoji">💊</span>SOIGNER</button>
-  <button class="action" data-action="discipline"><span class="emoji">📢</span>GRONDER</button>
- </section>
- <div class="utility">
-  <button class="small-btn" id="renameBtn">✎ RENOMMER</button>
-  <button class="small-btn" id="shopBtn">★ BOUTIQUE</button>
-  <button class="small-btn" id="logBtn">▤ JOURNAL</button>
-  <button class="small-btn" id="resetBtn">↻ RESET</button>
- </div>
- <div class="footer">A PRODUCT OF QUESTIONABLE LIFE CHOICES · 1997–FOREVER</div>
+  <span id="progressText">0% terminé</span>
+</div>
+
+<input
+  id="search"
+  class="search"
+  type="search"
+  placeholder="🔎 Rechercher une catégorie..."
+>
+
+<h2>📚 Encyclopédie</h2>
+
+<div class="grid" id="categories"></div>
+
+<div class="section">
+  <div class="section-head">
+    <h3 id="checkTitle">☑ Checklist</h3>
+    <button id="closeChecklist">FERMER</button>
+  </div>
+  <div id="checklist">
+    Choisis une catégorie.
+  </div>
+</div>
+
+<div class="mapbox">
+  <h3>🗺️ CARTE INTERACTIVE GTA</h3>
+  <p>Carte détaillée de Los Santos et Blaine County.</p>
+
+  <a id="mapLink"
+     href="https://gtadb.net/gta-5-map/"
+     target="_blank"
+     rel="noopener">
+     OUVRIR LA CARTE ↗
+  </a>
+
+  <iframe
+    id="mapFrame"
+    src="https://gtadb.net/gta-5-map/"
+    title="Carte GTA V"
+    loading="lazy">
+  </iframe>
+</div>
+
 </main>
 
-<div class="modal-back" id="modalBack">
- <div class="modal" id="modal"></div>
-</div>
-<div class="toast" id="toast"></div>
+<footer>
+  GTA V COMPANION — FAN PROJECT NON OFFICIEL<br>
+  Progression sauvegardée sur ton appareil.
+</footer>
 
 <script>
-(() => {
-const KEY='tamagotchi-chaos-save-v1';
-const $=id=>document.getElementById(id);
-const clamp=n=>Math.max(0,Math.min(100,Math.round(n)));
 
-const defaults=()=>({
- name:'BIDULE',hunger:78,happy:72,clean:85,energy:82,
- health:100,coins:10,age:0,xp:0,level:1,discipline:0,
- poop:0,sick:false,asleep:false,dead:false,
- born:Date.now(),lastTick:Date.now(),log:['Naissance de Bidule. Il a immédiatement demandé un avocat.'],
- lastEvent:0
-});
+const data = {
 
-let state;
-try{
- state={...defaults(),...JSON.parse(localStorage.getItem(KEY)||'null')};
-}catch(e){state=defaults()}
-if(!state||!state.name)state=defaults();
+story: [
 
-let toastTimer;
+["🛸","Pièces de vaisseau spatial",50],
+["✉️","Fragments de lettres",50],
+["☢️","Déchets nucléaires",30],
+["⚓","Pièces de sous-marin",30],
+["🔷","Tracts Epsilon",10],
+["🏍️","Sauts uniques",50],
+["✈️","Passages sous les ponts",50],
+["🛩️","Vols sur la tranche",15],
+["🌵","Plantes peyotl",27],
+["🐒","Mosaïques de singe",50],
+["👽","Mystères et OVNI",12],
+["❗","Événements aléatoires",20],
+["🤝","Inconnus et détraqués",20],
+["🦌","Animaux et chasse",12],
+["🏠","Propriétés",15],
+["🔫","Armes et équipements",20],
+["🚗","Véhicules rares",20],
+["🎯","Missions principales",20],
+["🏎️","Véhicules cachés",15],
+["💎","Objets secrets",15]
 
-const save=()=>{
- state.lastTick=Date.now();
- localStorage.setItem(KEY,JSON.stringify(state));
+],
+
+online: [
+
+["🃏","Cartes à jouer",54],
+["🦸","Figurines d'action",100],
+["📡","Brouilleurs de signaux",50],
+["💾","Clés USB musicales",10],
+["🌿","Produits LD Organics",100],
+["💰","Caches et trésors",20],
+["🚢","Épaves",15],
+["🎒","Caches de G",15],
+["🏚️","Planques",15],
+["🧍","Dealers de rue",15],
+["🚐","Gun Van",15],
+["🏢","Business et propriétés",20],
+["💎","Braquages",20],
+["🏎️","Véhicules rares",20],
+["🔫","Armes et équipements",20],
+["🏁","Courses et événements",20],
+["🎃","Collectibles saisonniers",20],
+["🏝️","Cayo Perico",20],
+["🏆","Défis hebdomadaires",20],
+["🎯","Activités quotidiennes",20]
+
+]
+
 };
 
-const say=s=>{
- $('message').innerHTML='<b>SYSTÈME :</b> '+s;
-};
+let mode = "story";
+let selected = null;
+let saved = {};
 
-const toast=s=>{
- const t=$('toast');
- t.textContent=s;
- t.classList.add('show');
- clearTimeout(toastTimer);
- toastTimer=setTimeout(()=>t.classList.remove('show'),1900);
-};
-
-const log=s=>{
- state.log.unshift(new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+' — '+s);
- state.log=state.log.slice(0,35);
-};
-
-const random=a=>a[Math.floor(Math.random()*a.length)];
-
-const events=[
- ['💨','Ton animal a lâché une caisse radioactive. La science pleure.','poop'],
- ['🧠','Il vient d’inventer une nouvelle forme de paresse.','xp'],
- ['🛸','Un OVNI passe. Bidule lui fait un doigt.','coins'],
- ['🎁','Un pigeon livre 5 pièces. Ne pose pas de questions.','gift'],
- ['😈','Bidule complote contre le grille-pain.','mood'],
- ['🍀','Bonne fortune ! Il trouve quelques pièces sous son canapé.','coins'],
- ['🤢','Il a mangé un truc trouvé par terre. Mauvaise idée.','sick']
-];
-
-const statDefs=[
- ['hunger','FAIM','🍔'],
- ['happy','BONHEUR','♥'],
- ['clean','PROPRETÉ','✦'],
- ['energy','ÉNERGIE','⚡'],
- ['health','SANTÉ','✚']
-];
-
-function stage(){
- return state.level>=8?'MUTANT SUPRÊME':
- state.level>=5?'ADO CHAOTIQUE':
- state.level>=2?'ADOLESCENT':'BÉBÉ';
+try {
+  saved = JSON.parse(localStorage.getItem("gtav_companion")) || {};
+} catch(e) {
+  saved = {};
 }
 
-function face(){
- if(state.dead)return'💀';
- if(state.asleep)return'😴';
- if(state.sick)return'🤒';
- if(state.hunger<20)return'🥺';
- if(state.happy>80&&state.health>70)return'👾';
- if(state.clean<25)return'🤢';
- if(state.happy<25)return'😈';
- return'👾';
+const $ = id => document.getElementById(id);
+
+function save() {
+  localStorage.setItem(
+    "gtav_companion",
+    JSON.stringify(saved)
+  );
 }
 
-function mood(){
- if(state.dead)return'FIN DE PARTIE';
- if(state.asleep)return'EN MODE HIBERNATION';
- if(state.sick)return'MALADE ET DRAMATIQUE';
- if(state.hunger<20)return'AFFAMÉ ET SUSCEPTIBLE';
- if(state.happy>80)return'BEAUCOUP TROP HEUREUX';
- if(state.happy<25)return'VEUT DÉTRUIRE LE MONDE';
- if(state.energy<20)return'ÉPUISÉ';
- return'CURIEUX MAIS SUSPECT';
+function makeKey(category,index) {
+  return mode + "_" + category + "_" + index;
 }
 
-function render(){
- $('petName').textContent=state.name.toUpperCase();
- $('stage').textContent=stage();
- $('coins').textContent=state.coins;
- $('age').textContent=Math.floor((Date.now()-state.born)/86400000);
- $('level').textContent=state.level;
- $('condition').textContent=state.dead?'MORT':state.sick?'MALADE':state.asleep?'DORT':'VIVANT';
- $('mood').textContent='HUMEUR : '+mood();
- $('pet').textContent=face();
- $('pet').className='pet'+(state.sick?' sick':'')+(state.asleep?' sleep':'');
- $('bubble').textContent=state.dead?'Game over. Ou pas ?':
- state.asleep?'Zzz... ne me parle pas.':
- random(['Tu as des snacks ?','Je connais tes secrets.','C’est toi le patron ? Mdr.','J’exige un canapé.','Je pourrais être influenceur.','J’ai vu des choses.']);
+function updateProgress() {
 
- $('stats').innerHTML=statDefs.map(([k,label,ico])=>
- `<div class="stat">
-  <div class="stat-head"><span>${ico} ${label}</span><span>${state[k]}%</span></div>
-  <div class="track"><div class="fill ${state[k]<25?'bad':''}" style="width:${state[k]}%"></div></div>
- </div>`).join('');
+  let total = 0;
+  let done = 0;
 
- document.querySelectorAll('[data-action]').forEach(b=>b.disabled=state.dead);
+  data[mode].forEach((item,c) => {
+
+    for(let i=0;i<item[2];i++) {
+      total++;
+
+      if(saved[makeKey(c,i)]) {
+        done++;
+      }
+    }
+
+  });
+
+  let percent = total
+    ? Math.round(done / total * 100)
+    : 0;
+
+  $("progressBar").style.width = percent + "%";
+
+  $("progressText").textContent =
+    percent + "% terminé (" + done + "/" + total + ")";
+
 }
 
-function gainXP(n){
- state.xp+=n;
- if(state.xp>=state.level*30){
-  state.xp-=state.level*30;
-  state.level++;
-  state.coins+=8;
-  log('Niveau supérieur ! Niveau '+state.level);
-  say('ÉVOLUTION ! Tu viens de débloquer un niveau. Et une taxe de 8 pièces.');
-  toast('NIVEAU '+state.level+' ! +8 pièces');
- }
+function renderCategories() {
+
+  let query = $("search").value.toLowerCase();
+
+  $("categories").innerHTML = "";
+
+  data[mode].forEach((item,index) => {
+
+    if(!item[1].toLowerCase().includes(query)) {
+      return;
+    }
+
+    let done = 0;
+
+    for(let i=0;i<item[2];i++) {
+      if(saved[makeKey(index,i)]) {
+        done++;
+      }
+    }
+
+    let card = document.createElement("div");
+
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="icon">${item[0]}</div>
+      <h3>${item[1]}</h3>
+      <p>${done} / ${item[2]} trouvés</p>
+      <small>OUVRIR LA CHECKLIST →</small>
+    `;
+
+    card.addEventListener("click", () => {
+      openCategory(index);
+    });
+
+    $("categories").appendChild(card);
+
+  });
+
+  updateProgress();
+
 }
 
-function die(){
- state.dead=true;
- state.asleep=false;
- log('Bidule a quitté ce monde pixelisé.');
- say('BIDULE EST MORT. Tu peux recommencer avec RESET. Aucun remboursement.');
-}
+function openCategory(index) {
 
-function tick(){
- if(state.dead)return;
- const now=Date.now();
- const elapsed=Math.min(12,Math.floor((now-state.lastTick)/60000));
+  selected = index;
 
- if(elapsed>0){
-  state.hunger=clamp(state.hunger-elapsed*1.2);
-  state.happy=clamp(state.happy-elapsed*.45);
-  state.clean=clamp(state.clean-elapsed*.65);
-  state.energy=clamp(state.energy+(state.asleep?elapsed*2.4:-elapsed*.8));
+  let item = data[mode][index];
 
-  if(state.poop>0)state.clean=clamp(state.clean-elapsed*.5);
+  $("checkTitle").textContent =
+    item[0] + " " + item[1];
 
-  if(state.hunger<15||state.clean<12||state.energy<5)
-   state.health=clamp(state.health-elapsed*1.5);
-  else if(state.health<100&&state.hunger>45&&state.clean>40)
-   state.health=clamp(state.health+elapsed*.15);
+  $("checklist").innerHTML = "";
 
-  if(state.asleep&&state.energy>=100){
-   state.asleep=false;
-   log('Bidule se réveille et réclame le petit-déjeuner.');
+  for(let i=0;i<item[2];i++) {
+
+    let key = makeKey(index,i);
+
+    let row = document.createElement("label");
+
+    row.className =
+      "check-item" + (saved[key] ? " done" : "");
+
+    let checkbox = document.createElement("input");
+
+    checkbox.type = "checkbox";
+    checkbox.checked = !!saved[key];
+
+    let label = document.createElement("span");
+
+    label.textContent =
+      item[1] + " — " + (i+1);
+
+    checkbox.addEventListener("change", () => {
+
+      saved[key] = checkbox.checked;
+
+      row.classList.toggle(
+        "done",
+        checkbox.checked
+      );
+
+      save();
+      renderCategories();
+
+    });
+
+    row.appendChild(checkbox);
+    row.appendChild(label);
+
+    $("checklist").appendChild(row);
+
   }
 
-  if(state.health<=0)die();
-  state.lastTick=now;
-  save();
- }
- render();
 }
 
-function randomEvent(){
- if(state.dead||state.asleep||Date.now()-state.lastEvent<90000||Math.random()>.17)return;
+function setMode(next) {
 
- state.lastEvent=Date.now();
- const e=random(events);
- say(e[1]);
- log(e[1]);
+  mode = next;
+  selected = null;
 
- if(e[2]==='poop'){state.poop++;state.clean=clamp(state.clean-10)}
- if(e[2]==='xp')gainXP(5);
- if(e[2]==='coins'||e[2]==='gift')state.coins+=5;
- if(e[2]==='sick'){state.sick=true;state.health=clamp(state.health-12)}
- if(e[2]==='mood')state.happy=clamp(state.happy-8);
+  $("storyBtn").classList.toggle(
+    "active",
+    mode === "story"
+  );
 
- save();
- render();
- toast('ÉVÉNEMENT ALÉATOIRE !');
+  $("onlineBtn").classList.toggle(
+    "active",
+    mode === "online"
+  );
+
+  $("welcome").textContent =
+    mode === "story"
+    ? "Bienvenue à Los Santos"
+    : "Bienvenue dans GTA Online";
+
+  $("description").textContent =
+    mode === "story"
+    ? "Explore le mode Histoire avec Franklin, Michael et Trevor."
+    : "Découvre les collectibles, business, braquages et activités de GTA Online.";
+
+  let map = mode === "story"
+    ? "https://gtadb.net/gta-5-map/"
+    : "https://gtadb.net/gta-online-map/interactive/";
+
+  $("mapLink").href = map;
+  $("mapFrame").src = map;
+
+  $("checklist").textContent =
+    "Choisis une catégorie.";
+
+  $("checkTitle").textContent =
+    "☑ Checklist";
+
+  renderCategories();
+
 }
 
-function action(type){
- if(state.dead)return;
-
- if(state.asleep&&type!=='sleep'){
-  say('Chut. Bidule dort. Il a un avocat très agressif.');
-  toast('IL DORT 😴');
-  return;
- }
-
- switch(type){
-  case'feed':
-   if(state.coins<2){
-    toast('Pas assez de pièces !');
-    say('La nourriture coûte 2 pièces. Pauvre humain.');
-    return;
-   }
-   state.coins-=2;
-   state.hunger=clamp(state.hunger+27);
-   state.happy=clamp(state.happy+5);
-   state.poop=Math.min(5,state.poop+1);
-   say(random(['Miam. C’était quoi ? Peu importe.','Délicieux. J’en veux 47 autres.','Je mange pour oublier.']));
-   log('Repas servi.');
-   gainXP(3);
-   break;
-
-  case'play':
-   if(state.energy<12){
-    say('Je suis épuisé. Joue avec toi-même.');
-    return;
-   }
-   state.energy=clamp(state.energy-13);
-   state.happy=clamp(state.happy+23);
-   state.hunger=clamp(state.hunger-5);
-   state.coins+=Math.random()<.35?3:0;
-   say(random(['HAHA ! Encore !','Tu es nul à ce jeu.','J’ai gagné. Évidemment.','C’est ça, ton meilleur score ?']));
-   log('Session de jeu.');
-   gainXP(7);
-   break;
-
-  case'clean':
-   state.clean=clamp(state.clean+38);
-   state.poop=0;
-   state.happy=clamp(state.happy+3);
-   say('Merci. Ça sent moins la fin du monde.');
-   log('Nettoyage effectué.');
-   gainXP(2);
-   break;
-
-  case'sleep':
-   state.asleep=!state.asleep;
-   say(state.asleep?'Bonne nuit, serviteur.':'Pourquoi tu me réveilles ?!');
-   log(state.asleep?'Bidule s’endort.':'Bidule se réveille.');
-   break;
-
-  case'heal':
-   if(state.coins<5){toast('Il faut 5 pièces !');return}
-   state.coins-=5;
-   state.health=clamp(state.health+35);
-   state.sick=false;
-   say('Le médicament avait un goût de chaussette. Mais ça va mieux.');
-   log('Soins administrés.');
-   break;
-
-  case'discipline':
-   state.discipline++;
-   state.happy=clamp(state.happy-12);
-   state.coins+=2;
-   say(random(['Tu n’es pas mon père.','Je vais appeler la SPA.','Ok boomer.','Je vais faire semblant d’écouter.']));
-   log('Tentative d’autorité.');
-   break;
- }
- save();
- render();
-}
-
-function modal(content){
- $('modal').innerHTML=content;
- $('modalBack').classList.add('show');
-}
-
-function closeModal(){
- $('modalBack').classList.remove('show');
-}
-
-$('modalBack').addEventListener('click',e=>{
- if(e.target===$('modalBack'))closeModal();
+$("storyBtn").addEventListener("click", () => {
+  setMode("story");
 });
 
-$('renameBtn').onclick=()=>modal(`
- <h2>✎ RENOMMER LA CRÉATURE</h2>
- <p>Choisis un nom. Il ne promet pas de le respecter.</p>
- <input id="newName" maxlength="14" value="${state.name.replace(/"/g,'&quot;')}">
- <div class="modal-actions">
-  <button class="small-btn" id="cancel">ANNULER</button>
-  <button class="small-btn" id="saveName">VALIDER</button>
- </div>
-`);
-
-$('shopBtn').onclick=()=>modal(`
- <h2>★ BOUTIQUE DU CHAOS</h2>
- <p>Ton solde : <b>${state.coins} pièces</b></p>
- <p>🍖 Festin (+45 faim) — 6 pièces</p>
- <p>🧼 Bain premium (+60 propreté) — 5 pièces</p>
- <p>💖 Cœur magique (+40 bonheur) — 7 pièces</p>
- <p>🧪 Potion de santé (+55 santé, soigne) — 10 pièces</p>
- <div class="modal-actions">
-  <button class="small-btn" data-buy="food">ACHETER FESTIN</button>
-  <button class="small-btn" data-buy="bath">ACHETER BAIN</button>
- </div>
- <div class="modal-actions">
-  <button class="small-btn" data-buy="heart">ACHETER CŒUR</button>
-  <button class="small-btn" data-buy="potion">ACHETER POTION</button>
- </div>
- <div class="modal-actions"><button class="small-btn" id="cancel">FERMER</button></div>
-`);
-
-$('logBtn').onclick=()=>modal(`
- <h2>▤ JOURNAL DE BIDULE</h2>
- <div class="log">${state.log.map(x=>'• '+x).join('<br>')}</div>
- <div class="modal-actions"><button class="small-btn" id="cancel">FERMER</button></div>
-`);
-
-$('resetBtn').onclick=()=>modal(`
- <h2>↻ NOUVELLE PARTIE ?</h2>
- <p>Bidule va disparaître dans le néant numérique. Cette action efface la sauvegarde actuelle.</p>
- <div class="modal-actions">
-  <button class="small-btn" id="cancel">NON, PARDON</button>
-  <button class="small-btn" id="confirmReset">OUI, RESET</button>
- </div>
-`);
-
-$('modal').addEventListener('click',e=>{
- if(e.target.id==='cancel')closeModal();
-
- if(e.target.id==='saveName'){
-  const v=$('newName').value.trim().slice(0,14);
-  if(v){
-   state.name=v.toUpperCase();
-   log('Nouveau nom : '+state.name);
-   save();
-   render();
-  }
-  closeModal();
- }
-
- if(e.target.id==='confirmReset'){
-  state=defaults();
-  save();
-  render();
-  say('Nouvelle créature détectée. Elle est déjà déçue.');
-  closeModal();
-  toast('NOUVELLE PARTIE !');
- }
-
- if(e.target.dataset.buy){
-  const items={
-   food:[6,()=>state.hunger=clamp(state.hunger+45),'Festin servi. Bidule rote avec élégance.'],
-   bath:[5,()=>{state.clean=clamp(state.clean+60);state.poop=0},'Bain premium. Il sent la lavande et le pouvoir.'],
-   heart:[7,()=>state.happy=clamp(state.happy+40),'Un cœur magique ! Il le revend sur Internet.'],
-   potion:[10,()=>{state.health=clamp(state.health+55);state.sick=false},'Potion bue. Goût : batterie de voiture.']
-  };
-
-  const [price,fn,msg]=items[e.target.dataset.buy];
-
-  if(state.coins<price){
-   toast('Pas assez de pièces !');
-   return;
-  }
-
-  state.coins-=price;
-  fn();
-  say(msg);
-  log(msg);
-  save();
-  render();
-  closeModal();
-  toast('ACHAT EFFECTUÉ !');
- }
+$("onlineBtn").addEventListener("click", () => {
+  setMode("online");
 });
 
-document.querySelectorAll('[data-action]').forEach(b=>{
- b.addEventListener('click',()=>action(b.dataset.action));
+$("search").addEventListener("input", () => {
+  renderCategories();
 });
 
-setInterval(()=>{
- tick();
- randomEvent();
-},5000);
+$("closeChecklist").addEventListener("click", () => {
 
-document.addEventListener('visibilitychange',()=>{
- if(!document.hidden){
-  tick();
-  randomEvent();
- }
+  selected = null;
+
+  $("checklist").textContent =
+    "Choisis une catégorie.";
+
+  $("checkTitle").textContent =
+    "☑ Checklist";
+
 });
 
-save();
-render();
-})();
+setMode("story");
+
 </script>
+
 </body>
 </html>
