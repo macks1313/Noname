@@ -20,14 +20,17 @@ function applyTheme(theme) {
   $("theme-icon").textContent = night ? "☀️" : "🌙";
   $("theme-label").textContent = night ? "Mode jour" : "Mode nuit";
   $("theme-toggle").setAttribute("aria-label", night ? "Activer le mode jour" : "Activer le mode nuit");
+  if ($("auth-theme-icon")) { $("auth-theme-icon").textContent = night ? "☀️" : "🌙"; $("auth-theme-label").textContent = night ? "Mode jour" : "Mode nuit"; }
   document.querySelector('meta[name="theme-color"]').setAttribute("content", night ? "#292536" : "#fffaf5");
 }
 applyTheme(getPreferredTheme());
-$("theme-toggle").addEventListener("click", () => {
+const toggleTheme = () => {
   const next = document.body.dataset.theme === "night" ? "day" : "night";
   localStorage.setItem("pip-theme", next);
   applyTheme(next);
-});
+};
+$("theme-toggle").addEventListener("click", toggleTheme);
+$("auth-theme-toggle").addEventListener("click", toggleTheme);
 
 const escapeHtml = (value = "") => String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const initials = (name = "P") => name.trim().split(/\s+/).slice(0,2).map(x => x[0] || "").join("").toUpperCase() || "P";
