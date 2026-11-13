@@ -59,7 +59,7 @@ $("forgot-button").addEventListener("click", async () => {
 });
 function makeUsername(name) {
   const base = name.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9_]/g,"").slice(0,18);
-  return base || "membre" + Math.floor(Math.random()*9999);
+  return (base || "membre") + "_" + Math.floor(1000 + Math.random()*9000);
 }
 function authMessage(error) {
   const m = (error.message || "").toLowerCase();
