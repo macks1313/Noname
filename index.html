@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#080b12">
-  <meta name="description" content="PULSE — Le réseau des idées en mouvement.">
-  <title>PULSE — Your world. Your voice.</title>
+  <meta name="theme-color" content="#fffaf5">
+  <meta name="description" content="PIP — Le petit réseau des grandes idées.">
+  <title>PIP — Le petit coin d’internet</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -18,18 +18,18 @@
 
   <main id="auth-screen" class="auth-screen">
     <section class="auth-brand">
-      <a class="brand brand-large" href="#"><span class="brand-mark">P</span><span>PULSE</span></a>
+      <a class="brand brand-large" href="#"><span class="brand-mark">P</span><span>PIP</span></a>
       <div class="auth-message">
-        <p class="eyebrow"><span class="live-dot"></span> THE SOCIAL FREQUENCY</p>
-        <h1>Les idées<br>font <span class="gradient-text">du bruit.</span></h1>
-        <p>Un espace pour partager ce qui vous anime, découvrir d'autres voix et rejoindre les conversations.</p>
+        <p class="eyebrow"><span class="live-dot"></span> LE PETIT COIN DES GRANDES IDÉES</p>
+        <h1>Les idées<br>font <span class="gradient-text">coucou.</span></h1>
+        <p>Un petit coin d'internet pour partager vos idées, rencontrer du monde et rire un peu.</p>
         <div class="orbit-art" aria-hidden="true"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit-core">P</div><i></i><b></b><em></em></div>
       </div>
-      <p class="auth-foot">PULSE SOCIAL · BETA</p>
+      <p class="auth-foot">PIP SOCIAL · BETA</p>
     </section>
     <section class="auth-panel">
       <div class="auth-card">
-        <div class="mobile-brand brand"><span class="brand-mark">P</span><span>PULSE</span></div>
+        <div class="mobile-brand brand"><span class="brand-mark">P</span><span>PIP</span></div>
         <div class="auth-tabs"><button class="auth-tab active" data-auth-tab="login">Connexion</button><button class="auth-tab" data-auth-tab="signup">Créer un compte</button></div>
         <div id="login-form" class="auth-form">
           <h2>Content de vous revoir.</h2><p class="muted">Connectez-vous pour retrouver votre fil.</p>
@@ -39,7 +39,7 @@
           <button id="forgot-button" class="text-btn">Mot de passe oublié ?</button>
         </div>
         <div id="signup-form" class="auth-form hidden">
-          <h2>Entrez dans le mouvement.</h2><p class="muted">Créez votre compte PULSE gratuitement.</p>
+          <h2>Entrez dans le mouvement.</h2><p class="muted">Créez votre compte PIP gratuitement.</p>
           <label for="signup-name">Nom affiché</label><input id="signup-name" type="text" maxlength="30" autocomplete="nickname" placeholder="Comment vous appeler ?">
           <label for="signup-email">Adresse e-mail</label><input id="signup-email" type="email" autocomplete="email" placeholder="vous@exemple.com">
           <label for="signup-password">Mot de passe</label><input id="signup-password" type="password" minlength="8" autocomplete="new-password" placeholder="8 caractères minimum">
@@ -54,7 +54,7 @@
 
   <div id="app" class="app-shell hidden">
     <aside class="sidebar">
-      <a class="brand" href="#" aria-label="PULSE accueil"><span class="brand-mark">P</span><span>PULSE</span></a>
+      <a class="brand" href="#" aria-label="PIP accueil"><span class="brand-mark">P</span><span>PIP</span></a>
       <nav class="main-nav">
         <button class="nav-item active" data-view="home"><span class="nav-icon">⌂</span> Accueil</button>
         <button class="nav-item" data-view="explore"><span class="nav-icon">⌕</span> Explorer</button>
@@ -68,7 +68,7 @@
     </aside>
 
     <section class="main-column">
-      <header class="topbar"><div><span class="eyebrow">YOUR WORLD. YOUR VOICE.</span><h1 id="view-title">Accueil</h1></div><div class="topbar-user"><span class="live-dot"></span><span>En direct</span></div></header>
+      <header class="topbar"><div><span class="eyebrow">YOUR LITTLE CORNER OF THE INTERNET.</span><h1 id="view-title">Accueil</h1></div><div class="topbar-actions"><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Activer le mode nuit"><span id="theme-icon">🌙</span><span id="theme-label">Mode nuit</span></button><div class="topbar-user"><span class="live-dot"></span><span>En ligne</span></div></div></header>
       <div id="home-view" class="view">
         <div class="feed-tabs"><button class="feed-tab active" data-feed="all">Pour vous</button><button class="feed-tab" data-feed="following">Abonnements</button></div>
         <section class="composer">
@@ -79,21 +79,21 @@
       </div>
       <div id="explore-view" class="view hidden">
         <div class="search-box"><span>⌕</span><input id="member-search" type="search" placeholder="Rechercher des membres..."></div>
-        <div id="member-results" class="member-results"><p class="muted">Recherchez un membre de PULSE.</p></div>
+        <div id="member-results" class="member-results"><p class="muted">Recherchez un membre de PIP.</p></div>
         <div class="section-heading"><span class="eyebrow">À DÉCOUVRIR</span><h2>Les dernières conversations</h2></div>
         <div id="explore-feed" class="feed"></div>
       </div>
       <div id="profile-view" class="view hidden">
         <div id="profile-content"></div>
       </div>
-      <footer class="main-footer">PULSE <span>·</span> Faites circuler les idées.</footer>
+      <footer class="main-footer">PIP <span>·</span> Faites circuler les idées.</footer>
     </section>
 
     <aside class="rightbar">
-      <div class="right-card welcome-card"><span class="eyebrow">WELCOME TO PULSE</span><h2>Votre voix<br><span class="gradient-text">compte.</span></h2><p>Les meilleures conversations commencent souvent par une simple idée.</p><div class="welcome-line"></div></div>
-      <div class="right-card"><div class="card-heading"><h3>La communauté</h3><span class="live-dot"></span></div><p class="muted small">Les membres qui font vivre PULSE.</p><div id="suggested-members" class="suggested-members"><span class="muted small">Chargement...</span></div></div>
+      <div class="right-card welcome-card"><span class="eyebrow">BIENVENUE CHEZ PIP</span><h2>Pose-toi.<br><span class="gradient-text">Raconte.</span> ☁️</h2><p>Les meilleures conversations commencent parfois par « coucou ».</p><div class="welcome-line"></div></div>
+      <div class="right-card"><div class="card-heading"><h3>La communauté</h3><span class="live-dot"></span></div><p class="muted small">Les membres qui font vivre PIP.</p><div id="suggested-members" class="suggested-members"><span class="muted small">Chargement...</span></div></div>
       <div class="right-quote">“<span>Une idée partagée</span> peut faire le tour du monde.”</div>
-      <div class="right-legal">PULSE SOCIAL · BETA<br>Un espace ouvert, respectueux et vivant.</div>
+      <div class="right-legal">PIP SOCIAL · BETA<br>Un espace ouvert, respectueux et vivant.</div>
     </aside>
   </div>
   <script src="app.js"></script>
