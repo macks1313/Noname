@@ -158,7 +158,7 @@ async function loadFeed(target = "feed", mode = activeFeed) {
     query = query.in("user_id",ids);
   }
   const { data, error } = await query;
-  if (error) { container.innerHTML = '<div class="empty-state">Erreur de chargement. Vérifiez les tables et les règles RLS dans Supabase.</div>'; return; }
+  if (error) { container.innerHTML = '<div class="empty-state"><strong>Le fil n’a pas pu être chargé.</strong><p>'+escapeHtml(error.message || "Erreur Supabase")+'</p><button class="edit-profile-btn" id="retry-feed">Réessayer ↻</button></div>'; $("retry-feed")?.addEventListener("click",()=>loadFeed(target,mode)); return; }
   renderPosts(container,await enrichPosts(data || []));
 }
 
@@ -181,7 +181,7 @@ async function enrichPosts(posts) {
 
 function emptyMarkup(title, detail) { return '<div class="empty-state"><div class="empty-icon">✳</div><strong>'+escapeHtml(title)+'</strong><p>'+escapeHtml(detail)+'</p></div>'; }
 function renderPosts(container, posts) {
-  if (!posts.length) { container.innerHTML = emptyMarkup("Le fil est encore calme.","Soyez le premier à lancer une conversation."); return; }
+  if (!posts.length) { container.innerHTML = emptyMarkup("Le fil est encore calme.","Aucune publication n’a été renvoyée par Supabase. Tirez vers le bas ou revenez ici après actualisation."); return; }
   container.innerHTML = posts.map(post => {
     const p = post.profiles || {display_name:"Membre",username:"membre"};
     const liked = (post.likes || []).some(l=>l.user_id===currentUser.id);
@@ -240,16 +240,46 @@ async function loadProfile(userId, own) {
     db.from("posts").select("id,user_id,content,created_at").eq("user_id",userId).order("created_at",{ascending:false}).limit(40),
     own?Promise.resolve({data:null}):db.from("follows").select("following_id").eq("follower_id",currentUser.id).eq("following_id",userId).maybeSingle()
   ]);
-  $("profile-content").innerHTML='<div class="profile-cover"></div><div class="profile-head">'+avatarMarkup(profile)+'<div class="profile-heading-row"><div><h2>'+escapeHtml(profile.display_name)+'</h2><span class="handle">'+escapeHtml(handleFor(profile))+'</span></div>'+(own?'<button class="edit-profile-btn" id="edit-profile-button">✏️ Modifier le profil</button>':'<button class="primary-btn follow-btn" id="follow-toggle">'+(follow.data?'Abonné ✓':'Suivre ＋')+'</button>')+'</div>'+(profile.bio?'<p>'+escapeHtml(profile.bio)+'</p>':'<p class="profile-empty-bio">Pas encore de petite bio. ☁️</p>')+'<div class="profile-stats"><span><strong>'+(postsCount||0)+'</strong> publications</span><span><strong>'+(followerCount||0)+'</strong> abonnés</span><span><strong>'+(followingCount||0)+'</strong> abonnements</span></div></div>'+(own?'<form id="profile-edit-form" class="profile-edit-form hidden"><h3>Modifier mon profil ✨</h3><label for="edit-display-name">Nom affiché</label><input id="edit-display-name" maxlength="30" required value="'+escapeHtml(profile.display_name||'')+'"><label for="edit-username">Nom d’utilisateur</label><input id="edit-username" maxlength="24" pattern="[a-zA-Z0-9_]+" required value="'+escapeHtml(profile.username||'')+'"><small>Uniquement lettres, chiffres et tirets bas.</small><label for="edit-bio">Petite bio</label><textarea id="edit-bio" maxlength="160" placeholder="Quelques mots sur vous...">'+escapeHtml(profile.bio||'')+'</textarea><div class="profile-edit-actions"><button type="button" class="edit-profile-btn" id="cancel-profile-edit">Annuler</button><button type="submit" class="primary-btn" id="save-profile-button">Enregistrer</button></div><p id="profile-edit-error" class="auth-error"></p></form>':'')+'<h3 class="profile-title">Publications</h3><div id="profile-posts" class="feed"></div>';
+  $("profile-content").innerHTML='<div class="profile-cover"></div><div class="profile-head">'+avatarMarkup(profile)+'<div class="profile-heading-row"><div><h2>'+escapeHtml(profile.display_name)+'</h2><span class="handle">'+escapeHtml(handleFor(profile))+'</span></div>'+(own?'<button class="edit-profile-btn" id="edit-profile-button">✏️ Modifier le profil</button>':'<button class="primary-btn follow-btn" id="follow-toggle">'+(follow.data?'Abonné ✓':'Suivre ＋')+'</button>')+'</div>'+(profile.bio?'<p>'+escapeHtml(profile.bio)+'</p>':'<p class="profile-empty-bio">Pas encore de petite bio. ☁️</p>')+'<div class="profile-stats"><span><strong>'+(postsCount||0)+'</strong> publications</span><span><strong>'+(followerCount||0)+'</strong> abonnés</span><span><strong>'+(followingCount||0)+'</strong> abonnements</span></div></div>'+(own?'<form id="profile-edit-form" class="profile-edit-form"><h3>✏️ Modifier mon profil</h3><label for="edit-avatar">Photo de profil</label><div class="avatar-upload-row">'+avatarMarkup(profile,'edit-avatar-preview')+'<input id="edit-avatar" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><small>JPG, PNG, WEBP ou GIF · 5 Mo maximum</small></div><label for="edit-display-name">Nom affiché</label><input id="edit-display-name" maxlength="30" required value="'+escapeHtml(profile.display_name||'')+'"><label for="edit-username">Nom d’utilisateur</label><input id="edit-username" maxlength="24" pattern="[a-zA-Z0-9_]+" required value="'+escapeHtml(profile.username||'')+'"><small>3 à 24 caractères : lettres, chiffres et _.</small><label for="edit-bio">Petite bio</label><textarea id="edit-bio" maxlength="160" placeholder="Quelques mots sur vous...">'+escapeHtml(profile.bio||'')+'</textarea><div class="profile-edit-actions"><button type="submit" class="primary-btn" id="save-profile-button">Enregistrer les changements</button></div><p id="profile-edit-error" class="auth-error"></p></form>':'')+'<h3 class="profile-title">Publications</h3><div id="profile-posts" class="feed"></div>';
   renderPosts($("profile-posts"),await enrichPosts(posts||[]));
   if(!own)$("follow-toggle").addEventListener("click",()=>toggleFollow(userId,!!follow.data));
 
   if(own) {
-    $("edit-profile-button").addEventListener("click",()=> $("profile-edit-form").classList.toggle("hidden"));
-    $("cancel-profile-edit").addEventListener("click",()=> $("profile-edit-form").classList.add("hidden"));
     $("profile-edit-form").addEventListener("submit",saveProfile);
+    $("edit-avatar").addEventListener("change",uploadAvatar);
   }
 
+}
+
+
+async function uploadAvatar(event) {
+  const file=event.target.files?.[0];
+  if(!file) return;
+  const errorBox=$("profile-edit-error");
+  errorBox.textContent="";
+  if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type) || file.size>5*1024*1024) {
+    errorBox.textContent="Choisis une image JPG, PNG, WEBP ou GIF de 5 Mo maximum.";
+    event.target.value="";
+    return;
+  }
+  const input=event.target;
+  input.disabled=true;
+  showToast("Envoi de la photo...");
+  const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"")||"jpg";
+  const path=currentUser.id+"/"+Date.now()+"."+ext;
+  const {error:uploadError}=await db.storage.from("avatars").upload(path,file,{upsert:true,contentType:file.type});
+  if(uploadError) {
+    errorBox.textContent="Photo non envoyée : "+uploadError.message+". Vérifie que le stockage avatars est créé dans Supabase.";
+    input.disabled=false; return;
+  }
+  const {data:urlData}=db.storage.from("avatars").getPublicUrl(path);
+  const avatar_url=urlData.publicUrl+"?v="+Date.now();
+  const {error:updateError}=await db.from("profiles").update({avatar_url}).eq("id",currentUser.id);
+  input.disabled=false;
+  if(updateError) { errorBox.textContent="Photo envoyée mais profil non mis à jour : "+updateError.message; return; }
+  currentProfile={...currentProfile,avatar_url};
+  showToast("Photo de profil mise à jour !");
+  await loadProfile(currentUser.id,true);
 }
 
 async function saveProfile(event) {
