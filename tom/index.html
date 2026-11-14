@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10131c">
+<title>Le Dossier TOM — Archives confidentielles</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
+:root{--bg:#10131c;--panel:#191e2a;--panel2:#202737;--ink:#f1eee6;--muted:#a1a9b8;--lime:#d6fa75;--orange:#ff9b6a;--line:#343c4d}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 75% -10%,#29344a 0,transparent 42%),var(--bg);color:var(--ink);font-family:Manrope,system-ui,sans-serif}a{color:inherit}.wrap{width:min(1120px,calc(100% - 40px));margin:auto}.top{display:flex;justify-content:space-between;align-items:center;padding:25px 0;border-bottom:1px solid var(--line);font:12px 'DM Mono',monospace;letter-spacing:.12em;color:var(--muted)}.brand{color:var(--lime);font-weight:500}.status{display:flex;align-items:center;gap:9px}.dot{width:8px;height:8px;background:#d6fa75;border-radius:50%;box-shadow:0 0 12px #d6fa75}.hero{padding:78px 0 60px;display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:center}.eyebrow{font:12px 'DM Mono',monospace;color:var(--lime);letter-spacing:.18em;text-transform:uppercase}.hero h1{font:800 clamp(64px,11vw,128px)/.88 'Playfair Display',serif;letter-spacing:-.065em;margin:20px 0}.hero h1 span{color:var(--lime);font-style:italic}.intro{font-size:17px;line-height:1.75;color:#c0c6d0;max-width:550px}.stamp{display:inline-block;margin-top:22px;border:1px solid var(--orange);color:var(--orange);padding:9px 13px;transform:rotate(-3deg);font:11px 'DM Mono',monospace;letter-spacing:.12em}.portrait{min-height:370px;border:1px solid #414b60;border-radius:5px;background:linear-gradient(145deg,#323d50,#1b2230 65%);position:relative;overflow:hidden;display:grid;place-items:center}.portrait:before{content:"";position:absolute;width:270px;height:270px;border:1px solid #718096;border-radius:50%;box-shadow:0 0 0 35px #ffffff08,0 0 0 70px #ffffff05}.silhouette{font-size:145px;filter:grayscale(1);z-index:1;transform:translateY(8px)}.portrait small{position:absolute;bottom:18px;left:20px;font:10px 'DM Mono',monospace;color:#b8c1cf;letter-spacing:.1em}.portrait .number{position:absolute;top:18px;right:20px;color:var(--lime);font:12px 'DM Mono',monospace}.section-head{display:flex;justify-content:space-between;align-items:end;margin:45px 0 18px}.section-head h2{font:700 32px 'Playfair Display',serif;margin:0}.section-head span{font:10px 'DM Mono',monospace;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:var(--panel);border:1px solid var(--line);padding:22px;border-radius:5px;min-height:160px}.card .ico{font-size:24px}.card h3{font-size:14px;margin:16px 0 7px}.card p{font-size:13px;line-height:1.65;color:var(--muted);margin:0}.wide{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.quote{background:var(--lime);color:#171c17;padding:30px;border-radius:5px}.quote small{font:10px 'DM Mono',monospace;letter-spacing:.15em}.quote blockquote{font:700 26px/1.25 'Playfair Display',serif;margin:18px 0 8px}.quote p{font-size:12px;margin:0;opacity:.7}.timeline{background:var(--panel);border:1px solid var(--line);padding:26px;border-radius:5px}.event{display:grid;grid-template-columns:76px 1fr;gap:15px;padding:13px 0;border-bottom:1px solid var(--line)}.event:last-child{border:0}.event time{font:11px 'DM Mono',monospace;color:var(--lime)}.event p{margin:0;font-size:13px;line-height:1.6;color:#c2c8d2}.meter{background:var(--panel);border:1px solid var(--line);padding:26px;border-radius:5px;margin-top:14px}.meter-row{display:grid;grid-template-columns:150px 1fr 45px;gap:14px;align-items:center;margin:17px 0;font-size:12px;color:#c4cad4}.track{height:7px;background:#30394a;border-radius:20px;overflow:hidden}.fill{height:100%;background:var(--lime);border-radius:20px}.meter-row b{font:11px 'DM Mono',monospace;color:var(--lime);text-align:right}.secret{margin:65px 0 30px;text-align:center;padding:34px;border:1px dashed #515d70;border-radius:5px}.secret h2{font:700 27px 'Playfair Display',serif;margin:8px}.secret p{color:var(--muted);font-size:13px}.secret button{background:var(--lime);color:#151a17;border:0;padding:13px 18px;border-radius:3px;font:700 12px Manrope;cursor:pointer;margin-top:10px}.secret button:hover{transform:translateY(-2px)}#reveal{display:none;margin:18px auto 0;max-width:550px;color:var(--lime);font-size:14px;line-height:1.7}.foot{border-top:1px solid var(--line);padding:25px 0 35px;display:flex;justify-content:space-between;gap:20px;color:#778193;font:10px 'DM Mono',monospace;letter-spacing:.08em}.disclaimer{color:#7f899b}
+@media(max-width:760px){.hero{grid-template-columns:1fr;padding:55px 0 35px;gap:28px}.portrait{min-height:280px}.grid{grid-template-columns:1fr 1fr}.wide{grid-template-columns:1fr}.top{font-size:10px}.section-head h2{font-size:27px}.meter-row{grid-template-columns:112px 1fr 36px;gap:9px}.foot{flex-direction:column}.intro{font-size:15px}}
+@media(max-width:430px){.grid{grid-template-columns:1fr}.wrap{width:min(100% - 28px,1120px)}.hero h1{font-size:76px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand">▣ ARCHIVES // DIVISION 07</div><div class="status"><i class="dot"></i> DOSSIER DÉCLASSIFIÉ</div></header>
+<main>
+<section class="hero">
+<div><div class="eyebrow">Rapport non sollicité nº 0042</div><h1>Qui est<br><span>TOM</span> ?</h1><p class="intro">Un homme. Une énigme. Une quantité de mystères administrativement préoccupante. Nos équipes ont consacré 11 mois, 3 cafés et un stagiaire à comprendre Tom. Voici ce qu'elles ont découvert.</p><div class="stamp">CLASSIFICATION : BEAUCOUP TROP SÉRIEUX</div></div>
+<div class="portrait"><span class="number">SUJET : T-OM / 001</span><div class="silhouette">🕵️</div><small>RECONSTITUTION ARTISTIQUE — VISAGE NON CONTRACTUEL</small></div>
+</section>
+<div class="section-head"><h2>Fiche signalétique</h2><span>DONNÉES APPROXIMATIVES À 300 %</span></div>
+<section class="grid">
+<article class="card"><div class="ico">🧬</div><h3>Identité biologique</h3><p>Tom serait composé à 68 % d'eau, 22 % de mauvaise foi et 10 % de décisions prises « on verra ».</p></article>
+<article class="card"><div class="ico">🧭</div><h3>Localisation</h3><p>Repéré pour la dernière fois près d'un endroit où il n'avait absolument rien à faire. Il avait l'air chez lui.</p></article>
+<article class="card"><div class="ico">🧠</div><h3>Capacités cognitives</h3><p>Peut oublier pourquoi il est entré dans une pièce, mais se souvenir d'une humiliation de 2014 en 4K.</p></article>
+<article class="card"><div class="ico">🕰️</div><h3>Ponctualité</h3><p>Tom ne sera jamais en retard. C'est simplement l'heure qui arrive trop tôt.</p></article>
+<article class="card"><div class="ico">🍕</div><h3>Alimentation</h3><p>Affirme ne pas avoir faim. Puis mange dans l'assiette des autres avec une précision chirurgicale.</p></article>
+<article class="card"><div class="ico">📡</div><h3>Communication</h3><p>Répond « j'arrive » alors qu'il n'a pas encore envisagé de se lever. Phénomène inexpliqué.</p></article>
+</section>
+<div class="wide">
+<section class="quote"><small>ENREGISTREMENT AUDIO Nº 18</small><blockquote>« T'inquiète, je gère. »</blockquote><p>Derniers mots avant l'incident du barbecue.</p></section>
+<section class="timeline"><div class="eyebrow">Chronologie reconstituée</div><div class="event"><time>08:42</time><p>Tom annonce qu'il a une idée. Trois témoins quittent immédiatement la pièce.</p></div><div class="event"><time>11:16</time><p>Déclare « c'est rapide » avant de lancer une opération de 4 heures.</p></div><div class="event"><time>16:03</time><p>Disparaît mystérieusement. Réapparaît avec un snack et aucune explication.</p></div><div class="event"><time>22:51</time><p>Envoie « mdrrr » sans contexte. Le groupe reste silencieux.</p></div></section>
+</div>
+<div class="section-head"><h2>Indicateurs de performance</h2><span>ÉCHELLE SCIENTIFIQUEMENT DOUTEUSE</span></div>
+<section class="meter">
+<div class="meter-row"><span>Confiance en soi</span><div class="track"><div class="fill" style="width:97%"></div></div><b>97%</b></div>
+<div class="meter-row"><span>Organisation</span><div class="track"><div class="fill" style="width:18%"></div></div><b>18%</b></div>
+<div class="meter-row"><span>Excuses disponibles</span><div class="track"><div class="fill" style="width:100%"></div></div><b>∞</b></div>
+<div class="meter-row"><span>Discrétion</span><div class="track"><div class="fill" style="width:6%"></div></div><b>6%</b></div>
+<div class="meter-row"><span>Potentiel de légende</span><div class="track"><div class="fill" style="width:89%"></div></div><b>89%</b></div>
+</section>
+<section class="secret"><div class="eyebrow">Accès niveau 2 requis</div><h2>Tu crois vraiment tout savoir sur Tom ?</h2><p>Les archives contiennent une dernière pièce à conviction.</p><button id="revealBtn">DÉVERROUILLER LE SECRET ↗</button><div id="reveal">Le plus grand mystère de Tom, ce n'est pas ce qu'il fait. C'est comment il arrive encore à convaincre les gens que « cette fois, c'est différent ». <br><br><strong>Conclusion du comité : Tom est un phénomène. Pas forcément explicable. Mais un phénomène.</strong></div></section>
+</main>
+<footer class="foot"><span>© BUREAU DES AFFAIRES TOMESQUES — 2026</span><span class="disclaimer">ŒUVRE HUMORISTIQUE · PERSONNAGE FICTIF · FAITS ENTIÈREMENT INVENTÉS</span></footer>
+</div>
+<script>
+const btn=document.getElementById('revealBtn'), box=document.getElementById('reveal');
+btn.addEventListener('click',()=>{box.style.display=box.style.display==='block'?'none':'block';btn.textContent=box.style.display==='block'?'REFERMER LE DOSSIER ↑':'DÉVERROUILLER LE SECRET ↗'});
+</script>
+</body></html>
