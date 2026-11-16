@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#171717">
+<title>Le Frigo à 999 € — Une occasion qui ne se représentera pas</title>
+<style>
+:root{--ink:#171717;--paper:#f3efe7;--acid:#d7ff42;--red:#ff5b43;--muted:#777}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 6vw;border-bottom:1px solid #17171722;font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.logo{display:flex;align-items:center;gap:10px}.logo b{background:var(--acid);padding:8px 10px;border:2px solid var(--ink);transform:rotate(-4deg);font-size:16px}
+nav a{color:inherit;text-decoration:none}
+.hero{padding:8vh 6vw 7vh;display:grid;grid-template-columns:1.05fr .95fr;gap:5vw;align-items:center;max-width:1400px;margin:auto}
+.kicker{font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:900;color:#666}
+h1{font-size:clamp(54px,8.5vw,120px);line-height:.85;letter-spacing:-.09em;margin:22px 0 28px;font-weight:950}
+h1 em{font-style:normal;color:var(--red)}
+.lead{font-size:clamp(18px,2vw,24px);line-height:1.35;max-width:550px}
+.price{display:inline-flex;align-items:center;gap:12px;margin:24px 0 30px;background:var(--acid);border:2px solid var(--ink);padding:13px 18px;font-size:clamp(32px,5vw,58px);font-weight:950;letter-spacing:-.06em;transform:rotate(-2deg);box-shadow:6px 6px 0 var(--ink)}
+.price small{font-size:11px;letter-spacing:.05em;max-width:90px;line-height:1.1}
+.btn{display:inline-block;border:2px solid var(--ink);background:var(--ink);color:white;padding:17px 22px;text-decoration:none;font-weight:900;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:.2s}
+.btn:hover{background:var(--red);transform:translateY(-3px);box-shadow:5px 5px 0 var(--ink)}
+.visual{position:relative;min-height:530px;display:grid;place-items:center;background:#e5dfd2;border:2px solid var(--ink);overflow:hidden}
+.visual:before{content:"";position:absolute;width:440px;height:440px;border:1px solid #17171733;border-radius:50%}
+.fridge{position:relative;width:min(62%,330px);height:440px;background:linear-gradient(100deg,#c9c9c6,#f8f8f4 18%,#e8e8e3 75%,#c5c5c0);border:3px solid #777;border-radius:13px 13px 20px 20px;box-shadow:22px 22px 0 #17171718, inset 8px 0 9px #fff9}
+.fridge:before{content:"";position:absolute;top:18%;left:0;right:0;height:3px;background:#aaa}
+.fridge:after{content:"";position:absolute;top:24%;left:9px;width:15px;height:100px;border-radius:10px;background:linear-gradient(90deg,#aaa,#fff,#aaa);box-shadow:0 0 2px #555}
+.fridge .brand{position:absolute;top:9%;right:8%;font-size:8px;line-height:1.15;text-align:center;color:#444;border:1px solid #b5c5cb;border-radius:50%;padding:10px 7px;background:#e4f4f7;font-weight:bold}
+.sticker{position:absolute;right:5%;top:8%;background:var(--red);color:white;padding:10px 14px;font-weight:950;transform:rotate(8deg);border:2px solid var(--ink);z-index:2;font-size:13px}
+.caption{position:absolute;bottom:18px;left:20px;font-size:11px;text-transform:uppercase;font-weight:900;letter-spacing:.1em}
+section{padding:85px 6vw;border-top:2px solid var(--ink)}
+.section-inner{max-width:1200px;margin:auto}
+h2{font-size:clamp(38px,6vw,76px);line-height:.92;letter-spacing:-.07em;margin:0 0 30px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{border:2px solid var(--ink);padding:24px;background:#fffaf1;min-height:200px}
+.card .num{font-size:12px;font-weight:900;color:var(--red);letter-spacing:.12em}
+.card h3{font-size:24px;letter-spacing:-.04em;margin:24px 0 10px}
+.card p{line-height:1.5;color:#555;margin:0}
+.specs{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #17171755}
+.spec{padding:18px 0;border-bottom:1px solid #17171755;display:flex;justify-content:space-between;gap:20px}
+.spec span:first-child{color:#777}.spec strong{text-align:right}
+.manifesto{background:var(--ink);color:var(--paper)}
+.manifesto h2 em{color:var(--acid);font-style:normal}
+.manifesto p{font-size:clamp(18px,2vw,25px);line-height:1.45;max-width:800px;color:#ddd}
+.final{display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap}
+.final strong{font-size:clamp(52px,9vw,110px);letter-spacing:-.09em}
+footer{padding:24px 6vw;background:var(--ink);color:#aaa;font-size:11px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+#notice{display:none;margin-top:18px;padding:16px;border:2px dashed var(--ink);background:var(--acid);font-weight:bold;line-height:1.4}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:55px}.visual{min-height:430px}.fridge{height:350px;width:55%}.grid{grid-template-columns:1fr}.spec{font-size:14px}section{padding:60px 6vw}nav{padding:18px 5vw}}
+</style>
+</head>
+<body>
+<nav><div class="logo"><b>FROID™</b><span>Le luxe à température ambiante</span></div><a href="#fiche">La fiche technique ↓</a></nav>
+<main>
+<div class="hero">
+<div>
+<div class="kicker">Petite annonce — pièce unique — émotion garantie</div>
+<h1>LE FRIGO.<br><em>LE VRAI.</em></h1>
+<p class="lead">Vous avez déjà un réfrigérateur ? Quelle banalité. Passez au niveau supérieur avec cet appareil électroménager qui ose demander le prix d'un week-end à Rome.</p>
+<div class="price">999 € <small>NEUF DANS SON PRIX. PAS DANS SON ÂGE.</small></div><br>
+<a class="btn" href="#acheter">Je mérite ce frigo →</a>
+</div>
+<div class="visual" aria-label="Illustration d'un réfrigérateur blanc vintage">
+<div class="sticker">ÉDITION<br>PRESTIGE</div>
+<div class="fridge"><div class="brand">ARTHUR MARTIN<br>Electrolux</div></div>
+<div class="caption">Un design qui a traversé les époques. Toutes.</div>
+</div>
+</div>
+<section id="fiche">
+<div class="section-inner">
+<div class="kicker">01 / Une fiche produit d'exception</div>
+<h2>La technologie<br>du <em>froid.</em></h2>
+<div class="grid">
+<article class="card"><div class="num">01 — ESTHÉTIQUE</div><h3>Blanc intemporel</h3><p>Une robe immaculée qui a vécu. Quelques marques discrètes, comme les rides d'un grand cru.</p></article>
+<article class="card"><div class="num">02 — ERGONOMIE</div><h3>Une porte, une poignée</h3><p>Le concept est révolutionnaire : on tire, ça s'ouvre. Pas besoin de mise à jour logicielle.</p></article>
+<article class="card"><div class="num">03 — EXCLUSIVITÉ</div><h3>Pièce unique</h3><p>Un seul exemplaire disponible. Principalement parce qu'on n'a pas prévu d'en trouver un deuxième.</p></article>
+</div>
+</div>
+</section>
+<section>
+<div class="section-inner">
+<div class="kicker">02 / Transparence totale (ou presque)</div>
+<h2>Les détails qui<br>font <em>la différence.</em></h2>
+<div class="specs">
+<div class="spec"><span>Marque visible</span><strong>Arthur Martin / Electrolux</strong></div>
+<div class="spec"><span>Couleur</span><strong>Blanc « vécu »</strong></div>
+<div class="spec"><span>État esthétique</span><strong>Voir les photos. Vraiment.</strong></div>
+<div class="spec"><span>Âge</span><strong>Classé confidentiel</strong></div>
+<div class="spec"><span>Classe énergétique</span><strong>Classe émotionnelle A++</strong></div>
+<div class="spec"><span>Options connectées</span><strong>Il ne vous espionne pas.</strong></div>
+<div class="spec"><span>Prix demandé</span><strong>999 € — ferme… ou presque</strong></div>
+<div class="spec"><span>Livraison</span><strong>Votre cardio vous remercie.</strong></div>
+</div>
+<p style="font-size:12px;color:#777;margin-top:18px">Les caractéristiques techniques non visibles sur les photos ne sont pas garanties ici. Toute personne exigeant une fiche énergétique complète devra d'abord reprendre son souffle.</p>
+</div>
+</section>
+<section class="manifesto">
+<div class="section-inner">
+<div class="kicker" style="color:#aaa">03 / Notre philosophie</div>
+<h2>Ce n'est pas un frigo.<br>C'est un <em>placement.</em></h2>
+<p>Les marchés sont instables. L'immobilier est compliqué. L'or fluctue. Mais ce réfrigérateur, lui, reste debout dans sa cuisine. Une valeur refuge avec poignée latérale.</p>
+<p>À 999 €, vous n'achetez pas simplement un appareil : vous achetez le droit de dire « oui, j'ai payé 999 euros pour ce frigo » sans baisser les yeux.</p>
+</div>
+</section>
+<section id="acheter">
+<div class="section-inner final">
+<div><div class="kicker">04 / L'occasion de votre vie</div><h2>Il vous attend.<br>Il est <em>froid.</em></h2><p>Une décision importante mérite une réflexion de 4 à 6 secondes.</p><button class="btn" id="buy">Je veux tenter l'expérience →</button><div id="notice">Votre enthousiasme est enregistré dans nos serveurs imaginaires. Pour organiser une vraie vente, contactez directement le vendeur : aucun paiement n'est effectué sur ce site.</div></div>
+<strong>999 €</strong>
+</div>
+</section>
+</main>
+<footer><span>FROID™ — Le froid, le standing, le prix.</span><span>Site parodique. Prix affiché à titre humoristique. Aucune transaction intégrée.</span></footer>
+<script>
+document.getElementById('buy').addEventListener('click',function(){const n=document.getElementById('notice');n.style.display='block';this.textContent='Votre candidature est légendaire ✓';this.disabled=true;});
+</script>
+</body></html>
