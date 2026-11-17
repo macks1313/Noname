@@ -85,21 +85,21 @@ pantyShape.quadraticCurveTo(-.68,-.34,-.72,-.10);pantyShape.closePath();
 const clothMat=new THREE.MeshStandardMaterial({color:0xfff0e8,roughness:.82});
 const cloth=new THREE.Mesh(new THREE.ExtrudeGeometry(pantyShape,{depth:.24,bevelEnabled:true,bevelSegments:4,steps:1,bevelSize:.065,bevelThickness:.055}),clothMat);
 cloth.position.set(0,1.55,.12);cloth.castShadow=true;lady.add(cloth);
-const waistband=new THREE.Mesh(new THREE.BoxGeometry(1.62,.19,.19),mat(0xd98eae));waistband.position.set(0,2.13,.18);lady.add(waistband);
-const waistTrim=new THREE.Mesh(new THREE.BoxGeometry(1.57,.045,.205),mat(0xffd8e7));waistTrim.position.set(0,2.02,.19);lady.add(waistTrim);
+const waistband=new THREE.Mesh(new THREE.BoxGeometry(1.62,.19,.19),mat(0xd98eae));waistband.position.set(0,2.13,.39);lady.add(waistband);
+const waistTrim=new THREE.Mesh(new THREE.BoxGeometry(1.57,.045,.205),mat(0xffd8e7));waistTrim.position.set(0,2.02,.40);lady.add(waistTrim);
 const seamMat=mat(0xe3a9bd);
-for(const side of [-1,1]){const seamCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(side*.70,2.02,.27),new THREE.Vector3(side*.67,1.72,.29),new THREE.Vector3(side*.53,1.48,.29),new THREE.Vector3(side*.30,1.43,.29)]);lady.add(new THREE.Mesh(new THREE.TubeGeometry(seamCurve,18,.018,6,false),seamMat));}
-const gusset=new THREE.Mesh(new THREE.CircleGeometry(.22,24),mat(0xf7d8e3));gusset.position.set(0,1.30,.39);gusset.scale.set(1,.72,1);lady.add(gusset);
+for(const side of [-1,1]){const seamCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(side*.70,2.02,.44),new THREE.Vector3(side*.67,1.72,.45),new THREE.Vector3(side*.53,1.48,.45),new THREE.Vector3(side*.30,1.43,.45)]);lady.add(new THREE.Mesh(new THREE.TubeGeometry(seamCurve,18,.018,6,false),seamMat));}
+const gusset=new THREE.Mesh(new THREE.CircleGeometry(.22,24),mat(0xf7d8e3));gusset.position.set(0,1.30,.48);gusset.scale.set(1,.72,1);lady.add(gusset);
 const eyeMat=mat(0x392638);
-for(const x of [-.22,.22]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.085,14,12),eyeMat);eye.position.set(x,1.78,.27);lady.add(eye);const shine=new THREE.Mesh(new THREE.SphereGeometry(.025,8,8),mat(0xffffff));shine.position.set(x-.025,1.81,.34);lady.add(shine);}
-const smileCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(-.16,1.59,.34),new THREE.Vector3(0,1.53,.38),new THREE.Vector3(.16,1.59,.34)]);lady.add(new THREE.Mesh(new THREE.TubeGeometry(smileCurve,16,.025,8,false),mat(0x71334f)));
-for(const x of [-.39,.39]){const cheek=new THREE.Mesh(new THREE.SphereGeometry(.085,10,8),mat(0xffb3c7));cheek.position.set(x,1.61,.29);lady.add(cheek);}
+for(const x of [-.22,.22]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.085,14,12),eyeMat);eye.position.set(x,1.78,.48);lady.add(eye);const shine=new THREE.Mesh(new THREE.SphereGeometry(.025,8,8),mat(0xffffff));shine.position.set(x-.025,1.81,.55);lady.add(shine);}
+const smileCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(-.16,1.59,.49),new THREE.Vector3(0,1.53,.52),new THREE.Vector3(.16,1.59,.49)]);lady.add(new THREE.Mesh(new THREE.TubeGeometry(smileCurve,16,.025,8,false),mat(0x71334f)));
+for(const x of [-.39,.39]){const cheek=new THREE.Mesh(new THREE.SphereGeometry(.085,10,8),mat(0xffb3c7));cheek.position.set(x,1.61,.47);lady.add(cheek);}
 const arms=[];
 for(const x of [-.88,.88]){const arm=new THREE.Group();const limb=new THREE.Mesh(new THREE.CylinderGeometry(.075,.085,.48,10),mat(0xffd6c8));limb.rotation.z=x<0?-.7:.7;arm.add(limb);const shoulder=new THREE.Mesh(new THREE.SphereGeometry(.085,10,8),mat(0xffd6c8));shoulder.position.y=.22;arm.add(shoulder);arm.position.set(x,1.42,.08);lady.add(arm);arms.push(arm);const hand=new THREE.Mesh(new THREE.SphereGeometry(.10,10,8),mat(0xffd6c8));hand.position.set(x*1.12,1.19,.1);lady.add(hand);}
 const legs=[];
 for(const x of [-.29,.29]){const leg=new THREE.Mesh(new THREE.CylinderGeometry(.075,.085,.58,10),mat(0xffd6c8));leg.position.set(x,.52,.05);lady.add(leg);const knee=new THREE.Mesh(new THREE.SphereGeometry(.08,10,8),mat(0xffd6c8));knee.position.set(x,.23,.05);lady.add(knee);legs.push(leg);const shoe=new THREE.Mesh(new THREE.SphereGeometry(.15,12,8),mat(0x9b6688));shoe.scale.set(1.25,.55,1.5);shoe.position.set(x,.22,.13);lady.add(shoe);}
-const bow=new THREE.Group();const bowMat=mat(0xb85d88);const bowA=new THREE.Mesh(new THREE.SphereGeometry(.14,10,8),bowMat);bowA.scale.set(1.35,.72,.48);bowA.position.x=-.13;const bowB=bowA.clone();bowB.position.x=.13;bow.add(bowA,bowB);const knot=new THREE.Mesh(new THREE.SphereGeometry(.075,10,8),mat(0xf4c5d7));bow.add(knot);bow.position.set(0,2.31,.2);lady.add(bow);
-const laceMat=mat(0xd98cac);for(let x=-.61;x<=.62;x+=.15){const dot=new THREE.Mesh(new THREE.SphereGeometry(.027,8,6),laceMat);dot.position.set(x,1.94,.30);lady.add(dot);}
+const bow=new THREE.Group();const bowMat=mat(0xb85d88);const bowA=new THREE.Mesh(new THREE.SphereGeometry(.14,10,8),bowMat);bowA.scale.set(1.35,.72,.48);bowA.position.x=-.13;const bowB=bowA.clone();bowB.position.x=.13;bow.add(bowA,bowB);const knot=new THREE.Mesh(new THREE.SphereGeometry(.075,10,8),mat(0xf4c5d7));bow.add(knot);bow.position.set(0,2.31,.43);lady.add(bow);
+const laceMat=mat(0xd98cac);for(let x=-.61;x<=.62;x+=.15){const dot=new THREE.Mesh(new THREE.SphereGeometry(.027,8,6),laceMat);dot.position.set(x,1.94,.45);lady.add(dot);}
 lady.position.set(0,0,-2);scene.add(lady);lady.userData={home:new THREE.Vector3(0,0,-2),target:new THREE.Vector3(0,0,-2),walk:0};
 const beacon=new THREE.Group();
 const beam=new THREE.Mesh(new THREE.CylinderGeometry(.12,.55,5,12,1,true),new THREE.MeshBasicMaterial({color:0xffd477,transparent:true,opacity:.2,depthWrite:false}));
