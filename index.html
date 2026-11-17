@@ -84,9 +84,9 @@ function solidBox(x,z,w,d,pad=.55){colliders.push({type:'box',x,z,w:w/2+pad,d:d/
 function solidCircle(x,z,r){colliders.push({type:'circle',x,z,r})}
 function blocked(x,z){if(Math.hypot(x,z)>22.1)return true;return colliders.some(c=>c.type==='box'?Math.abs(x-c.x)<c.w&&Math.abs(z-c.z)<c.d:Math.hypot(x-c.x,z-c.z)<c.r)}
 // Physical footprints: openings remain clear, all other pavilion walls and gate piers block passage.
-for(let p of [[-12,-10],[12,-10],[-12,10],[12,10]])solidCircle(p[0],p[1],2.25);
+for(let p of [[-12,-10],[12,-10],[-12,10],[12,10]])solidCircle(p[0],p[1],2.85);
 for(let a of [[-3,-17],[3,-17],[14,-3],[14,3],[-14,-3],[-14,3],[-3,17],[3,17]])solidCircle(a[0],a[1],.72);
-for(let i=0;i<12;i++){let a=i*Math.PI/6;solidCircle(Math.cos(a)*19,Math.sin(a)*19,.42)}
+for(let i=0;i<12;i++){let a=i*Math.PI/6;solidCircle(Math.cos(a)*19,Math.sin(a)*19,.52)}solidCircle(0,0,1.45);for(let i=0;i<8;i++){let a=i*Math.PI/4;solidCircle(Math.cos(a)*3.1,Math.sin(a)*3.1,.34)}
 // Character models: visitor and Lady are independent agents.
 function person(coat,hat){const group=new THREE.Group();const dress=new THREE.Mesh(new THREE.ConeGeometry(.48,1.28,24),mat(coat));dress.position.y=.72;dress.castShadow=true;group.add(dress);const collar=new THREE.Mesh(new THREE.SphereGeometry(.24,20,16),mat(0xf0e5cf));collar.position.y=1.27;collar.scale.set(1,.55,.8);group.add(collar);const head=new THREE.Mesh(new THREE.SphereGeometry(.23,24,20),mat(0xe8c8a6));head.position.y=1.58;group.add(head);const hair=new THREE.Mesh(new THREE.SphereGeometry(.245,20,16),mat(0x51382e));hair.position.set(0,1.68,-.055);hair.scale.set(1.04,1,.92);group.add(hair);const brim=new THREE.Mesh(new THREE.CylinderGeometry(.39,.39,.045,32),mat(hat));brim.position.y=1.82;group.add(brim);const crown=new THREE.Mesh(new THREE.CylinderGeometry(.22,.25,.25,24),mat(hat));crown.position.y=1.96;group.add(crown);const pack=new THREE.Mesh(new THREE.BoxGeometry(.34,.42,.2),mat(0x6b5137));pack.position.set(0,.78,-.34);group.add(pack);scene.add(group);return group}
 const lady=person(0x2b9eaa,0xd6b77b);lady.position.set(-2,0,2);
