@@ -65,37 +65,10 @@ function flowerbed(x,z){const bed=box(4,.25,2,mat(0x7b9e4d),x,.18,z);for(let i=0
 flowerbed(-10,9);flowerbed(13,10);flowerbed(-13,-9);flowerbed(25,5);
 function bench(x,z){box(2,.16,.55,mat(0xb77b55),x,.65,z);box(2,.75,.14,mat(0xb77b55),x,1,z-.23);for(let dx of [-.75,.75])box(.12,.65,.12,mat(0x65545a),x+dx,.32,z)}
 bench(4,8);bench(14,5);bench(-8,12);
-const worldInteractables=[{name:"The Laundry",x:-16,z:-15,r:5,action:()=>{state.hygiene=Math.min(100,state.hygiene+18);toast("Fresh as a daisy. Hygiene +18!") }},{name:"The Thrift Shop",x:18,z:-16,r:5,action:()=>{toast("You browse the boutique. Perhaps you will find something worth selling someday.")}},{name:"The Drunken Sock",x:-18,z:17,r:5,action:()=>{state.mood=Math.min(100,state.mood+12);toast("A little gossip lifts your mood. +12 mood!") }},{name:"Lost Things Museum",x:18,z:17,r:6,action:()=>{const names=["The Sock of Destiny","Still Life with Washing Basket","Portrait of a Very Tired Butler","The Great Laundry Escape","Untitled (Missing Pair)","Duchess in a Delicate Mood"];const title=names[state.artworks.length%names.length];state.artworks.push({title:title,value:8+state.artworks.length*2});state.art=state.artworks.length;toast("Artwork collected: "+title+" · visit Gallery in the menu!") }},{name:"Town Fountain",x:9,z:-7,r:4,action:()=>{state.energy=Math.min(100,state.energy+8);toast("A peaceful pause by the fountain. Energy +8!") }},{name:"Flower Garden",x:13,z:10,r:4,action:()=>{state.mood=Math.min(100,state.mood+8);toast("The flowers are lovely. Mood +8!") }}];
+const worldInteractables=[{name:"The Laundry",x:-16,z:-15,r:5,action:()=>{state.hygiene=Math.min(100,state.hygiene+18);toast("Fresh as a daisy. Hygiene +18!") }},{name:"The Thrift Shop",x:18,z:-16,r:5,action:()=>{toast("You browse the boutique. Perhaps you will find something worth selling someday.")}},{name:"The Drunken Sock",x:-18,z:17,r:5,action:()=>{state.mood=Math.min(100,state.mood+12);toast("A little gossip lifts your mood. +12 mood!") }},{name:"Lost Things Museum",x:18,z:17,r:6,action:()=>{const names=["The Sock of Destiny","Still Life with Washing Basket","Portrait of a Very Tired Butler","The Great Laundry Escape","Untitled (Missing Pair)","Duchess in a Delicate Mood"];const title=names[state.artworks.length%names.length];state.artworks.push(createArtwork(title,"Museum visit"));state.art=state.artworks.length;toast("Artwork collected: "+title+" · visit Gallery in the menu!") }},{name:"Town Fountain",x:9,z:-7,r:4,action:()=>{state.energy=Math.min(100,state.energy+8);toast("A peaceful pause by the fountain. Energy +8!") }},{name:"Flower Garden",x:13,z:10,r:4,action:()=>{state.mood=Math.min(100,state.mood+8);toast("The flowers are lovely. Mood +8!") }}];
 
 
-const residents=[
-{id:"mabel",name:"Mabel Threadneedle",role:"retired dressmaker",x:3,z:11,color:0xd98eae,coat:0x8e668f,hello:"Oh, darling! I used to make the finest garments in Briefsville. These days I mostly people-watch.",topics:["Mabel tells you about the old tailor's quarter and its famous fashions.","Mabel says never trust a loose button, nor a person who promises to fix it tomorrow.","Mabel remembers the velvet coat she made for the mayor."]},
-{id:"felix",name:"Felix Patches",role:"collector and amateur historian",x:-9,z:14,color:0x82b7d7,coat:0x526b91,hello:"Greetings! Felix Patches, collector of curious objects and facts of questionable importance.",topics:["Felix wonders whether the museum might accept an especially unusual sock.","Felix says every object has a story. Some stories are admittedly rather boring.","Felix mentions a missing silver thimble near the town square."]},
-{id:"iris",name:"Iris Bloom",role:"flower gardener",x:24,z:5,color:0xe7bd70,coat:0x65966e,hello:"Hello there! I'm Iris. I look after the flowers around town. A little sunshine can fix quite a lot.",topics:["Iris explains which flowers bloom first in Briefsville.","Iris says the fountain birds have returned. She considers this a very good sign.","Iris is trying to grow a rare blue flower and could use a little luck."]}
-];
-function makeResident(p){
-const g=new THREE.Group(),skin=mat(0xf0c9ad),cloth=mat(p.coat),hair=mat(p.color),dark=mat(0x403747);
-const body=new THREE.Mesh(new THREE.CylinderGeometry(.36,.43,.95,12),cloth);body.position.y=1.02;body.castShadow=true;g.add(body);
-const head=new THREE.Mesh(new THREE.SphereGeometry(.39,16,12),skin);head.position.y=1.82;head.castShadow=true;g.add(head);
-const cap=new THREE.Mesh(new THREE.SphereGeometry(.405,16,8,0,Math.PI*2,0,Math.PI*.56),hair);cap.position.y=1.91;g.add(cap);
-for(const x of [-.14,.14]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.045,8,8),dark);eye.position.set(x,1.84,.35);g.add(eye)}
-for(const x of [-.48,.48]){const arm=new THREE.Mesh(new THREE.CylinderGeometry(.11,.13,.68,8),skin);arm.position.set(x,1.12,0);arm.rotation.z=x<0?-.18:.18;g.add(arm)}
-for(const x of [-.19,.19]){const leg=new THREE.Mesh(new THREE.CylinderGeometry(.13,.14,.52,8),dark);leg.position.set(x,.29,0);g.add(leg)}
-g.position.set(p.x,0,p.z);g.userData.residentId=p.id;scene.add(g);p.mesh=g;
-state.residents[p.id]=state.residents[p.id]||{meetings:0,affinity:0};
-worldInteractables.push({name:p.name,x:p.x,z:p.z,r:5,action:()=>talkResident(p)});
-}
-function talkResident(p){
-const rel=state.residents[p.id],first=rel.meetings===0;
-const line=first?p.hello:p.topics[(rel.meetings-1)%p.topics.length];
-rel.meetings++;rel.affinity=Math.min(10,rel.affinity+1);
-dialogue=true;document.getElementById("dialogText").textContent="“"+line+"”";
-document.getElementById("dialog").style.display="block";
-state.mood=Math.min(100,state.mood+3);
-remember("I chatted with "+p.name+". "+(first?"We have just been introduced.":"We are getting to know one another."),"Talked with "+p.name);
-renderMeters();
-}
-// Resident creation moved below saved-state initialization.
+
 
 // Distinct points of interest
 function sign(text,x,z,color){const base=box(3,2,.25,mat(color),x,1.6,z);const canvas=document.createElement("canvas");canvas.width=512;canvas.height=128;const c=canvas.getContext("2d");c.fillStyle="#241e2c";c.fillRect(0,0,512,128);c.fillStyle="#f0cf91";c.font="bold 48px Georgia";c.textAlign="center";c.fillText(text,256,82);const tex=new THREE.CanvasTexture(canvas);const board=new THREE.Mesh(new THREE.PlaneGeometry(3,0.75),new THREE.MeshBasicMaterial({map:tex}));board.position.set(x,2.6,z+.14);scene.add(board);return base}
@@ -142,12 +115,34 @@ const hitObjects=[cloth];cloth.userData.isLady=true;
 const raycaster=new THREE.Raycaster(),center=new THREE.Vector2(0,0);let yaw=0,pitch=0,moveX=0,moveY=0,nearLady=false,activeInteractable=null,started=true,dialogue=false,lastTime=performance.now();
 const moveVelocity=new THREE.Vector3(),mapCanvas=document.getElementById("minimap"),mapCtx=mapCanvas.getContext("2d");
 const mapPlaces=[{x:-16,z:-15,c:"#ed8c84"},{x:18,z:-16,c:"#e6ad47"},{x:-18,z:17,c:"#a889c9"},{x:18,z:17,c:"#5caaa0"}];
-const state={day:1,hunger:66,energy:82,mood:78,sleep:74,hygiene:43,health:100,money:0,art:0,artworks:[],sales:0,residents:{mabel:{meetings:0,affinity:0},felix:{meetings:0,affinity:0},iris:{meetings:0,affinity:0}},brain:{goal:"Explore Briefsville",lastThought:"I wonder what the town is hiding today.",lastAction:"Looking around",memories:[]},events:["Lady Briefington was last spotted somewhere in Briefsville."]};
+const state={day:1,hunger:66,energy:82,mood:78,sleep:74,hygiene:43,health:100,money:0,art:0,artworks:[],sales:0,brain:{goal:"Explore Briefsville",lastThought:"I wonder what the town is hiding today.",lastAction:"Looking around",memories:[]},events:["Lady Briefington was last spotted somewhere in Briefsville."]};
 const meterNames=[["Hunger","hunger"],["Energy","energy"],["Mood","mood"],["Sleep","sleep"],["Hygiene","hygiene"],["Health","health"]];
-try{const saved=JSON.parse(localStorage.getItem("briefsville-save")||"null");if(saved){for(const k of ["day","hunger","energy","mood","sleep","hygiene","health","artworks","sales","brain","residents"])if(saved[k]!==undefined)state[k]=saved[k];state.money=saved.sales>0&&Number.isFinite(saved.money)?saved.money:0;state.art=state.artworks.length}}catch(e){}
-residents.forEach(makeResident);
+try{const saved=JSON.parse(localStorage.getItem("briefsville-save")||"null");if(saved){for(const k of ["day","hunger","energy","mood","sleep","hygiene","health","artworks","sales","brain"])if(saved[k]!==undefined)state[k]=saved[k];state.money=saved.sales>0&&Number.isFinite(saved.money)?saved.money:0;state.art=state.artworks.length}}catch(e){}
+
 
 let language=localStorage.getItem("briefsville-language")==="fr"?"fr":"en";const words={en:{menu:"☰ MENU",journal:"📖 Journal",gallery:"🎨 Gallery",bag:"👜 Bag",shop:"🛍 Shop",status:"♡ Status",residents:"👥 Residents",mind:"🧠 Mind",dismiss:"Dismiss",move:"MOVE",map:"BRIEFSVILLE MAP",legend:"● You • Places",hint:"Find Lady Briefington somewhere in Briefsville",talk:"Talk to Lady Briefington",day:"BRIEFSVILLE · DAY",intro:"Explore the town, meet its residents and discover hidden surprises."},fr:{menu:"☰ MENU",journal:"📖 Journal",gallery:"🎨 Galerie",bag:"👜 Sac",shop:"🛍 Boutique",status:"♡ État",residents:"👥 Habitants",mind:"🧠 Esprit",dismiss:"Fermer",move:"DÉPLACEMENT",map:"PLAN DE BRIEFSVILLE",legend:"● Vous • Lieux",hint:"Retrouvez Lady Briefington dans Briefsville",talk:"Parler à Lady Briefington",day:"BRIEFSVILLE · JOUR",intro:"Explorez la ville, rencontrez ses habitants et découvrez leurs secrets."}};function tr(k){return words[language][k]||words.en[k]||k}function applyLanguage(){document.documentElement.lang=language;document.getElementById("languageToggle").textContent=language==="fr"?"🇬🇧 English":"🇫🇷 Français";document.getElementById("menuToggle").textContent=tr("menu");document.querySelector(".sticklabel").textContent=tr("move");document.getElementById("minimapTitle").textContent=tr("map");document.getElementById("minimapLegend").textContent=tr("legend");document.getElementById("hint").textContent=tr("hint");document.getElementById("interact").textContent=tr("talk");document.getElementById("dialogClose").textContent=tr("dismiss");document.querySelector(".day").childNodes[0].textContent=tr("day")+" ";renderMenuHome()}document.getElementById("languageToggle").onclick=()=>{language=language==="en"?"fr":"en";localStorage.setItem("briefsville-language",language);applyLanguage()};
+
+function artworkImage(a){
+const c=document.createElement("canvas");c.width=480;c.height=320;const g=c.getContext("2d");
+const seed=Number(a.seed)||1;let n=seed;const rnd=()=>{n=(n*1664525+1013904223)>>>0;return n/4294967296};
+const palettes=[["#f4d8c8","#a65d69","#e9b86d","#526d73"],["#d7e5dc","#668b80","#e7b7a2","#e4cf8b"],["#e8dff0","#78628d","#d98eae","#f0c77c"],["#d8e8ef","#5b7f9a","#e8a56b","#e8d9bd"]];
+const p=palettes[(seed-1)%palettes.length];g.fillStyle=p[0];g.fillRect(0,0,480,320);
+g.fillStyle="rgba(255,255,255,.22)";g.fillRect(18,18,444,284);
+for(let i=0;i<8;i++){g.fillStyle=p[1+i%3];g.globalAlpha=.38+rnd()*.42;g.beginPath();const x=30+rnd()*420,y=25+rnd()*270,r=18+rnd()*90;g.ellipse(x,y,r,r*(.35+rnd()*.8),rnd()*3,0,Math.PI*2);g.fill()}
+g.globalAlpha=1;
+const motif=seed%4;
+if(motif===0){g.fillStyle=p[2];g.beginPath();g.arc(240,145,65,0,Math.PI*2);g.fill();g.fillStyle=p[3];g.fillRect(95,215,290,12)}
+if(motif===1){g.strokeStyle=p[2];g.lineWidth=18;g.beginPath();g.moveTo(80,245);g.bezierCurveTo(120,20,360,300,400,70);g.stroke()}
+if(motif===2){for(let i=0;i<7;i++){g.fillStyle=p[(i%3)+1];g.beginPath();g.arc(90+i*48,160+Math.sin(i+seed)*45,20+i%3*5,0,Math.PI*2);g.fill()}}
+if(motif===3){g.fillStyle=p[3];g.beginPath();g.moveTo(60,250);g.lineTo(180,65);g.lineTo(270,250);g.closePath();g.fill();g.fillStyle=p[2];g.fillRect(290,75,90,160)}
+g.fillStyle="rgba(44,35,45,.72)";g.fillRect(18,268,444,34);g.fillStyle="#fff8ee";g.font="italic 17px Georgia";g.textAlign="center";g.fillText(a.title||"A Briefsville Study",240,290);
+return c.toDataURL("image/jpeg",.78);
+}
+function createArtwork(title,source){
+const seed=state.artworks.length+1+state.day*17;
+return {title,value:8+state.artworks.length*2,source:source||"Museum visit",day:state.day,seed};
+}
+
 function renderMeters(){document.getElementById("meters").innerHTML=meterNames.map(([n,k])=>'<div class="meter"><div class="meterhead"><span>'+n+'</span><b>'+state[k]+'%</b></div><div class="track"><div class="fill" style="width:'+state[k]+'%"></div></div></div>').join("");document.getElementById("day").textContent=String(state.day).padStart(3,"0");try{localStorage.setItem("briefsville-save",JSON.stringify(state))}catch(e){}}
 
 const brainPlaces=[
@@ -155,7 +150,7 @@ const brainPlaces=[
 {name:"Town Fountain",x:9,z:-7,reason:"rest and recharge",run:()=>{state.energy=Math.min(100,state.energy+12);state.mood=Math.min(100,state.mood+3)}},
 {name:"Flower Garden",x:13,z:10,reason:"enjoy the flowers",run:()=>state.mood=Math.min(100,state.mood+12)},
 {name:"The Drunken Sock",x:-18,z:17,reason:"hear the latest gossip",run:()=>state.mood=Math.min(100,state.mood+8)},
-{name:"Lost Things Museum",x:18,z:17,reason:"seek artistic inspiration",run:()=>{if(state.artworks.length<12){const titles=["The Sock of Destiny","Still Life with Washing Basket","Portrait of a Very Tired Butler","The Great Laundry Escape","Untitled (Missing Pair)","Duchess in a Delicate Mood"];state.artworks.push({title:titles[state.artworks.length%titles.length],value:8+state.artworks.length*2,source:"Museum visit",day:state.day});state.art=state.artworks.length}}}
+{name:"Lost Things Museum",x:18,z:17,reason:"seek artistic inspiration",run:()=>{if(state.artworks.length<12){const titles=["The Sock of Destiny","Still Life with Washing Basket","Portrait of a Very Tired Butler","The Great Laundry Escape","Untitled (Missing Pair)","Duchess in a Delicate Mood"];state.artworks.push(createArtwork(titles[state.artworks.length%titles.length],"Lady inspiration"));state.art=state.artworks.length}}}
 ];
 let brainTarget=null,brainPause=0,brainTimer=0;
 function remember(thought,action){state.brain.lastThought=thought;state.brain.lastAction=action;state.brain.memories.unshift({day:state.day,text:thought});state.brain.memories=state.brain.memories.slice(0,20);state.events.unshift("Day "+state.day+": "+thought);state.events=state.events.slice(0,30);renderMeters()}
@@ -195,10 +190,10 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menuPanel.style.dis
 function openPage(p){
 const pages={
 Journal:["Lady's Journal","<p>Day "+state.day+": Briefsville is tolerable. The locals are not.</p><p class='small'>Lady Briefington's story is still unfolding.</p>"],
-Gallery:["Lady's Gallery","<p><b>Collected works: "+state.artworks.length+"</b></p>"+(state.artworks.length?state.artworks.map(a=>"<div><b>🖼 "+a.title+"</b><p class='small'>Asking price: €"+a.value+"</p></div>").join(""):"<p>No artworks yet. Visit the Lost Things Museum to find pieces for your collection.</p>")+"<p class='small'>Your collection stays here until you decide to sell it in the boutique.</p>"],
+Gallery:["Lady's Gallery","<p><b>Collected works: "+state.artworks.length+"</b></p>"+(state.artworks.length?state.artworks.map(a=>"<div style='margin:14px 0;padding:10px;border:1px solid #dfc9bd;border-radius:14px'><img alt='"+a.title+"' src='"+artworkImage(a)+"' style='display:block;width:100%;border-radius:9px;object-fit:cover'><b>🖼 "+a.title+"</b><p class='small'>Asking price: €"+a.value+" · Day "+(a.day||1)+"</p></div>").join(""):"<p>No artworks yet. Visit the Lost Things Museum to find pieces for your collection.</p>")+"<p class='small'>Each artwork now has its own visible image.</p>"],
 Inventory:["Personal Effects","<p>One pearl necklace · One gold monocle · Money: €"+state.money+"</p>"],
 Shop:["Briefsville Boutique","<p>Collectors can buy Lady Briefington's artworks. She earns money only when a collector purchases a piece.</p><p>Works available: "+state.artworks.length+" · Sales completed: "+state.sales+"</p>"+(state.artworks.length?"<button class='menubtn' data-action='sell'>💶 Sell to a collector · €"+state.artworks[0].value+"</button>":"<p class='small'>Find an artwork at the Lost Things Museum to stock the boutique.</p>")],
-Residents:["Briefsville Residents","<p>People Lady has met and the friendships she is building.</p>"+residents.map(r=>{const v=state.residents[r.id]||{meetings:0,affinity:0};return "<div><b>"+r.name+"</b><p class='small'>"+r.role+" · Conversations: "+v.meetings+" · Friendship: "+v.affinity+"/10</p></div>"}).join("")],
+
 Status:["Lady's Condition","<p>🍽 Hunger: "+state.hunger+"%<br>⚡ Energy: "+state.energy+"%<br>😊 Mood: "+state.mood+"%<br>😴 Sleep: "+state.sleep+"%<br>🧼 Hygiene: "+state.hygiene+"%<br>❤️ Health: "+state.health+"%</p><p>Money: €"+state.money+"</p>"]
 };
 if(p==="Brain"){showPanel("Lady's Mind","<p><b>Autonomy:</b> Local decision engine active</p><p><b>Current ambition:</b> "+state.brain.goal+"</p><p><b>Last action:</b> "+state.brain.lastAction+"</p><blockquote>“"+state.brain.lastThought+"”</blockquote><p><b>Recent memories</b></p>"+(state.brain.memories.length?state.brain.memories.slice(0,8).map(m=>"<p class='small'>Day "+m.day+" · "+m.text+"</p>").join(""):"<p class='small'>Her memories will appear as she explores.</p>"));return;} if(pages[p])showPanel(pages[p][0],pages[p][1]);
@@ -230,7 +225,7 @@ const [px,py]=xy(camera.position.x,camera.position.z);c.save();c.translate(px,py
 }
 function clampPos(v){v.x=Math.max(-43,Math.min(43,v.x));v.z=Math.max(-43,Math.min(43,v.z));return v}
 function wander(dt){updateBrain(dt);lady.userData.walk+=dt;lady.position.y=.035+Math.sin(performance.now()*.003)*.035;bow.rotation.z=Math.sin(performance.now()*.002)*.08;arms[0].rotation.z=Math.sin(performance.now()*.003)*.08;arms[1].rotation.z=-Math.sin(performance.now()*.003)*.08;if(!brainTarget){if(lady.userData.walk>8){lady.userData.walk=0;lady.userData.target.set(lady.userData.home.x+(Math.random()-.5)*12,0,lady.userData.home.z+(Math.random()-.5)*12)}const dir=lady.userData.target.clone().sub(lady.position);dir.y=0;if(dir.length()>.6){dir.normalize();lady.position.addScaledVector(dir,dt*.42);lady.rotation.y=Math.atan2(dir.x,dir.z);legs[0].rotation.x=Math.sin(performance.now()*.008)*.35;legs[1].rotation.x=-legs[0].rotation.x}}beacon.position.set(lady.position.x,lady.position.y,lady.position.z);beaconRing.rotation.y=performance.now()*.0012;beaconDot.position.y=5.35+Math.sin(performance.now()*.003)*.22}
-function checkLady(){const dist=camera.position.distanceTo(new THREE.Vector3(lady.position.x,1.3,lady.position.z));nearLady=dist<7;activeInteractable=null;let nearest=Infinity;for(const item of worldInteractables){const d=Math.hypot(camera.position.x-item.x,camera.position.z-item.z);if(d<item.r&&d<nearest){nearest=d;activeInteractable=item}}const button=document.getElementById("interact");button.style.display=nearLady||activeInteractable?"block":"none";button.textContent=nearLady?"Talk to Lady Briefington":activeInteractable?(residents.some(r=>r.name===activeInteractable.name)?"Talk to "+activeInteractable.name:"Explore · "+activeInteractable.name):"Explore";document.getElementById("hint").textContent=nearLady?"Lady Briefington is right here!":activeInteractable?"You found "+activeInteractable.name+" · tap to interact":"Joystick to move · drag the right side to look · Lady is "+Math.round(dist)+" m away";}
+function checkLady(){const dist=camera.position.distanceTo(new THREE.Vector3(lady.position.x,1.3,lady.position.z));nearLady=dist<7;activeInteractable=null;let nearest=Infinity;for(const item of worldInteractables){const d=Math.hypot(camera.position.x-item.x,camera.position.z-item.z);if(d<item.r&&d<nearest){nearest=d;activeInteractable=item}}const button=document.getElementById("interact");button.style.display=nearLady||activeInteractable?"block":"none";button.textContent=nearLady?"Talk to Lady Briefington":activeInteractable?"Explore · "+activeInteractable.name:"Explore";document.getElementById("hint").textContent=nearLady?"Lady Briefington is right here!":activeInteractable?"You found "+activeInteractable.name+" · tap to interact":"Joystick to move · drag the right side to look · Lady is "+Math.round(dist)+" m away";}
 function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-lastTime)/1000);lastTime=now;if(started){const forward=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));const desired=new THREE.Vector3();desired.addScaledVector(forward,-moveY);desired.addScaledVector(right,moveX);if(desired.length()>1)desired.normalize();let strength=Math.min(1,desired.length());if(strength<.13){desired.set(0,0,0);strength=0}else{strength=(strength-.13)/.87;strength=strength*strength*(3-2*strength);desired.normalize().multiplyScalar(8.0*strength)}
 const response=desired.length()>moveVelocity.length()?7.5:10.5;moveVelocity.lerp(desired,1-Math.exp(-dt*response));camera.position.addScaledVector(moveVelocity,dt);clampPos(camera.position);if(moveVelocity.length()>.1){state.energy=Math.max(0,state.energy-dt*.018);state.hunger=Math.max(0,state.hunger-dt*.012)}updateCamera();wander(dt);checkLady();drawMap();}renderer.render(scene,camera)}
 requestAnimationFrame(tick);
