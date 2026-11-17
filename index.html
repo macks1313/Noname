@@ -15,7 +15,7 @@
 #toast{position:fixed;z-index:20;bottom:18px;left:50%;transform:translateX(-50%);background:#fff1cc;color:#654c67;padding:10px 15px;border-radius:30px;font-size:11px;opacity:0;transition:.2s;pointer-events:none}#toast.show{opacity:1}
 #loadError{display:none;position:fixed;z-index:40;inset:0;background:#eaf7f5f2;align-items:center;justify-content:center;text-align:center;padding:28px}#loadError .box{max-width:440px;background:#fff8ed;border:1px solid #d9a6a9;border-radius:18px;padding:24px}#loadError h2{font:26px Georgia,serif;color:#efcc89}#loadError p{font-size:14px;line-height:1.6;color:#e4d8e1}#loadError button{background:#594052;color:white;border:1px solid #b18b9e;padding:10px 16px;border-radius:10px}
 @media(pointer:coarse){#minimapWrap{top:91px;width:106px;padding:5px}#minimap{width:92px;height:92px}#meters{max-width:calc(100% - 130px)}.meter{width:calc(50% - 4px)}#hint{top:auto;bottom:145px;font-size:9px}#interact{bottom:155px}#meters{top:62px;gap:5px}.meter{width:91px;padding:6px 7px}.meterhead{font-size:8px}#menu{top:auto;bottom:150px;right:12px}.menubtn{padding:7px 9px;font-size:10px}}
-@media(max-width:420px){.brand{font-size:15px}.tag{font-size:8px}.meter{width:calc(33.33vw - 15px)}#meters{right:10px}.stick{width:105px;height:105px}.knob{left:28px;top:28px}}
+@media(max-width:420px){.brand{font-size:15px}.tag{font-size:8px}.meter{width:calc(33.33vw - 15px)}#meters{right:10px}.stick{width:120px;height:120px}.knob{width:52px;height:52px;left:34px;top:34px}}
 </style></head><body>
 <div id="game"></div>
 <div id="top"><div class="brand">♛ LADY BRIEFINGTON</div><div class="tag">Lost in the laundry. Found by destiny.</div><div class="day">BRIEFSVILLE · DAY <b id="day">001</b></div></div>
@@ -86,7 +86,7 @@ cloth.position.set(0,1.55,.12);cloth.castShadow=true;lady.add(cloth);
 const smileCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(-.19,1.57,.43),new THREE.Vector3(0,1.49,.46),new THREE.Vector3(.19,1.57,.43)]);
 const smile=new THREE.Mesh(new THREE.TubeGeometry(smileCurve,16,.025,8,false),mat(0x71334f));lady.add(smile);
 const cheekMat=mat(0xffb0c7);for(const x of [-.34,.34]){const cheek=new THREE.Mesh(new THREE.SphereGeometry(.075,10,8),cheekMat);cheek.position.set(x,1.59,.42);lady.add(cheek)}
-const armMat=mat(0xff5f9e);for(const x of [-.88,.88]){const arm=new THREE.Mesh(new THREE.CapsuleGeometry(.07,.38,4,8),armMat);arm.position.set(x,1.28,.06);arm.rotation.z=x<0?-.45:.45;lady.add(arm)}
+const armMat=mat(0xff5f9e);for(const x of [-.88,.88]){const arm=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.48,8),armMat);arm.position.set(x,1.28,.06);arm.rotation.z=x<0?-.45:.45;lady.add(arm)}
 
 const waistband=new THREE.Mesh(new THREE.BoxGeometry(1.47,.15,.16),mat(0xffc6df));waistband.position.set(0,2.02,.16);lady.add(waistband);
 const laceMat=mat(0xd987a7);
