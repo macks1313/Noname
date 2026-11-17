@@ -13,7 +13,7 @@
 #panel{display:none;position:fixed;z-index:12;right:16px;top:50%;transform:translateY(-50%);width:min(350px,calc(100% - 32px));max-height:75vh;overflow:auto;background:#211e2df2;border:1px solid #a58b70;border-radius:17px;padding:18px;box-shadow:0 18px 60px #000b;backdrop-filter:blur(15px)}#panel h2{font:22px Georgia,serif;color:#efcc89;margin:0 0 10px}#panel p{font-size:13px;color:#e4d8e1;line-height:1.6}#panel .close{float:right;background:none;border:1px solid #716078;color:#fff;border-radius:8px;padding:5px 9px}#panel .small{font-size:10px;color:#b9aabd}
 #dialog{display:none;position:fixed;z-index:13;left:50%;bottom:12%;transform:translateX(-50%);width:min(500px,calc(100% - 28px));background:#211e2df2;border:1px solid #d7b779;border-radius:16px;padding:16px 18px;box-shadow:0 12px 50px #000b}#dialog strong{color:#f0cc89;font:18px Georgia,serif}#dialog p{margin:8px 0 12px;font:14px/1.5 Georgia,serif}#dialog button{float:right;background:#594052;border:1px solid #b18b9e;border-radius:9px;padding:7px 13px;color:#fff}
 #toast{position:fixed;z-index:20;bottom:18px;left:50%;transform:translateX(-50%);background:#f0dfc5;color:#272130;padding:10px 15px;border-radius:30px;font-size:11px;opacity:0;transition:.2s;pointer-events:none}#toast.show{opacity:1}
-#start{position:fixed;z-index:30;inset:0;background:linear-gradient(120deg,#171522ee,#2a2030ee),radial-gradient(circle at 70% 30%,#8b5c71,#15141d);display:flex;align-items:center;justify-content:center;text-align:center;padding:25px}#start .box{max-width:460px}#start h1{font:clamp(30px,7vw,54px) Georgia,serif;color:#f0cc89;letter-spacing:.08em;margin:0 0 8px}#start p{color:#d7c9d9;line-height:1.6;font-size:14px}#start button{margin-top:15px;border:1px solid #f0cc89;background:#6b455c;color:#fff3df;border-radius:30px;padding:14px 26px;font-weight:800;letter-spacing:.08em}
+#loadError{display:none;position:fixed;z-index:40;inset:0;background:#15141df2;align-items:center;justify-content:center;text-align:center;padding:28px}#loadError .box{max-width:440px;background:#211e2d;border:1px solid #a58b70;border-radius:18px;padding:24px}#loadError h2{font:26px Georgia,serif;color:#efcc89}#loadError p{font-size:14px;line-height:1.6;color:#e4d8e1}#loadError button{background:#594052;color:white;border:1px solid #b18b9e;padding:10px 16px;border-radius:10px}
 @media(pointer:coarse){#lookstick{display:block}#hint{top:auto;bottom:145px;font-size:9px}#interact{bottom:155px}#meters{top:62px;gap:5px}.meter{width:91px;padding:6px 7px}.meterhead{font-size:8px}#menu{top:auto;bottom:150px;right:12px}.menubtn{padding:7px 9px;font-size:10px}}
 @media(max-width:420px){.brand{font-size:15px}.tag{font-size:8px}.meter{width:calc(33.33vw - 15px)}#meters{right:10px}.stick{width:105px;height:105px}.knob{left:28px;top:28px}.lookstick{width:105px;height:105px}}
 </style></head><body>
@@ -25,15 +25,20 @@
 <div id="lookstick"><div class="knob" id="lookKnob"></div><div class="looklabel">LOOK</div></div>
 <div id="menu"><button class="menubtn" data-page="Journal">📖 Journal</button><button class="menubtn" data-page="Gallery">🎨 Gallery</button><button class="menubtn" data-page="Inventory">👜 Bag</button><button class="menubtn" data-page="Shop">🛍 Shop</button></div>
 <div id="panel"><button class="close" id="closePanel">✕</button><h2 id="panelTitle"></h2><div id="panelBody"></div></div>
-<div id="dialog"><strong>Lady Briefington</strong><p id="dialogText"></p><button id="dialogClose">Dismiss</button></div><div id="toast"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<div id="dialog"><strong>Lady Briefington</strong><p id="dialogText"></p><button id="dialogClose">Dismiss</button></div><div id="toast"></div><div id="loadError"><div class="box"><h2>Briefsville is not responding</h2><p id="loadErrorText">The 3D world could not start.</p><button onclick="location.reload()">Try again</button></div></div>
 <script>
-(function(){
-if(!window.THREE){document.getElementById("start").querySelector("p").textContent="The 3D engine could not load. Please refresh with an internet connection.";return}
+function showLoadError(message){const e=document.getElementById("loadError");document.getElementById("loadErrorText").textContent=message;e.style.display="flex"}
+function loadThree(urls){return new Promise((resolve,reject)=>{let i=0;function next(){if(window.THREE)return resolve();if(i>=urls.length)return reject(new Error("Could not download the 3D engine from the available servers."));const script=document.createElement("script");script.src=urls[i++];script.onload=()=>window.THREE?resolve():next();script.onerror=next;document.head.appendChild(script)}next()})}
+function boot(){
 const THREE=window.THREE,root=document.getElementById("game");
+if(!THREE){showLoadError("The 3D engine did not load. Check your internet connection and reload.");return}
+let renderer;
+try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:"high-performance"})}
+catch(error){showLoadError("Your browser could not start WebGL, which is required to display the 3D city. Try opening this page directly in Safari instead of the in-app browser.");return}
+
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x9bb7c1);scene.fog=new THREE.Fog(0x9bb7c1,24,100);
 const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,180);camera.position.set(0,1.7,12);
-const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputEncoding=THREE.sRGBEncoding;root.appendChild(renderer.domElement);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputEncoding=THREE.sRGBEncoding;root.appendChild(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0xddeeff,0x6c594b,1.35));const sun=new THREE.DirectionalLight(0xffe3bd,1.4);sun.position.set(-20,35,15);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);
 const mat=(c,r)=>new THREE.MeshStandardMaterial({color:c,roughness:r===undefined?.85:r});
 const grass=mat(0x63805a),road=mat(0x454650),sidewalk=mat(0xb9a58b),brick=mat(0x94766e),cream=mat(0xd8c6a9),roof=mat(0x544452),windowMat=new THREE.MeshStandardMaterial({color:0xf5dca0,emissive:0x80602c,emissiveIntensity:.25}),treeMat=mat(0x315b43),trunk=mat(0x5c4538);
@@ -99,5 +104,10 @@ renderer.domElement.addEventListener("dblclick",()=>{if(nearLady)openTalk()});
 renderer.domElement.addEventListener("click",e=>{if(!started||dialogue||document.getElementById("panel").style.display==="block")return;raycaster.setFromCamera(center,camera);const hits=raycaster.intersectObject(cloth,true);if(hits.length&&camera.position.distanceTo(lady.position)<5)openTalk()});
 setInterval(()=>{if(started){state.day++;state.hunger=Math.max(0,state.hunger-1);state.energy=Math.max(0,state.energy-1);state.sleep=Math.max(0,state.sleep-1);renderMeters()}},60000);
 renderMeters();window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-})();
+}
+loadThree([
+ "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
+ "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js",
+ "https://unpkg.com/three@0.128.0/build/three.min.js"
+]).then(boot).catch(()=>showLoadError("The 3D engine could not be downloaded. Check your connection, then tap Try again."));
 </script></body></html>
