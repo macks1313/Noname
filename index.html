@@ -150,6 +150,13 @@ function showPanel(title,body){document.getElementById("panelTitle").textContent
 function openTalk(){dialogue=true;document.getElementById("dialogText").textContent="“Darling! You found me. I was conducting an extremely important inspection of the pavement. It is dreadful, by the way. Now, tell me: have you come to admire me, or are you here to waste my time?”";document.getElementById("dialog").style.display="block";state.mood=Math.min(100,state.mood+2);renderMeters()}
 document.getElementById("dialogClose").onclick=()=>{dialogue=false;document.getElementById("dialog").style.display="none"};
 document.getElementById("closePanel").onclick=()=>document.getElementById("panel").style.display="none";
+const menuPanel=document.getElementById("panel");
+const menuToggle=document.getElementById("menuToggle");
+menuToggle.setAttribute("aria-expanded","false");
+menuToggle.onclick=()=>{const opening=menuPanel.style.display!=="block";menuPanel.style.display=opening?"block":"none";menuToggle.setAttribute("aria-expanded",String(opening));};
+document.getElementById("closePanel").onclick=()=>{menuPanel.style.display="none";menuToggle.setAttribute("aria-expanded","false");};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menuPanel.style.display==="block"){menuPanel.style.display="none";menuToggle.setAttribute("aria-expanded","false");}});
+
 function openPage(p){
 const pages={
 Journal:["Lady's Journal","<p>Day "+state.day+": Briefsville is tolerable. The locals are not.</p><p class='small'>Lady Briefington's story is still unfolding.</p>"],
