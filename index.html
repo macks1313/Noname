@@ -144,7 +144,8 @@ const dx=brainTarget.x-lady.position.x,dz=brainTarget.z-lady.position.z,dist=Mat
 if(dist>1.4){const step=Math.min(dist,dt*1.5);lady.position.x+=dx/dist*step;lady.position.z+=dz/dist*step;lady.rotation.y=Math.atan2(dx,dz)}
 else{const place=brainTarget;place.run();remember("I spent time at "+place.name+". "+(place.name==="Lost Things Museum"?"A new idea for my collection!":"That was rather pleasant."),"Visited "+place.name);brainTarget=null;brainPause=16;renderMeters()}
 }
-\nfunction toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1900)}
+
+function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1900)}
 function showPanel(title,body){document.getElementById("panelTitle").textContent=title;document.getElementById("panelBody").innerHTML=body;document.getElementById("panel").style.display="block"}
 function openTalk(){dialogue=true;document.getElementById("dialogText").textContent="“Darling! You found me. I was conducting an extremely important inspection of the pavement. It is dreadful, by the way. Now, tell me: have you come to admire me, or are you here to waste my time?”";document.getElementById("dialog").style.display="block";state.mood=Math.min(100,state.mood+2);renderMeters()}
 document.getElementById("dialogClose").onclick=()=>{dialogue=false;document.getElementById("dialog").style.display="none"};
