@@ -34,7 +34,23 @@ scene.add(new THREE.HemisphereLight(0x9fc9e7,0x172a39,1.35));
 const keyLight=new THREE.DirectionalLight(0xffe3c1,2.1);keyLight.position.set(-16,28,12);keyLight.castShadow=true;keyLight.shadow.mapSize.set(1536,1536);keyLight.shadow.camera.left=-28;keyLight.shadow.camera.right=28;keyLight.shadow.camera.top=28;keyLight.shadow.camera.bottom=-28;scene.add(keyLight);
 const rimLight=new THREE.PointLight(0x39c9e7,2.4,46);rimLight.position.set(5,8,-7);scene.add(rimLight);
 const mat=(color,rough=.8,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
+const textureLoader=new THREE.TextureLoader();
+textureLoader.setCrossOrigin('anonymous');
+function loadPBR(id,material,repeat=4){
+ const root='https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/'+id+'/'+id;
+ const load=(suffix,apply)=>textureLoader.load(root+suffix,tex=>{tex.wrapS=tex.wrapT=THREE.RepeatWrapping;tex.repeat.set(repeat,repeat);tex.anisotropy=renderer.capabilities.getMaxAnisotropy();apply(tex)},undefined,err=>console.warn('Texture indisponible:',id,suffix));
+ load('_diff_2k.jpg',tex=>{tex.encoding=THREE.sRGBEncoding;material.map=tex;material.needsUpdate=true});
+ load('_nor_gl_2k.jpg',tex=>{material.normalMap=tex;material.normalScale.set(.55,.55);material.needsUpdate=true});
+ load('_rough_2k.jpg',tex=>{material.roughnessMap=tex;material.needsUpdate=true});
+}
+
 const pearl=mat(0xc9d8df,.28,.42),white=mat(0xe7eff0,.32,.22),dark=mat(0x142b3c,.38,.55),glass=new THREE.MeshPhysicalMaterial({color:0x5dbbd0,metalness:.18,roughness:.12,transparent:true,opacity:.34,clearcoat:1}),glow=new THREE.MeshBasicMaterial({color:0x43e5ed}),gold=mat(0xe3b879,.25,.72),ground=mat(0x253e50,.72,.2);
+loadPBR('concrete_floor_01',ground,7);
+loadPBR('marble_01',pearl,3);
+loadPBR('marble_01',white,2);
+loadPBR('metal_plate',dark,3);
+loadPBR('metal_plate',gold,2);
+
 function addMesh(g,m,x,y,z,rx=0,ry=0,rz=0,parent=scene){const o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.rotation.set(rx,ry,rz);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
 function cylinder(x,z,r1,r2,h,m,y=h/2,n=48){return addMesh(new THREE.CylinderGeometry(r1,r2,h,n),m,x,y,z)}
 function box(x,y,z,w,h,d,m,ry=0){return addMesh(new THREE.BoxGeometry(w,h,d),m,x,y,z,0,ry,0)}
