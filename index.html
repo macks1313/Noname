@@ -115,9 +115,9 @@ const hitObjects=[cloth];cloth.userData.isLady=true;
 const raycaster=new THREE.Raycaster(),center=new THREE.Vector2(0,0);let yaw=0,pitch=0,moveX=0,moveY=0,nearLady=false,activeInteractable=null,started=true,dialogue=false,lastTime=performance.now();
 const moveVelocity=new THREE.Vector3(),mapCanvas=document.getElementById("minimap"),mapCtx=mapCanvas.getContext("2d");
 const mapPlaces=[{x:-16,z:-15,c:"#ed8c84"},{x:18,z:-16,c:"#e6ad47"},{x:-18,z:17,c:"#a889c9"},{x:18,z:17,c:"#5caaa0"}];
-const state={day:1,hunger:66,energy:82,mood:78,sleep:74,hygiene:43,health:100,money:0,art:0,artworks:[],sales:0,brain:{goal:"Explore Briefsville",lastThought:"I wonder what the town is hiding today.",lastAction:"Looking around",memories:[]},events:["Lady Briefington was last spotted somewhere in Briefsville."]};
+const state={day:1,hunger:66,energy:82,mood:78,sleep:74,hygiene:43,health:100,money:0,art:0,artworks:[],sales:0,reputation:0,brain:{goal:"Explore Briefsville",lastThought:"I wonder what the town is hiding today.",lastAction:"Looking around",memories:[]},events:["Lady Briefington was last spotted somewhere in Briefsville."]};
 const meterNames=[["Hunger","hunger"],["Energy","energy"],["Mood","mood"],["Sleep","sleep"],["Hygiene","hygiene"],["Health","health"]];
-try{const saved=JSON.parse(localStorage.getItem("briefsville-save")||"null");if(saved){for(const k of ["day","hunger","energy","mood","sleep","hygiene","health","artworks","sales","brain"])if(saved[k]!==undefined)state[k]=saved[k];state.money=saved.sales>0&&Number.isFinite(saved.money)?saved.money:0;state.art=state.artworks.length;state.artworks.forEach((a,i)=>{if(!a.seed)a.seed=i+1;if(!a.day)a.day=state.day||1})}}catch(e){}
+try{const saved=JSON.parse(localStorage.getItem("briefsville-save")||"null");if(saved){for(const k of ["day","hunger","energy","mood","sleep","hygiene","health","artworks","sales","reputation","brain"])if(saved[k]!==undefined)state[k]=saved[k];state.money=saved.sales>0&&Number.isFinite(saved.money)?saved.money:0;state.art=state.artworks.length;state.artworks.forEach((a,i)=>{if(!a.seed)a.seed=i+1;if(!a.day)a.day=state.day||1})}}catch(e){}
 
 
 let language=localStorage.getItem("briefsville-language")==="fr"?"fr":"en";const words={en:{menu:"☰ MENU",journal:"📖 Journal",gallery:"🎨 Gallery",bag:"👜 Bag",shop:"🛍 Shop",status:"♡ Status",mind:"🧠 Mind",dismiss:"Dismiss",move:"MOVE",map:"BRIEFSVILLE MAP",legend:"● You • Places",hint:"Find Lady Briefington somewhere in Briefsville",talk:"Talk to Lady Briefington",day:"BRIEFSVILLE · DAY",intro:"Explore the town, meet its residents and discover hidden surprises."},fr:{menu:"☰ MENU",journal:"📖 Journal",gallery:"🎨 Galerie",bag:"👜 Sac",shop:"🛍 Boutique",status:"♡ État",mind:"🧠 Esprit",dismiss:"Fermer",move:"DÉPLACEMENT",map:"PLAN DE BRIEFSVILLE",legend:"● Vous • Lieux",hint:"Retrouvez Lady Briefington dans Briefsville",talk:"Parler à Lady Briefington",day:"BRIEFSVILLE · JOUR",intro:"Explorez Briefsville, prenez soin de Lady et découvrez ce que sa journée lui réserve."}};function tr(k){return words[language][k]||words.en[k]||k}function applyLanguage(){document.documentElement.lang=language;document.getElementById("languageToggle").textContent=language==="fr"?"🇬🇧 English":"🇫🇷 Français";document.getElementById("menuToggle").textContent=tr("menu");document.querySelector(".sticklabel").textContent=tr("move");document.getElementById("minimapTitle").textContent=tr("map");document.getElementById("minimapLegend").textContent=tr("legend");document.getElementById("hint").textContent=tr("hint");document.getElementById("interact").textContent=tr("talk");document.getElementById("dialogClose").textContent=tr("dismiss");document.querySelector(".day").childNodes[0].textContent=tr("day")+" ";renderMenuHome()}document.getElementById("languageToggle").onclick=()=>{language=language==="en"?"fr":"en";localStorage.setItem("briefsville-language",language);applyLanguage()};
@@ -140,7 +140,7 @@ return c.toDataURL("image/jpeg",.78);
 }
 function createArtwork(title,source){
 const seed=state.artworks.length+1+state.day*17;
-return {title,value:8+state.artworks.length*2,source:source||"Museum visit",day:state.day,seed};
+const values=[12,18,25,38,55];return {title,value:values[state.artworks.length%values.length],source:source||"Lady atelier",day:state.day,seed,description:"An original creation from Lady Briefington."};
 }
 
 function renderMeters(){document.getElementById("meters").innerHTML=meterNames.map(([n,k])=>'<div class="meter"><div class="meterhead"><span>'+n+'</span><b>'+state[k]+'%</b></div><div class="track"><div class="fill" style="width:'+state[k]+'%"></div></div></div>').join("");document.getElementById("day").textContent=String(state.day).padStart(3,"0");try{localStorage.setItem("briefsville-save",JSON.stringify(state))}catch(e){}}
@@ -150,7 +150,7 @@ const brainPlaces=[
 {name:"Town Fountain",x:9,z:-7,reason:"rest and recharge",run:()=>{state.energy=Math.min(100,state.energy+12);state.mood=Math.min(100,state.mood+3)}},
 {name:"Flower Garden",x:13,z:10,reason:"enjoy the flowers",run:()=>state.mood=Math.min(100,state.mood+12)},
 {name:"The Drunken Sock",x:-18,z:17,reason:"hear the latest gossip",run:()=>state.mood=Math.min(100,state.mood+8)},
-{name:"Lost Things Museum",x:18,z:17,reason:"seek artistic inspiration",run:()=>{if(state.artworks.length<12){const titles=["The Sock of Destiny","Still Life with Washing Basket","Portrait of a Very Tired Butler","The Great Laundry Escape","Untitled (Missing Pair)","Duchess in a Delicate Mood"];state.artworks.push(createArtwork(titles[state.artworks.length%titles.length],"Lady inspiration"));state.art=state.artworks.length}}}
+{name:"Lady’s Atelier",x:18,z:17,reason:"develop an artistic project",run:()=>{if(state.artworks.length<12){const titles=["Lady Briefington: Icon in Lace","The Royal Waistband","A Culotte in Bloom","Briefsville After Midnight","The Duchess of Delicates","The Pink Seam Manifesto","The Art of Being Unmentionable","Silk, Sass & Self-Respect"];state.artworks.push(createArtwork(titles[state.artworks.length%titles.length],"Lady inspiration"));state.art=state.artworks.length}}}
 ];
 let brainTarget=null,brainPause=0,brainTimer=0;
 function remember(thought,action){state.brain.lastThought=thought;state.brain.lastAction=action;state.brain.memories.unshift({day:state.day,text:thought});state.brain.memories=state.brain.memories.slice(0,20);state.events.unshift("Day "+state.day+": "+thought);state.events=state.events.slice(0,30);renderMeters()}
@@ -159,7 +159,7 @@ const options=[];
 if(state.hygiene<65)options.push({score:75-state.hygiene,place:brainPlaces[0],thought:"Good heavens, I need a wash. One must maintain standards."});
 if(state.energy<60||state.sleep<50)options.push({score:Math.max(60-state.energy,50-state.sleep)+10,place:brainPlaces[1],thought:"A little rest is in order. Even a distinguished lady needs a pause."});
 if(state.mood<65)options.push({score:65-state.mood+8,place:brainPlaces[2],thought:"I refuse to be miserable. A stroll among the flowers should help."});
-if(state.artworks.length<4)options.push({score:35-state.artworks.length,place:brainPlaces[4],thought:"An artist must seek inspiration. I shall visit the museum."});
+if(state.artworks.length<12)options.push({score:Math.max(18,34-state.artworks.length*2),place:brainPlaces[4],thought:"I have an idea for a new piece. To my atelier!"});
 options.push({score:12,place:brainPlaces[3],thought:"I fancy a little gossip. Briefsville must be buzzing."});
 options.sort((a,b)=>b.score-a.score);const choice=options[0];brainTarget=choice.place;state.brain.goal=choice.place.name+" — "+choice.place.reason;remember(choice.thought,"Heading to "+choice.place.name);
 }
@@ -169,7 +169,7 @@ if(!brainTarget&&brainTimer>12){brainTimer=0;chooseBrainGoal()}
 if(!brainTarget)return;
 const dx=brainTarget.x-lady.position.x,dz=brainTarget.z-lady.position.z,dist=Math.hypot(dx,dz);
 if(dist>1.4){const step=Math.min(dist,dt*1.5);lady.position.x+=dx/dist*step;lady.position.z+=dz/dist*step;lady.rotation.y=Math.atan2(dx,dz)}
-else{const place=brainTarget;place.run();remember("I spent time at "+place.name+". "+(place.name==="Lost Things Museum"?"A new idea for my collection!":"That was rather pleasant."),"Visited "+place.name);brainTarget=null;brainPause=16;renderMeters()}
+else{const place=brainTarget;place.run();remember("I spent time at "+place.name+". "+(place.name==="Lady’s Atelier"?"A new work has joined my collection!":"That was rather pleasant."),"Visited "+place.name);brainTarget=null;brainPause=16;renderMeters()}
 }
 
 function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1900)}
@@ -192,7 +192,7 @@ const pages={
 Journal:["Lady's Journal","<p>Day "+state.day+": Briefsville is tolerable. The locals are not.</p><p class='small'>Lady Briefington's story is still unfolding.</p>"],
 Gallery:["Lady's Gallery","<p><b>Collected works: "+state.artworks.length+"</b></p>"+(state.artworks.length?state.artworks.map(a=>"<div style='margin:14px 0;padding:10px;border:1px solid #dfc9bd;border-radius:14px'><img alt='"+a.title+"' src='"+artworkImage(a)+"' style='display:block;width:100%;border-radius:9px;object-fit:cover'><b>🖼 "+a.title+"</b><p class='small'>Asking price: €"+a.value+" · Day "+(a.day||1)+"</p></div>").join(""):"<p>No artworks yet. Visit the Lost Things Museum to find pieces for your collection.</p>")+"<p class='small'>Each artwork now has its own visible image.</p>"],
 Inventory:["Personal Effects","<p>One pearl necklace · One gold monocle · Money: €"+state.money+"</p>"],
-Shop:["Briefsville Boutique","<p>Collectors can buy Lady Briefington's artworks. She earns money only when a collector purchases a piece.</p><p>Works available: "+state.artworks.length+" · Sales completed: "+state.sales+"</p>"+(state.artworks.length?"<button class='menubtn' data-action='sell'>💶 Sell to a collector · €"+state.artworks[0].value+"</button>":"<p class='small'>Find an artwork at the Lost Things Museum to stock the boutique.</p>")],
+Shop:["Briefsville Boutique","<p>Collectors can buy Lady Briefington's artworks. She earns money only when a collector purchases a piece.</p><p>Works available: "+state.artworks.length+" · Sales completed: "+state.sales+" · Reputation: "+(state.reputation||0)+"</p>"+(state.artworks.length?"<button class='menubtn' data-action='sell'>💶 Sell to a collector · €"+state.artworks[0].value+"</button>":"<p class='small'>Find an artwork at the Lost Things Museum to stock the boutique.</p>")],
 
 Status:["Lady's Condition","<p>🍽 Hunger: "+state.hunger+"%<br>⚡ Energy: "+state.energy+"%<br>😊 Mood: "+state.mood+"%<br>😴 Sleep: "+state.sleep+"%<br>🧼 Hygiene: "+state.hygiene+"%<br>❤️ Health: "+state.health+"%</p><p>Money: €"+state.money+"</p>"]
 };
