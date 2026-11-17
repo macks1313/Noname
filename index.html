@@ -63,7 +63,7 @@ sign("THRIFT SHOP",18,-16,0x8a6e89);building(18,-21,9,8,7,0xb78f75);
 sign("THE DRUNKEN SOCK",-18,17,0x8a6e89);building(-18,22,10,8,8,0x7c8292);
 sign("LOST THINGS MUSEUM",18,17,0x8a6e89);building(18,22,11,9,10,0xb49b78);
 // Character: a little animated anthropomorphic lace-panties silhouette
-const lady=new THREE.Group();const cloth=new THREE.Mesh(new THREE.CapsuleGeometry(.62,.45,6,12),new THREE.MeshStandardMaterial({color:0xf2dfc7,roughness:.65}));cloth.scale.set(1.12,.78,.42);cloth.position.y=1.55;cloth.castShadow=true;lady.add(cloth);
+const lady=new THREE.Group();const cloth=new THREE.Mesh(new THREE.SphereGeometry(.62,16,12),new THREE.MeshStandardMaterial({color:0xf2dfc7,roughness:.65}));cloth.scale.set(1.12,.78,.42);cloth.position.y=1.55;cloth.castShadow=true;lady.add(cloth);
 const trim=new THREE.Mesh(new THREE.TorusGeometry(.53,.055,8,24),mat(0xc99b9e));trim.position.set(0,1.33,.04);trim.scale.set(1.12,.55,.7);lady.add(trim);
 const eyeMat=mat(0x392638);for(let x of [-.2,.2]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.07,10,8),eyeMat);eye.position.set(x,1.67,.4);lady.add(eye)}
 const monocle=new THREE.Mesh(new THREE.TorusGeometry(.16,.025,8,20),mat(0xc99b50));monocle.position.set(.24,1.68,.42);lady.add(monocle);
@@ -105,5 +105,7 @@ renderer.domElement.addEventListener("click",e=>{if(!started||dialogue||document
 setInterval(()=>{if(started){state.day++;state.hunger=Math.max(0,state.hunger-1);state.energy=Math.max(0,state.energy-1);state.sleep=Math.max(0,state.sleep-1);renderMeters()}},60000);
 renderMeters();window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 }
-if(window.THREE){boot()}else{showLoadError("The local 3D engine file could not be loaded. Reload the page; if this continues, the GitHub Pages deployment may still be updating.")}
+window.addEventListener("error",e=>showLoadError("Game startup error: "+(e.message||"unknown JavaScript error")));
+window.addEventListener("unhandledrejection",e=>showLoadError("Game startup error: "+(e.reason&&e.reason.message?e.reason.message:"unexpected loading error")));
+if(window.THREE){try{boot()}catch(error){showLoadError("Game startup error: "+(error&&error.message?error.message:"unknown error"));console.error(error)}}else{showLoadError("The local 3D engine file could not be loaded. Reload the page; if this continues, the GitHub Pages deployment may still be updating.")}
 </script></body></html>
