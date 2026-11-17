@@ -26,9 +26,9 @@
 <div id="menu"><button class="menubtn" data-page="Journal">📖 Journal</button><button class="menubtn" data-page="Gallery">🎨 Gallery</button><button class="menubtn" data-page="Inventory">👜 Bag</button><button class="menubtn" data-page="Shop">🛍 Shop</button></div>
 <div id="panel"><button class="close" id="closePanel">✕</button><h2 id="panelTitle"></h2><div id="panelBody"></div></div>
 <div id="dialog"><strong>Lady Briefington</strong><p id="dialogText"></p><button id="dialogClose">Dismiss</button></div><div id="toast"></div><div id="loadError"><div class="box"><h2>Briefsville is not responding</h2><p id="loadErrorText">The 3D world could not start.</p><button onclick="location.reload()">Try again</button></div></div>
+<script src="./three.min.js"></script>
 <script>
 function showLoadError(message){const e=document.getElementById("loadError");document.getElementById("loadErrorText").textContent=message;e.style.display="flex"}
-function loadThree(urls){return new Promise((resolve,reject)=>{let i=0;function next(){if(window.THREE)return resolve();if(i>=urls.length)return reject(new Error("Could not download the 3D engine from the available servers."));const script=document.createElement("script");script.src=urls[i++];script.onload=()=>window.THREE?resolve():next();script.onerror=next;document.head.appendChild(script)}next()})}
 function boot(){
 const THREE=window.THREE,root=document.getElementById("game");
 if(!THREE){showLoadError("The 3D engine did not load. Check your internet connection and reload.");return}
@@ -105,9 +105,5 @@ renderer.domElement.addEventListener("click",e=>{if(!started||dialogue||document
 setInterval(()=>{if(started){state.day++;state.hunger=Math.max(0,state.hunger-1);state.energy=Math.max(0,state.energy-1);state.sleep=Math.max(0,state.sleep-1);renderMeters()}},60000);
 renderMeters();window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 }
-loadThree([
- "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
- "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js",
- "https://unpkg.com/three@0.128.0/build/three.min.js"
-]).then(boot).catch(()=>showLoadError("The 3D engine could not be downloaded. Check your connection, then tap Try again."));
+if(window.THREE){boot()}else{showLoadError("The local 3D engine file could not be loaded. Reload the page; if this continues, the GitHub Pages deployment may still be updating.")}
 </script></body></html>
