@@ -1,244 +1,94 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#15141d"><title>Lady Briefington — Briefsville</title>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#282633"><title>THE LITTLE THING — A tiny life in the attic</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#bfe8f4;color:#49384c;font-family:Inter,system-ui,Arial,sans-serif}#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;touch-action:none}
-#top{position:fixed;z-index:5;top:0;left:0;right:0;padding:13px 16px;background:linear-gradient(#fff4e6ee,#fff4e688,transparent);pointer-events:none}.brand{font:700 18px Georgia,serif;letter-spacing:.12em;color:#a85d79}.tag{font-size:9px;letter-spacing:.2em;color:#705b77;text-transform:uppercase;margin-top:3px}.day{position:absolute;right:16px;top:17px;font-size:11px;color:#e9d6b3;border:1px solid #82718b;border-radius:20px;padding:7px 11px;background:#211d2caa}
-#meters{position:fixed;z-index:6;top:62px;left:12px;display:flex;gap:5px;flex-wrap:wrap;width:205px;pointer-events:none}.meter{width:106px;padding:7px 9px;border-radius:9px;background:#fff8eddd;border:1px solid #d9a6a9;backdrop-filter:blur(8px)}.meterhead{display:flex;justify-content:space-between;font-size:9px;color:#705b77;margin-bottom:5px}.meterhead b{color:#49384c}.track{height:5px;background:#ead9d0;border-radius:5px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#f08a9b,#f4c45e,#83c9a9);border-radius:5px}
-#hint{position:fixed;z-index:5;top:135px;left:50%;transform:translateX(-50%);font-size:10px;color:#654c67;background:#fff8edee;padding:7px 12px;border:1px solid #e4b6b5;border-radius:20px;white-space:nowrap;pointer-events:none}
-#minimapWrap{display:block;position:fixed;z-index:7;right:12px;top:76px;width:124px;padding:6px;border-radius:13px;background:#fff8eddf;border:1px solid #e5b96b;box-shadow:0 5px 20px #72556b33}#minimapTitle{font-size:8px;font-weight:900;letter-spacing:.16em;text-align:center;color:#705b77;margin-bottom:4px}#minimap{display:block;width:108px;height:108px;border-radius:10px;background:#cfe9c4}#minimapLegend{font-size:8px;text-align:center;color:#705b77;margin-top:4px}#crosshair{position:fixed;z-index:4;left:50%;top:50%;width:9px;height:9px;border:1px solid #fff9;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 8px #000}
-#interact{position:fixed;z-index:7;left:50%;bottom:18%;transform:translateX(-50%);display:none;border:1px solid #e4c27d;background:#fff8ed;color:#654c67;padding:12px 18px;border-radius:24px;font-weight:700;box-shadow:0 8px 30px #0008}
-#controls{position:fixed;z-index:6;bottom:24px;left:20px;display:flex;gap:12px;align-items:end}.stick{width:132px;height:132px;border-radius:50%;border:2px solid #e0a7a8;background:#fff4e6bb;backdrop-filter:blur(5px);position:relative;touch-action:none}.knob{position:absolute;width:48px;height:48px;border-radius:50%;left:34px;top:34px;background:#e7a7a8;border:2px solid #fff8ed;box-shadow:0 3px 12px #0006}.sticklabel{position:absolute;left:0;right:0;bottom:-17px;text-align:center;font-size:10px;color:#654c67;letter-spacing:.1em}
-
-#menu{position:fixed;z-index:8;right:14px;top:14px;display:flex;gap:6px;flex-direction:column}.menubtn{background:#fff8edee;border:1px solid #d9a6a9;color:#654c67;border-radius:10px;padding:9px 12px;font-size:11px;backdrop-filter:blur(8px)}
-#panel{display:none;position:fixed;z-index:12;right:14px;top:62px;transform:none;width:min(330px,calc(100% - 28px));max-height:72vh;overflow:auto;background:#fff8f2f5;border:1px solid #d9a6a9;border-radius:17px;padding:18px;box-shadow:0 18px 60px #000b;backdrop-filter:blur(15px)}#panel h2{font:22px Georgia,serif;color:#a85d79;margin:0 0 10px}#panel p{font-size:13px;color:#705b77;line-height:1.6}#panel .close{float:right;background:none;border:1px solid #716078;color:#fff;border-radius:8px;padding:5px 9px}#panel .small{font-size:10px;color:#967f91}
-#dialog{display:none;position:fixed;z-index:13;left:50%;bottom:12%;transform:translateX(-50%);width:min(500px,calc(100% - 28px));background:#fff8edf5;border:1px solid #e5b96b;border-radius:16px;padding:16px 18px;box-shadow:0 12px 50px #000b}#dialog strong{color:#a85d79;font:18px Georgia,serif}#dialog p{margin:8px 0 12px;font:14px/1.5 Georgia,serif}#dialog button{float:right;background:#a85d79;border:1px solid #d9a6a9;border-radius:9px;padding:7px 13px;color:#fff}
-#toast{position:fixed;z-index:20;bottom:18px;left:50%;transform:translateX(-50%);background:#fff1cc;color:#654c67;padding:10px 15px;border-radius:30px;font-size:11px;opacity:0;transition:.2s;pointer-events:none}#toast.show{opacity:1}
-#loadError{display:none;position:fixed;z-index:40;inset:0;background:#eaf7f5f2;align-items:center;justify-content:center;text-align:center;padding:28px}#loadError .box{max-width:440px;background:#fff8ed;border:1px solid #d9a6a9;border-radius:18px;padding:24px}#loadError h2{font:26px Georgia,serif;color:#efcc89}#loadError p{font-size:14px;line-height:1.6;color:#e4d8e1}#loadError button{background:#594052;color:white;border:1px solid #b18b9e;padding:10px 16px;border-radius:10px}
-@media(pointer:coarse){#minimapWrap{top:91px;width:106px;padding:5px}#minimap{width:92px;height:92px}#meters{max-width:calc(100% - 130px);width:calc(100% - 130px)}.meter{width:calc(50% - 4px)}#hint{top:auto;bottom:145px;font-size:9px}#interact{bottom:155px}#meters{top:62px;gap:5px;width:calc(100% - 130px)}.meter{width:91px;padding:6px 7px}.meterhead{font-size:8px}#menu{top:auto;bottom:150px;right:12px}.menubtn{padding:7px 9px;font-size:10px}}
-@media(max-width:420px){.brand{font-size:15px}.tag{font-size:8px}.meter{width:calc(33.33vw - 15px)}#meters{right:10px}.stick{width:120px;height:120px}.knob{width:52px;height:52px;left:34px;top:34px}}
+:root{--ink:#302b39;--paper:#f7efdf;--muted:#9b8b83;--copper:#c18b62;--sage:#9caa91;--plum:#75657e}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#282633;color:var(--paper);font-family:system-ui,-apple-system,Arial,sans-serif}#scene{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 45%,#786b68,#373342 65%,#24232e);overflow:hidden}
+#world{position:absolute;inset:0;width:100%;height:100%}
+#grain{position:absolute;inset:0;pointer-events:none;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.3'/%3E%3C/svg%3E")}
+#header{position:absolute;z-index:3;top:0;left:0;right:0;padding:20px 22px;display:flex;justify-content:space-between;align-items:flex-start;background:linear-gradient(#272531dd,transparent);pointer-events:none}.brand{font:italic 25px Georgia,serif;letter-spacing:.04em}.tag{font-size:9px;letter-spacing:.23em;text-transform:uppercase;color:#d5b99b;margin-top:4px}.day{font-size:10px;letter-spacing:.14em;color:#e5c6a3;border:1px solid #b99b7b66;border-radius:30px;padding:8px 12px;background:#28263377}
+#caption{position:absolute;z-index:3;top:104px;left:50%;transform:translateX(-50%);text-align:center;width:min(85%,520px);font:italic 15px Georgia,serif;color:#f2dfc6;text-shadow:0 2px 12px #191821}
+#bottom{position:absolute;z-index:4;bottom:0;left:0;right:0;padding:38px 18px 18px;background:linear-gradient(transparent,#25232ff0 45%);display:flex;justify-content:space-between;align-items:end;gap:10px}
+#status{font-size:10px;line-height:1.7;color:#c8b9ad;max-width:175px}#status strong{color:#f0d5b2;font:italic 17px Georgia,serif}
+.actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.actions button,.panel button{border:1px solid #c3a17c88;background:#393542dd;color:#f4e8d8;padding:10px 12px;border-radius:9px;font-size:10px;letter-spacing:.06em}
+#panel{display:none;position:absolute;z-index:8;right:14px;top:72px;width:min(360px,calc(100% - 28px));max-height:70vh;overflow:auto;padding:20px;background:#f5eddf;color:#332e39;border-radius:14px;box-shadow:0 18px 60px #0009;border:1px solid #d2b895}
+#panel h2{font:italic 27px Georgia,serif;margin:0 0 12px;color:#765d62}#panel p{font:13px/1.65 Georgia,serif;color:#645b5c}#panel .close{float:right;background:transparent;color:#51454a;border-color:#c9b8a2}#panel button{background:#75657e;color:white;border:0;margin:4px 3px 4px 0} .entry{padding:12px 0;border-top:1px solid #ddcfbc}.entry b{font:italic 17px Georgia,serif}.entry small{display:block;color:#8d7d76;margin-top:4px}.artifact{display:flex;gap:12px;align-items:center}.thumb{width:72px;height:72px;flex:none;border-radius:8px;background:linear-gradient(145deg,#d2b68f,#796e80 55%,#b4a88e);position:relative;overflow:hidden}.thumb:before{content:"";position:absolute;width:34px;height:34px;border:3px solid #f4e3c8;border-radius:50%;left:18px;top:18px;box-shadow:0 0 0 7px #f4e3c833}
+#toast{position:absolute;z-index:9;left:50%;bottom:115px;transform:translateX(-50%);padding:10px 15px;border-radius:30px;background:#f3e5cd;color:#403845;font-size:11px;opacity:0;transition:.25s;pointer-events:none}#toast.show{opacity:1}
+@media(max-width:600px){#header{padding:15px}.brand{font-size:21px}#caption{top:86px;font-size:13px}#bottom{padding:32px 12px 14px;align-items:end}#status{max-width:120px;font-size:9px}.actions button{padding:9px 10px;font-size:9px}.actions{max-width:220px}}
 </style></head><body>
-<div id="game"></div>
-<div id="top"><div class="brand">♛ LADY BRIEFINGTON</div><div class="tag">Lost in the laundry. Found by destiny.</div><div class="day">BRIEFSVILLE · DAY <b id="day">001</b></div></div>
-<div id="meters"></div><div id="minimapWrap"><div id="minimapTitle">BRIEFSVILLE MAP</div><canvas id="minimap" width="216" height="216"></canvas><div id="minimapLegend">● You　★ Lady　• Places</div></div><div id="hint">Find Lady Briefington somewhere in Briefsville</div><div id="crosshair"></div>
-<button id="interact">Talk to Lady Briefington</button>
-<div id="controls"><div class="stick" id="moveStick"><div class="knob" id="moveKnob"></div><div class="sticklabel">MOVE</div></div></div>
-
-<div id="menu"><button class="menubtn" id="languageToggle">🇫🇷 Français</button><button class="menubtn" id="menuToggle">☰ MENU</button></div>
-<div id="panel"><button class="close" id="closePanel">✕</button><h2 id="panelTitle">Briefsville</h2><div id="panelBody"><p>Explore Briefsville, look after Lady and see what her day brings.</p><button class="menubtn" data-page="Journal">📖 Journal</button> <button class="menubtn" data-page="Gallery">🎨 Gallery</button> <button class="menubtn" data-page="Inventory">👜 Bag</button> <button class="menubtn" data-page="Shop">🛍 Shop</button><button class="menubtn" data-page="Status">♡ Status</button> <button class="menubtn" data-page="Residents">👥 Residents</button> <button class="menubtn" data-page="Brain">🧠 Mind</button></div></div>
-<div id="dialog"><strong>Lady Briefington</strong><p id="dialogText"></p><button id="dialogClose">Dismiss</button></div><div id="toast"></div><div id="loadError"><div class="box"><h2>Briefsville is not responding</h2><p id="loadErrorText">The 3D world could not start.</p><button onclick="location.reload()">Try again</button></div></div>
-<script src="./three.min.js"></script>
+<div id="scene"><canvas id="world"></canvas><div id="grain"></div></div>
+<header id="header"><div><div class="brand">The Little Thing</div><div class="tag">A tiny life in a forgotten attic</div></div><div class="day">DAY <b id="day">01</b></div></header>
+<div id="caption">Somewhere between dust and starlight, a little life is unfolding.</div>
+<footer id="bottom"><div id="status"><strong>Mimo</strong><br><span id="activity">Listening to the rain...</span><br><span id="mood">Mood · curious</span></div><div class="actions"><button id="journalBtn">✎ JOURNAL</button><button id="museumBtn">✧ COLLECTION</button><button id="workshopBtn">⚙ WORKSHOP</button><button id="pauseBtn">Ⅱ PAUSE</button></div></footer>
+<aside id="panel"><button class="close" id="closePanel">CLOSE ✕</button><h2 id="panelTitle">Mimo's notes</h2><div id="panelBody"></div></aside><div id="toast"></div>
 <script>
-function showLoadError(message){const e=document.getElementById("loadError");document.getElementById("loadErrorText").textContent=message;e.style.display="flex"}
-function boot(){
-const THREE=window.THREE,root=document.getElementById("game");
-if(!THREE){showLoadError("The 3D engine did not load. Check your internet connection and reload.");return}
-let renderer;
-try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:"high-performance"})}
-catch(error){showLoadError("Your browser could not start WebGL, which is required to display the 3D city. Try opening this page directly in Safari instead of the in-app browser.");return}
-
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x9edcf0);scene.fog=null;
-const camera=new THREE.PerspectiveCamera(65,Math.max(1,innerWidth)/Math.max(1,innerHeight),.1,220);camera.position.set(0,2.4,14);camera.lookAt(0,1,0);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,isCoarse()?1.25:1.5));renderer.setSize(Math.max(1,root.clientWidth),Math.max(1,root.clientHeight),false);renderer.shadowMap.enabled=false;renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.NoToneMapping;renderer.domElement.style.cssText="position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0";root.appendChild(renderer.domElement);renderer.setClearColor(0x9edcf0,1);renderer.domElement.addEventListener("webglcontextlost",e=>{e.preventDefault();showLoadError("WebGL context lost on this device. Close other tabs and reload.")});
-scene.add(new THREE.HemisphereLight(0xffffff,0x6b8052,.95));const sun=new THREE.DirectionalLight(0xffedcf,1.05);sun.position.set(-20,35,15);sun.castShadow=false;scene.add(sun);
-const mat=(c,r)=>new THREE.MeshStandardMaterial({color:c,roughness:r===undefined?.85:r});
-const grass=mat(0x69ad62),road=mat(0x777b88),sidewalk=mat(0xe8c99b),brick=mat(0x94766e),cream=mat(0xd8c6a9),roof=mat(0x8a6686),windowMat=new THREE.MeshStandardMaterial({color:0xf5dca0,emissive:0x80602c,emissiveIntensity:.25}),treeMat=mat(0x4d9a65),trunk=mat(0x5c4538);
-function box(w,h,d,m,x,y,z){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);return o}
-function ground(w,d,m,x,z){const o=new THREE.Mesh(new THREE.PlaneGeometry(w,d),m);o.rotation.x=-Math.PI/2;o.position.set(x,0,z);o.receiveShadow=true;scene.add(o);return o}
-ground(150,150,grass,0,0);
-box(150,.15,10,road,0,.04,0);box(10,.15,150,road,0,.04,0);
-box(150,.18,2,sidewalk,0,.08,6);box(150,.18,2,sidewalk,0,.08,-6);box(2,.18,150,sidewalk,6,.08,0);box(2,.18,150,sidewalk,-6,.08,0);
-for(let i=-65;i<=65;i+=8){box(2,.2,2,sidewalk,i,.12,8);box(2,.2,2,sidewalk,i,.12,-8);box(2,.2,2,sidewalk,8,.12,i);box(2,.2,2,sidewalk,-8,.12,i)}
-function building(x,z,w,d,h,color){box(w,h,d,mat(color),x,h/2,z);const roofObj=new THREE.Mesh(new THREE.ConeGeometry(Math.max(w,d)*.78,Math.min(3,h*.35),4),roof);roofObj.position.set(x,h+1,z);roofObj.rotation.y=Math.PI/4;roofObj.castShadow=true;scene.add(roofObj);for(let y=2;y<h-1;y+=3){for(let side=-1;side<=1;side+=2){box(1.1,1.35,.12,windowMat,x+side*w*.27,y,z+d/2+.07);box(.12,1.35,1.1,windowMat,x+w/2+.07,y,z+side*d*.27)}}}
-const colors=[0xf08b8b,0x8fc9e8,0xf5c66b,0x9bd6b1,0xc9a1dc,0xf3a7c7];
-for(let x=-55;x<=55;x+=18){if(Math.abs(x)<11)continue;for(let z of [-24,24])building(x,z,10,9,8+(Math.abs(x)%3)*1.5,colors[Math.abs(x/18)%colors.length|0])}
-for(let z=-55;z<=55;z+=18){if(Math.abs(z)<11)continue;for(let x of [-24,24])building(x,z,9,10,8+(Math.abs(z)%3)*1.5,colors[Math.abs(z/18)%colors.length|0])}
-function tree(x,z){const t=new THREE.Mesh(new THREE.CylinderGeometry(.25,.35,2.2,7),trunk);t.position.set(x,1.1,z);t.castShadow=true;scene.add(t);const crown=new THREE.Mesh(new THREE.IcosahedronGeometry(1.6,1),treeMat);crown.position.set(x,3,z);crown.castShadow=true;scene.add(crown)}
-for(let x=-58;x<=58;x+=13){tree(x,13);tree(x,-13);if(Math.abs(x)>12){tree(x,39);tree(x,-39)}}
-function lamp(x,z){const pole=box(.12,4,.12,mat(0x33313b),x,2,z);const bulb=new THREE.Mesh(new THREE.SphereGeometry(.28,10,8),mat(0xffd98b));bulb.position.set(x,4.1,z);scene.add(bulb)}
-
-for(let i=-45;i<=45;i+=15){lamp(i,5);lamp(5,i)}
-// A welcoming town square close to the starting point.
-const fountainBase=new THREE.Mesh(new THREE.CylinderGeometry(2.3,2.6,.42,24),mat(0xe9c6a6));fountainBase.position.set(9,.22,-7);scene.add(fountainBase);
-const fountainWater=new THREE.Mesh(new THREE.CylinderGeometry(1.85,1.85,.12,24),new THREE.MeshStandardMaterial({color:0x6dc9df,roughness:.25,metalness:.15}));fountainWater.position.set(9,.48,-7);scene.add(fountainWater);
-const fountainJet=new THREE.Mesh(new THREE.CylinderGeometry(.12,.2,1.5,12),new THREE.MeshStandardMaterial({color:0x8ee5ef,transparent:true,opacity:.8}));fountainJet.position.set(9,1.25,-7);scene.add(fountainJet);
-function flowerbed(x,z){const bed=box(4,.25,2,mat(0x7b9e4d),x,.18,z);for(let i=0;i<13;i++){const fx=x+(Math.random()-.5)*3.4,fz=z+(Math.random()-.5)*1.5;const stem=new THREE.Mesh(new THREE.CylinderGeometry(.025,.03,.35,5),mat(0x3e884f));stem.position.set(fx,.45,fz);scene.add(stem);const bloom=new THREE.Mesh(new THREE.SphereGeometry(.13,8,7),mat([0xf18bb2,0xffd56b,0xa98bd4,0xffffff][i%4]));bloom.position.set(fx,.68,fz);scene.add(bloom)}}
-flowerbed(-10,9);flowerbed(13,10);flowerbed(-13,-9);flowerbed(25,5);
-function bench(x,z){box(2,.16,.55,mat(0xb77b55),x,.65,z);box(2,.75,.14,mat(0xb77b55),x,1,z-.23);for(let dx of [-.75,.75])box(.12,.65,.12,mat(0x65545a),x+dx,.32,z)}
-bench(4,8);bench(14,5);bench(-8,12);
-const worldInteractables=[{name:"The Laundry",x:-16,z:-15,r:5,action:()=>{state.hygiene=Math.min(100,state.hygiene+18);toast("Fresh as a daisy. Hygiene +18!") }},{name:"The Thrift Shop",x:18,z:-16,r:5,action:()=>{toast("You browse the boutique. Perhaps you will find something worth selling someday.")}},{name:"The Drunken Sock",x:-18,z:17,r:5,action:()=>{state.mood=Math.min(100,state.mood+12);toast("A little gossip lifts your mood. +12 mood!") }},{name:"Lost Things Museum",x:18,z:17,r:6,action:()=>{const names=["The Sock of Destiny","Still Life with Washing Basket","Portrait of a Very Tired Butler","The Great Laundry Escape","Untitled (Missing Pair)","Duchess in a Delicate Mood"];const title=names[state.artworks.length%names.length];state.artworks.push(createArtwork(title,"Museum visit"));state.art=state.artworks.length;toast(language==="fr"?"Œuvre ajoutée : "+title+" · consultez la Galerie !":"Artwork collected: "+title+" · visit Gallery in the menu!") }},{name:"Town Fountain",x:9,z:-7,r:4,action:()=>{state.energy=Math.min(100,state.energy+8);toast("A peaceful pause by the fountain. Energy +8!") }},{name:"Flower Garden",x:13,z:10,r:4,action:()=>{state.mood=Math.min(100,state.mood+8);toast("The flowers are lovely. Mood +8!") }}];
-
-
-
-
-// Distinct points of interest
-function sign(text,x,z,color){const base=box(3,2,.25,mat(color),x,1.6,z);const canvas=document.createElement("canvas");canvas.width=512;canvas.height=128;const c=canvas.getContext("2d");c.fillStyle="#241e2c";c.fillRect(0,0,512,128);c.fillStyle="#f0cf91";c.font="bold 48px Georgia";c.textAlign="center";c.fillText(text,256,82);const tex=new THREE.CanvasTexture(canvas);const board=new THREE.Mesh(new THREE.PlaneGeometry(3,0.75),new THREE.MeshBasicMaterial({map:tex}));board.position.set(x,2.6,z+.14);scene.add(board);return base}
-sign("THE LAUNDRY",-16,-15,0xe99b88);building(-16,-20,9,8,7,0xf2a6a0);
-sign("THRIFT SHOP",18,-16,0x8a6e89);building(18,-21,9,8,7,0xf3c56b);
-sign("THE DRUNKEN SOCK",-18,17,0x8a6e89);building(-18,22,10,8,8,0x8fc9e8);
-sign("LOST THINGS MUSEUM",18,17,0x8a6e89);building(18,22,11,9,10,0x9bd6b1);
-
-// Lady Briefington: unmistakable high-waisted culotte character
-const lady=new THREE.Group();
-const pantyShape=new THREE.Shape();
-pantyShape.moveTo(-.78,.58);pantyShape.quadraticCurveTo(0,.68,.78,.58);
-pantyShape.lineTo(.72,-.10);pantyShape.quadraticCurveTo(.68,-.34,.43,-.28);
-pantyShape.quadraticCurveTo(.20,-.22,0,-.76);
-pantyShape.quadraticCurveTo(-.20,-.22,-.43,-.28);
-pantyShape.quadraticCurveTo(-.68,-.34,-.72,-.10);pantyShape.closePath();
-const clothMat=new THREE.MeshStandardMaterial({color:0xfff0e8,roughness:.82});
-const cloth=new THREE.Mesh(new THREE.ExtrudeGeometry(pantyShape,{depth:.24,bevelEnabled:true,bevelSegments:4,steps:1,bevelSize:.065,bevelThickness:.055}),clothMat);
-cloth.position.set(0,1.55,.12);cloth.castShadow=true;lady.add(cloth);
-const waistband=new THREE.Mesh(new THREE.BoxGeometry(1.62,.19,.19),mat(0xd98eae));waistband.position.set(0,2.13,.39);lady.add(waistband);
-const waistTrim=new THREE.Mesh(new THREE.BoxGeometry(1.57,.045,.205),mat(0xffd8e7));waistTrim.position.set(0,2.02,.40);lady.add(waistTrim);
-const seamMat=mat(0xe3a9bd);
-for(const side of [-1,1]){const seamCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(side*.70,2.02,.44),new THREE.Vector3(side*.67,1.72,.45),new THREE.Vector3(side*.53,1.48,.45),new THREE.Vector3(side*.30,1.43,.45)]);lady.add(new THREE.Mesh(new THREE.TubeGeometry(seamCurve,18,.018,6,false),seamMat));}
-const gusset=new THREE.Mesh(new THREE.CircleGeometry(.22,24),mat(0xf7d8e3));gusset.position.set(0,1.30,.48);gusset.scale.set(1,.72,1);lady.add(gusset);
-const eyeMat=mat(0x392638);
-for(const x of [-.22,.22]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.085,14,12),eyeMat);eye.position.set(x,1.78,.48);lady.add(eye);const shine=new THREE.Mesh(new THREE.SphereGeometry(.025,8,8),mat(0xffffff));shine.position.set(x-.025,1.81,.55);lady.add(shine);}
-const smileCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(-.16,1.59,.49),new THREE.Vector3(0,1.53,.52),new THREE.Vector3(.16,1.59,.49)]);lady.add(new THREE.Mesh(new THREE.TubeGeometry(smileCurve,16,.025,8,false),mat(0x71334f)));
-for(const x of [-.39,.39]){const cheek=new THREE.Mesh(new THREE.SphereGeometry(.085,10,8),mat(0xffb3c7));cheek.position.set(x,1.61,.47);lady.add(cheek);}
-const arms=[];
-for(const x of [-.88,.88]){const arm=new THREE.Group();const limb=new THREE.Mesh(new THREE.CylinderGeometry(.075,.085,.48,10),mat(0xffd6c8));limb.rotation.z=x<0?-.7:.7;arm.add(limb);const shoulder=new THREE.Mesh(new THREE.SphereGeometry(.085,10,8),mat(0xffd6c8));shoulder.position.y=.22;arm.add(shoulder);arm.position.set(x,1.42,.08);lady.add(arm);arms.push(arm);const hand=new THREE.Mesh(new THREE.SphereGeometry(.10,10,8),mat(0xffd6c8));hand.position.set(x*1.12,1.19,.1);lady.add(hand);}
-const legs=[];
-for(const x of [-.29,.29]){const leg=new THREE.Mesh(new THREE.CylinderGeometry(.075,.085,.58,10),mat(0xffd6c8));leg.position.set(x,.52,.05);lady.add(leg);const knee=new THREE.Mesh(new THREE.SphereGeometry(.08,10,8),mat(0xffd6c8));knee.position.set(x,.23,.05);lady.add(knee);legs.push(leg);const shoe=new THREE.Mesh(new THREE.SphereGeometry(.15,12,8),mat(0x9b6688));shoe.scale.set(1.25,.55,1.5);shoe.position.set(x,.22,.13);lady.add(shoe);}
-const bow=new THREE.Group();const bowMat=mat(0xb85d88);const bowA=new THREE.Mesh(new THREE.SphereGeometry(.14,10,8),bowMat);bowA.scale.set(1.35,.72,.48);bowA.position.x=-.13;const bowB=bowA.clone();bowB.position.x=.13;bow.add(bowA,bowB);const knot=new THREE.Mesh(new THREE.SphereGeometry(.075,10,8),mat(0xf4c5d7));bow.add(knot);bow.position.set(0,2.31,.43);lady.add(bow);
-const laceMat=mat(0xd98cac);for(let x=-.61;x<=.62;x+=.15){const dot=new THREE.Mesh(new THREE.SphereGeometry(.027,8,6),laceMat);dot.position.set(x,1.94,.45);lady.add(dot);}
-lady.position.set(0,0,-2);scene.add(lady);lady.userData={home:new THREE.Vector3(0,0,-2),target:new THREE.Vector3(0,0,-2),walk:0};
-const beacon=new THREE.Group();
-const beam=new THREE.Mesh(new THREE.CylinderGeometry(.12,.55,5,12,1,true),new THREE.MeshBasicMaterial({color:0xffd477,transparent:true,opacity:.2,depthWrite:false}));
-beam.position.y=2.7;beacon.add(beam);
-const beaconRing=new THREE.Mesh(new THREE.TorusGeometry(.72,.09,8,24),new THREE.MeshBasicMaterial({color:0xffd477}));
-beaconRing.position.y=5.35;beacon.add(beaconRing);
-const beaconDot=new THREE.Mesh(new THREE.SphereGeometry(.2,12,10),new THREE.MeshBasicMaterial({color:0xffefb0}));
-beaconDot.position.y=5.35;beacon.add(beaconDot);scene.add(beacon);
-const hitObjects=[cloth];cloth.userData.isLady=true;
-const raycaster=new THREE.Raycaster(),center=new THREE.Vector2(0,0);let yaw=0,pitch=0,moveX=0,moveY=0,nearLady=false,activeInteractable=null,started=true,dialogue=false,lastTime=performance.now();
-const moveVelocity=new THREE.Vector3(),mapCanvas=document.getElementById("minimap"),mapCtx=mapCanvas.getContext("2d");
-const mapPlaces=[{x:-16,z:-15,c:"#ed8c84"},{x:18,z:-16,c:"#e6ad47"},{x:-18,z:17,c:"#a889c9"},{x:18,z:17,c:"#5caaa0"}];
-const state={day:1,hunger:66,energy:82,mood:78,sleep:74,hygiene:43,health:100,money:0,art:0,artworks:[],sales:0,reputation:0,brain:{goal:"Explore Briefsville",lastThought:"I wonder what the town is hiding today.",lastAction:"Looking around",memories:[]},events:["Lady Briefington was last spotted somewhere in Briefsville."]};
-const meterNames=[["Hunger","hunger"],["Energy","energy"],["Mood","mood"],["Sleep","sleep"],["Hygiene","hygiene"],["Health","health"]];
-try{const saved=JSON.parse(localStorage.getItem("briefsville-save")||"null");if(saved){for(const k of ["day","hunger","energy","mood","sleep","hygiene","health","artworks","sales","reputation","brain"])if(saved[k]!==undefined)state[k]=saved[k];state.money=saved.sales>0&&Number.isFinite(saved.money)?saved.money:0;state.art=state.artworks.length;state.artworks.forEach((a,i)=>{if(!a.seed)a.seed=i+1;if(!a.day)a.day=state.day||1})}}catch(e){}
-
-
-let language=localStorage.getItem("briefsville-language")==="fr"?"fr":"en";const words={en:{menu:"☰ MENU",journal:"📖 Journal",gallery:"🎨 Gallery",bag:"👜 Bag",shop:"🛍 Shop",status:"♡ Status",mind:"🧠 Mind",dismiss:"Dismiss",move:"MOVE",map:"BRIEFSVILLE MAP",legend:"● You • Places",hint:"Find Lady Briefington somewhere in Briefsville",talk:"Talk to Lady Briefington",day:"BRIEFSVILLE · DAY",intro:"Explore the town, meet its residents and discover hidden surprises."},fr:{menu:"☰ MENU",journal:"📖 Journal",gallery:"🎨 Galerie",bag:"👜 Sac",shop:"🛍 Boutique",status:"♡ État",mind:"🧠 Esprit",dismiss:"Fermer",move:"DÉPLACEMENT",map:"PLAN DE BRIEFSVILLE",legend:"● Vous • Lieux",hint:"Retrouvez Lady Briefington dans Briefsville",talk:"Parler à Lady Briefington",day:"BRIEFSVILLE · JOUR",intro:"Explorez Briefsville, prenez soin de Lady et découvrez ce que sa journée lui réserve."}};function tr(k){return words[language][k]||words.en[k]||k}function applyLanguage(){document.documentElement.lang=language;document.getElementById("languageToggle").textContent=language==="fr"?"🇬🇧 English":"🇫🇷 Français";document.getElementById("menuToggle").textContent=tr("menu");document.querySelector(".sticklabel").textContent=tr("move");document.getElementById("minimapTitle").textContent=tr("map");document.getElementById("minimapLegend").textContent=tr("legend");document.getElementById("hint").textContent=tr("hint");document.getElementById("interact").textContent=tr("talk");document.getElementById("dialogClose").textContent=tr("dismiss");document.querySelector(".day").childNodes[0].textContent=tr("day")+" ";renderMenuHome()}document.getElementById("languageToggle").onclick=()=>{language=language==="en"?"fr":"en";localStorage.setItem("briefsville-language",language);applyLanguage()};
-
-function artworkImage(a){
-const c=document.createElement("canvas");c.width=480;c.height=320;const g=c.getContext("2d");
-const seed=Number(a.seed)||1;let n=seed;const rnd=()=>{n=(n*1664525+1013904223)>>>0;return n/4294967296};
-const palettes=[["#f4d8c8","#a65d69","#e9b86d","#526d73"],["#d7e5dc","#668b80","#e7b7a2","#e4cf8b"],["#e8dff0","#78628d","#d98eae","#f0c77c"],["#d8e8ef","#5b7f9a","#e8a56b","#e8d9bd"]];
-const p=palettes[(seed-1)%palettes.length];g.fillStyle=p[0];g.fillRect(0,0,480,320);
-g.fillStyle="rgba(255,255,255,.22)";g.fillRect(18,18,444,284);
-for(let i=0;i<8;i++){g.fillStyle=p[1+i%3];g.globalAlpha=.38+rnd()*.42;g.beginPath();const x=30+rnd()*420,y=25+rnd()*270,r=18+rnd()*90;g.ellipse(x,y,r,r*(.35+rnd()*.8),rnd()*3,0,Math.PI*2);g.fill()}
-g.globalAlpha=1;
-const motif=seed%4;
-if(motif===0){g.fillStyle=p[2];g.beginPath();g.arc(240,145,65,0,Math.PI*2);g.fill();g.fillStyle=p[3];g.fillRect(95,215,290,12)}
-if(motif===1){g.strokeStyle=p[2];g.lineWidth=18;g.beginPath();g.moveTo(80,245);g.bezierCurveTo(120,20,360,300,400,70);g.stroke()}
-if(motif===2){for(let i=0;i<7;i++){g.fillStyle=p[(i%3)+1];g.beginPath();g.arc(90+i*48,160+Math.sin(i+seed)*45,20+i%3*5,0,Math.PI*2);g.fill()}}
-if(motif===3){g.fillStyle=p[3];g.beginPath();g.moveTo(60,250);g.lineTo(180,65);g.lineTo(270,250);g.closePath();g.fill();g.fillStyle=p[2];g.fillRect(290,75,90,160)}
-g.fillStyle="rgba(44,35,45,.72)";g.fillRect(18,268,444,34);g.fillStyle="#fff8ee";g.font="italic 17px Georgia";g.textAlign="center";g.fillText(a.title||"A Briefsville Study",240,290);
-return c.toDataURL("image/jpeg",.78);
+(()=>{
+const canvas=document.getElementById('world'),ctx=canvas.getContext('2d');
+const $=id=>document.getElementById(id);
+let W=0,H=0,dpr=1,last=0,elapsed=0,paused=false,toastTimer=0;
+const saveKey='littlething-save-v1';
+const names=['A moon made of tin','The quietest bell','A pocket for lost wishes','Rain caught in a thimble','The clockwork firefly','A map of almost-nowhere','The little brass bird'];
+let data={day:1,coins:0,discoveries:0,works:[],journal:[],x:.48,y:.69,targetX:.65,targetY:.67,activity:'Listening to the rain...',mood:'curious',last:Date.now(),paused:false};
+try{const old=JSON.parse(localStorage.getItem(saveKey)||'null');if(old)data={...data,...old}}catch(e){}
+function save(){data.last=Date.now();localStorage.setItem(saveKey,JSON.stringify(data))}
+function resize(){W=innerWidth;H=innerHeight;dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0)}
+addEventListener('resize',resize);resize();
+function log(text){data.journal.unshift({day:data.day,text,at:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})});data.journal=data.journal.slice(0,40);save()}
+function say(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2200)}
+function createWork(){const title=names[(data.works.length+data.day-1)%names.length];const work={title,day:data.day,price:2+data.works.length%4,seed:data.day*13+data.works.length*7};data.works.unshift(work);data.discoveries++;data.activity='Making '+title.toLowerCase();data.mood='inspired';log('Mimo made something: '+title+'. He left it on the little shelf.');say('A new invention appeared in the workshop.');}
+function choose(){const r=Math.random();if(r<.36){data.activity='Following a stripe of sunlight';data.targetX=.18+Math.random()*.65;data.targetY=.54+Math.random()*.19;data.mood='curious'}else if(r<.68){data.activity='Searching through forgotten things';data.targetX=.12+Math.random()*.72;data.targetY=.68+Math.random()*.1;data.mood='focused'}else if(r<.88){createWork();data.targetX=.75;data.targetY=.69}else{data.activity='Taking a tiny nap';data.targetX=data.x;data.targetY=data.y;data.mood='sleepy'}log(data.activity+'.');}
+function offline(){const hours=Math.min(12,Math.max(0,(Date.now()-(data.last||Date.now()))/3600000));if(hours>=.15){const days=Math.floor(hours/2.5);if(days){data.day+=days;log('While you were away, '+days+' quiet day(s) passed in the attic.')}if(Math.random()<Math.min(.8,hours*.12))createWork();data.activity='Waking up after your absence';save()}}
+offline();$('day').textContent=String(data.day).padStart(2,'0');
+function ellipse(x,y,rx,ry,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fill()}
+function line(x1,y1,x2,y2,color,width=2){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()}
+function draw(t){ctx.clearRect(0,0,W,H);const wall=ctx.createLinearGradient(0,0,0,H);wall.addColorStop(0,'#8b7c79');wall.addColorStop(.58,'#655b65');wall.addColorStop(1,'#393542');ctx.fillStyle=wall;ctx.fillRect(0,0,W,H);
+ // attic roof and beams
+ ctx.fillStyle='#4c4653';ctx.beginPath();ctx.moveTo(0,H*.35);ctx.lineTo(W*.5,H*.04);ctx.lineTo(W,H*.35);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
+ line(0,H*.35,W*.5,H*.04,'#a58b7c',7);line(W*.5,H*.04,W,H*.35,'#a58b7c',7);
+ for(let i=0;i<4;i++){const x=W*(.12+i*.25);line(x,H*.27,x+W*.07,H*.72,'#6d5d5b',4)}
+ // round window
+ const wx=W*.5,wy=H*.27,wr=Math.min(W*.17,H*.17);ellipse(wx,wy,wr+9,wr+9,'#3d3545');ellipse(wx,wy,wr,wr,'#d5ad8c');ellipse(wx,wy,wr-8,wr-8,'#a9b4ad');ellipse(wx,wy,wr-14,wr-14,'#d8c1a0');line(wx-wr,wy,wx+wr,wy,'#8d766a',5);line(wx,wy-wr,wx,wy+wr,'#8d766a',5);
+ // distant rooftops
+ ctx.fillStyle='#7b777f';for(let i=0;i<7;i++){let x=wx-wr+8+i*(wr*2-16)/6;ctx.beginPath();ctx.moveTo(x,wy+wr-8);ctx.lineTo(x+8,wy+wr-30-Math.sin(i)*9);ctx.lineTo(x+17,wy+wr-8);ctx.fill()}
+ // floor
+ ctx.fillStyle='#8d7463';ctx.beginPath();ctx.moveTo(0,H*.67);ctx.lineTo(W,H*.67);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
+ for(let i=0;i<8;i++)line(0,H*(.71+i*.045),W,H*(.71+i*.045),'#b08e70',1);
+ // storage boxes
+ function box(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);line(x,y,x+w,y,'#d2ad83',2);line(x+w*.5,y,x+w*.5,y+h,'#594c50',2);ctx.fillStyle='#d2ad83';ctx.fillRect(x+w*.35,y+h*.3,w*.3,5)}
+ box(W*.07,H*.56,W*.19,H*.15,'#8d6e5c');box(W*.72,H*.57,W*.21,H*.13,'#716477');
+ // work table
+ ctx.fillStyle='#58434a';ctx.fillRect(W*.31,H*.65,W*.39,H*.045);ctx.fillRect(W*.34,H*.69,W*.025,H*.17);ctx.fillRect(W*.65,H*.69,W*.025,H*.17);
+ // small inventions on table
+ ellipse(W*.48,H*.625,18,7,'#c89c6d');line(W*.48,H*.62,W*.48,H*.56,'#e7c99c',3);ellipse(W*.48,H*.55,7,7,'#e9c994');line(W*.48,H*.55,W*.53,H*.51,'#e9c994',2);
+ // character Mimo
+ const x=data.x*W,y=data.y*H,bob=Math.sin(t*.003)*3;
+ ellipse(x,y+24,29,8,'#28232d77');ctx.save();ctx.translate(x,y+bob);
+ // little wind-up key
+ line(0,-25,0,-43,'#d9b27d',4);line(0,-43,12,-48,'#d9b27d',4);ellipse(14,-49,5,5,'#d9b27d');
+ // body like a tiny wooden music-box creature
+ ctx.fillStyle='#c49a72';ctx.beginPath();ctx.roundRect(-20,-29,40,52,10);ctx.fill();ctx.strokeStyle='#e8cda5';ctx.lineWidth=2;ctx.stroke();
+ ctx.fillStyle='#e8d3b5';ctx.beginPath();ctx.roundRect(-14,-21,28,25,7);ctx.fill();
+ ellipse(-6,-10,3,4,'#3d3545');ellipse(7,-10,3,4,'#3d3545');ctx.strokeStyle='#8a5d57';ctx.lineWidth=2;ctx.beginPath();ctx.arc(1,-3,5,0,Math.PI);ctx.stroke();
+ // little feet
+ line(-10,22,-13,28,'#d9b27d',4);line(10,22,13,28,'#d9b27d',4);
+ // side crank
+ line(20,-7,28,-7,'#d9b27d',3);ellipse(30,-7,4,4,'#e5c38e');
+ ctx.restore();
+ // dust motes
+ for(let i=0;i<22;i++){let px=(i*97+t*.008)%W,py=(i*53+Math.sin(t*.0007+i)*22)%H;ellipse(px,py,1.2,1.2,'#f1d9b477')}
+ // labels
+ ctx.fillStyle='#f2dfc6';ctx.font='10px Georgia';ctx.textAlign='center';ctx.fillText('THE ATTIC',W*.5,H*.94);
 }
-function createArtwork(title,source){
-const seed=state.artworks.length+1+state.day*17;
-const values=[12,18,25,38,55];return {title,value:values[state.artworks.length%values.length],source:source||"Lady atelier",day:state.day,seed,description:"An original creation from Lady Briefington."};
-}
-
-function renderMeters(){document.getElementById("meters").innerHTML=meterNames.map(([n,k])=>'<div class="meter"><div class="meterhead"><span>'+n+'</span><b>'+state[k]+'%</b></div><div class="track"><div class="fill" style="width:'+state[k]+'%"></div></div></div>').join("");document.getElementById("day").textContent=String(state.day).padStart(3,"0");try{localStorage.setItem("briefsville-save",JSON.stringify(state))}catch(e){}}
-
-const brainPlaces=[
-{name:"The Laundry",x:-16,z:-15,reason:"freshen up",run:()=>state.hygiene=Math.min(100,state.hygiene+20)},
-{name:"Town Fountain",x:9,z:-7,reason:"rest and recharge",run:()=>{state.energy=Math.min(100,state.energy+12);state.mood=Math.min(100,state.mood+3)}},
-{name:"Flower Garden",x:13,z:10,reason:"enjoy the flowers",run:()=>state.mood=Math.min(100,state.mood+12)},
-{name:"The Drunken Sock",x:-18,z:17,reason:"hear the latest gossip",run:()=>state.mood=Math.min(100,state.mood+8)},
-{name:"Lady’s Atelier",x:18,z:17,reason:"develop an artistic project",run:()=>{if(state.artworks.length<12){const titles=["Lady Briefington: Icon in Lace","The Royal Waistband","A Culotte in Bloom","Briefsville After Midnight","The Duchess of Delicates","The Pink Seam Manifesto","The Art of Being Unmentionable","Silk, Sass & Self-Respect"];state.artworks.push(createArtwork(titles[state.artworks.length%titles.length],"Lady inspiration"));state.art=state.artworks.length}}}
-];
-let brainTarget=null,brainPause=0,brainTimer=0;
-function remember(thought,action){state.brain.lastThought=thought;state.brain.lastAction=action;state.brain.memories.unshift({day:state.day,text:thought});state.brain.memories=state.brain.memories.slice(0,20);state.events.unshift("Day "+state.day+": "+thought);state.events=state.events.slice(0,30);renderMeters()}
-function chooseBrainGoal(){
-const options=[];
-if(state.hygiene<65)options.push({score:75-state.hygiene,place:brainPlaces[0],thought:"Good heavens, I need a wash. One must maintain standards."});
-if(state.energy<60||state.sleep<50)options.push({score:Math.max(60-state.energy,50-state.sleep)+10,place:brainPlaces[1],thought:"A little rest is in order. Even a distinguished lady needs a pause."});
-if(state.mood<65)options.push({score:65-state.mood+8,place:brainPlaces[2],thought:"I refuse to be miserable. A stroll among the flowers should help."});
-if(state.artworks.length<12)options.push({score:Math.max(18,34-state.artworks.length*2),place:brainPlaces[4],thought:"I have an idea for a new piece. To my atelier!"});
-options.push({score:12,place:brainPlaces[3],thought:"I fancy a little gossip. Briefsville must be buzzing."});
-options.sort((a,b)=>b.score-a.score);const choice=options[0];brainTarget=choice.place;state.brain.goal=choice.place.name+" — "+choice.place.reason;remember(choice.thought,"Heading to "+choice.place.name);
-}
-function updateBrain(dt){
-brainTimer+=dt;if(brainPause>0){brainPause-=dt;return}
-if(!brainTarget&&brainTimer>12){brainTimer=0;chooseBrainGoal()}
-if(!brainTarget)return;
-const dx=brainTarget.x-lady.position.x,dz=brainTarget.z-lady.position.z,dist=Math.hypot(dx,dz);
-if(dist>1.4){const step=Math.min(dist,dt*1.5);lady.position.x+=dx/dist*step;lady.position.z+=dz/dist*step;lady.rotation.y=Math.atan2(dx,dz)}
-else{const place=brainTarget;place.run();remember("I spent time at "+place.name+". "+(place.name==="Lady’s Atelier"?"A new work has joined my collection!":"That was rather pleasant."),"Visited "+place.name);brainTarget=null;brainPause=16;renderMeters()}
-}
-
-function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1900)}
-function showPanel(title,body){document.getElementById("panelTitle").textContent=title;document.getElementById("panelBody").innerHTML=body;document.getElementById("panel").style.display="block"}
-function openTalk(){dialogue=true;document.getElementById("dialogText").textContent="“Darling! You found me. I was conducting an extremely important inspection of the pavement. It is dreadful, by the way. Now, tell me: have you come to admire me, or are you here to waste my time?”";document.getElementById("dialog").style.display="block";state.mood=Math.min(100,state.mood+2);renderMeters()}
-document.getElementById("dialogClose").onclick=()=>{dialogue=false;document.getElementById("dialog").style.display="none"};
-document.getElementById("closePanel").onclick=()=>document.getElementById("panel").style.display="none";
-const menuPanel=document.getElementById("panel");
-const menuToggle=document.getElementById("menuToggle");
-menuToggle.setAttribute("aria-expanded","false");
-function renderMenuHome(){document.getElementById("panelTitle").textContent="Briefsville";document.getElementById("panelBody").innerHTML="<p>"+tr("intro")+"</p><button class='menubtn' data-page='Journal'>"+tr("journal")+"</button> <button class='menubtn' data-page='Gallery'>"+tr("gallery")+"</button> <button class='menubtn' data-page='Inventory'>"+tr("bag")+"</button> <button class='menubtn' data-page='Shop'>"+tr("shop")+"</button> <button class='menubtn' data-page='Status'>"+tr("status")+"</button> <button class='menubtn' data-page='Residents'>"+tr("residents")+"</button> <button class='menubtn' data-page='Brain'>"+tr("mind")+"</button> <a class='menubtn' href='./boutique.html' style='display:inline-block;text-decoration:none'>✨ Boutique en ligne</a>";}
-applyLanguage();
-
-menuToggle.onclick=()=>{const opening=menuPanel.style.display!=="block";if(opening)renderMenuHome();menuPanel.style.display=opening?"block":"none";menuToggle.setAttribute("aria-expanded",String(opening));};
-document.getElementById("closePanel").onclick=()=>{menuPanel.style.display="none";menuToggle.setAttribute("aria-expanded","false");};
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menuPanel.style.display==="block"){menuPanel.style.display="none";menuToggle.setAttribute("aria-expanded","false");}});
-
-function openPage(p){
-const pages={
-Journal:["Lady's Journal","<p>Day "+state.day+": Briefsville is tolerable. The locals are not.</p><p class='small'>Lady Briefington's story is still unfolding.</p>"],
-Gallery:["Lady's Gallery","<p><b>Collected works: "+state.artworks.length+"</b></p>"+(state.artworks.length?state.artworks.map(a=>"<div style='margin:14px 0;padding:10px;border:1px solid #dfc9bd;border-radius:14px'><img alt='"+a.title+"' src='"+artworkImage(a)+"' style='display:block;width:100%;border-radius:9px;object-fit:cover'><b>🖼 "+a.title+"</b><p class='small'>Asking price: €"+a.value+" · Day "+(a.day||1)+"</p></div>").join(""):"<p>No artworks yet. Visit the Lost Things Museum to find pieces for your collection.</p>")+"<p class='small'>Each artwork now has its own visible image.</p>"],
-Inventory:["Personal Effects","<p>One pearl necklace · One gold monocle · Money: €"+state.money+"</p>"],
-Shop:["Briefsville Boutique","<p>Collectors can buy Lady Briefington's artworks. She earns money only when a collector purchases a piece.</p><p>Works available: "+state.artworks.length+" · Sales completed: "+state.sales+" · Reputation: "+(state.reputation||0)+"</p>"+(state.artworks.length?"<button class='menubtn' data-action='sell'>💶 Sell to a collector · €"+state.artworks[0].value+"</button>":"<p class='small'>Find an artwork at the Lost Things Museum to stock the boutique.</p>")],
-
-Status:["Lady's Condition","<p>🍽 Hunger: "+state.hunger+"%<br>⚡ Energy: "+state.energy+"%<br>😊 Mood: "+state.mood+"%<br>😴 Sleep: "+state.sleep+"%<br>🧼 Hygiene: "+state.hygiene+"%<br>❤️ Health: "+state.health+"%</p><p>Money: €"+state.money+"</p>"]
-};
-if(p==="Brain"){showPanel("Lady's Mind","<p><b>Autonomy:</b> Local decision engine active</p><p><b>Current ambition:</b> "+state.brain.goal+"</p><p><b>Last action:</b> "+state.brain.lastAction+"</p><blockquote>“"+state.brain.lastThought+"”</blockquote><p><b>Recent memories</b></p>"+(state.brain.memories.length?state.brain.memories.slice(0,8).map(m=>"<p class='small'>Day "+m.day+" · "+m.text+"</p>").join(""):"<p class='small'>Her memories will appear as she explores.</p>"));return;} if(pages[p])showPanel(pages[p][0],pages[p][1]);
-}
-document.getElementById("panelBody").addEventListener("click",e=>{const pageButton=e.target.closest("[data-page]");if(pageButton){openPage(pageButton.dataset.page);return;}if(e.target.closest("[data-action='sell']")){if(!state.artworks.length)return;const a=state.artworks.shift();state.art=state.artworks.length;state.money+=a.value;state.sales++;toast((language==="fr"?"Un collectionneur a acheté « ":"A collector bought “")+a.title+(language==="fr"?" » pour €":"” for €")+a.value+"!");openPage("Shop");renderMeters();}});
-
-document.getElementById("interact").onclick=()=>{if(nearLady){openTalk();return}if(activeInteractable){activeInteractable.action();renderMeters()}};
-// Desktop mouse look and pointer lock
-
-document.addEventListener("mousemove",e=>{if(document.pointerLockElement===renderer.domElement){yaw-=e.movementX*.0018;pitch=Math.max(-1.0,Math.min(1.0,pitch-e.movementY*.0018))}});
-function isCoarse(){return matchMedia("(pointer:coarse)").matches}
-function onPointerStick(el,knob,cb){let active=false,id=null;el.addEventListener("pointerdown",e=>{active=true;id=e.pointerId;el.setPointerCapture(id);update(e)});el.addEventListener("pointermove",e=>{if(active&&e.pointerId===id)update(e)});function end(e){if(e.pointerId!==id)return;active=false;id=null;knob.style.transform="translate(0,0)";cb(0,0)}el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);function update(e){const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=(e.clientX-cx)/(r.width*.34),dy=(e.clientY-cy)/(r.height*.34);const l=Math.hypot(dx,dy);if(l>1){dx/=l;dy/=l}knob.style.transform="translate("+dx*36+"px,"+dy*36+"px)";cb(dx,dy)}}
-onPointerStick(document.getElementById("moveStick"),document.getElementById("moveKnob"),(x,y)=>{moveX=x;moveY=y});
-let touchLook=null;
-document.addEventListener("pointerdown",e=>{if(e.pointerType==="touch"&&e.clientX>innerWidth*.42&&!e.target.closest("button,#menu,#panel,#minimapWrap"))touchLook={x:e.clientX,y:e.clientY,id:e.pointerId}},{capture:true});
-document.addEventListener("pointermove",e=>{if(touchLook&&touchLook.id===e.pointerId){yaw-=(e.clientX-touchLook.x)*.0038;pitch=Math.max(-.78,Math.min(.78,pitch-(e.clientY-touchLook.y)*.0028));touchLook.x=e.clientX;touchLook.y=e.clientY}},{capture:true});
-document.addEventListener("pointerup",e=>{if(touchLook&&touchLook.id===e.pointerId)touchLook=null},{capture:true});
-document.addEventListener("pointercancel",()=>touchLook=null,{capture:true});
-function updateCamera(){camera.rotation.order="YXZ";camera.rotation.y=yaw;camera.rotation.x=pitch}
-function drawMap(){
-const c=mapCtx,w=216,h=216,scale=1.25;
-c.clearRect(0,0,w,h);c.fillStyle="#d8edcf";c.fillRect(0,0,w,h);
-c.strokeStyle="#fff8e8";c.lineWidth=13;c.beginPath();c.moveTo(w/2,0);c.lineTo(w/2,h);c.moveTo(0,h/2);c.lineTo(w,h/2);c.stroke();
-c.strokeStyle="#e4cba3";c.lineWidth=3;c.beginPath();c.moveTo(0,h/2-10);c.lineTo(w,h/2-10);c.moveTo(w/2-10,0);c.lineTo(w/2-10,h);c.stroke();
-function xy(x,z){return [w/2+x*scale,h/2+z*scale]}
-mapPlaces.forEach((p,i)=>{const [x,y]=xy(p.x,p.z);c.fillStyle=p.c;c.beginPath();c.arc(x,y,7,0,Math.PI*2);c.fill();c.strokeStyle="#fff";c.lineWidth=2;c.stroke();c.fillStyle="#fff";c.font="bold 8px sans-serif";c.textAlign="center";c.fillText(["L","T","P","M"][i],x,y+3)});
-const [lx,ly]=xy(lady.position.x,lady.position.z);c.fillStyle="#e7a52d";c.beginPath();c.arc(lx,ly,7,0,Math.PI*2);c.fill();c.fillStyle="#fff";c.font="bold 10px sans-serif";c.textAlign="center";c.fillText("★",lx,ly+3);
-const [px,py]=xy(camera.position.x,camera.position.z);c.save();c.translate(px,py);c.rotate(-yaw);c.fillStyle="#7c55bb";c.beginPath();c.moveTo(0,-9);c.lineTo(6,7);c.lineTo(0,4);c.lineTo(-6,7);c.closePath();c.fill();c.restore();
-}
-function clampPos(v){v.x=Math.max(-43,Math.min(43,v.x));v.z=Math.max(-43,Math.min(43,v.z));return v}
-function wander(dt){updateBrain(dt);lady.userData.walk+=dt;lady.position.y=.035+Math.sin(performance.now()*.003)*.035;bow.rotation.z=Math.sin(performance.now()*.002)*.08;arms[0].rotation.z=Math.sin(performance.now()*.003)*.08;arms[1].rotation.z=-Math.sin(performance.now()*.003)*.08;if(!brainTarget){if(lady.userData.walk>8){lady.userData.walk=0;lady.userData.target.set(lady.userData.home.x+(Math.random()-.5)*12,0,lady.userData.home.z+(Math.random()-.5)*12)}const dir=lady.userData.target.clone().sub(lady.position);dir.y=0;if(dir.length()>.6){dir.normalize();lady.position.addScaledVector(dir,dt*.42);lady.rotation.y=Math.atan2(dir.x,dir.z);legs[0].rotation.x=Math.sin(performance.now()*.008)*.35;legs[1].rotation.x=-legs[0].rotation.x}}beacon.position.set(lady.position.x,lady.position.y,lady.position.z);beaconRing.rotation.y=performance.now()*.0012;beaconDot.position.y=5.35+Math.sin(performance.now()*.003)*.22}
-function checkLady(){const dist=camera.position.distanceTo(new THREE.Vector3(lady.position.x,1.3,lady.position.z));nearLady=dist<7;activeInteractable=null;let nearest=Infinity;for(const item of worldInteractables){const d=Math.hypot(camera.position.x-item.x,camera.position.z-item.z);if(d<item.r&&d<nearest){nearest=d;activeInteractable=item}}const button=document.getElementById("interact");button.style.display=nearLady||activeInteractable?"block":"none";button.textContent=nearLady?"Talk to Lady Briefington":activeInteractable?"Explore · "+activeInteractable.name:"Explore";document.getElementById("hint").textContent=nearLady?"Lady Briefington is right here!":activeInteractable?"You found "+activeInteractable.name+" · tap to interact":"Joystick to move · drag the right side to look · Lady is "+Math.round(dist)+" m away";}
-function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-lastTime)/1000);lastTime=now;if(started){const forward=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));const desired=new THREE.Vector3();desired.addScaledVector(forward,-moveY);desired.addScaledVector(right,moveX);if(desired.length()>1)desired.normalize();let strength=Math.min(1,desired.length());if(strength<.13){desired.set(0,0,0);strength=0}else{strength=(strength-.13)/.87;strength=strength*strength*(3-2*strength);desired.normalize().multiplyScalar(8.0*strength)}
-const response=desired.length()>moveVelocity.length()?7.5:10.5;moveVelocity.lerp(desired,1-Math.exp(-dt*response));camera.position.addScaledVector(moveVelocity,dt);clampPos(camera.position);if(moveVelocity.length()>.1){state.energy=Math.max(0,state.energy-dt*.018);state.hunger=Math.max(0,state.hunger-dt*.012)}updateCamera();wander(dt);checkLady();drawMap();}renderer.render(scene,camera)}
+function tick(ts){if(!last)last=ts;let dt=Math.min(.05,(ts-last)/1000);last=ts;if(!paused){elapsed+=dt;const dx=data.targetX-data.x,dy=data.targetY-data.y,dist=Math.hypot(dx,dy);if(dist>.005){data.x+=dx*dt*.22;data.y+=dy*dt*.22}else if(Math.random()<dt*.045)choose();if(elapsed>75){elapsed=0;data.day++;$('day').textContent=String(data.day).padStart(2,'0');if(Math.random()<.72)choose();save()}}draw(ts);requestAnimationFrame(tick)}
 requestAnimationFrame(tick);
-if(!isCoarse()){renderer.domElement.addEventListener("click",()=>{if(started&&!document.pointerLockElement)renderer.domElement.requestPointerLock?.()})}
-window.addEventListener("keydown",e=>{if(e.key==="w"||e.key==="ArrowUp")moveY=-1;if(e.key==="s"||e.key==="ArrowDown")moveY=1;if(e.key==="a"||e.key==="ArrowLeft")moveX=-1;if(e.key==="d"||e.key==="ArrowRight")moveX=1;if(e.key==="Escape")document.exitPointerLock?.()});
-window.addEventListener("keyup",e=>{if(["w","ArrowUp","s","ArrowDown"].includes(e.key))moveY=0;if(["a","ArrowLeft","d","ArrowRight"].includes(e.key))moveX=0});
-renderer.domElement.addEventListener("click",e=>{if(!started||dialogue||document.getElementById("panel").style.display==="block")return;raycaster.setFromCamera(center,camera);const hits=raycaster.intersectObject(lady,true);if(hits.length&&camera.position.distanceTo(lady.position)<8)openTalk()});
-lady.traverse(o=>{if(o.isMesh)o.userData.isLady=true});
-drawMap();
-setInterval(()=>{if(started){state.day++;state.hunger=Math.max(0,state.hunger-1);state.energy=Math.max(0,state.energy-1);state.sleep=Math.max(0,state.sleep-1);renderMeters()}},60000);
-renderMeters();window.addEventListener("resize",()=>{camera.aspect=Math.max(1,innerWidth)/Math.max(1,innerHeight);camera.updateProjectionMatrix();renderer.setSize(Math.max(1,root.clientWidth),Math.max(1,root.clientHeight))});
-}
-window.addEventListener("error",e=>showLoadError("Game startup error: "+(e.message||"unknown JavaScript error")));
-window.addEventListener("unhandledrejection",e=>showLoadError("Game startup error: "+(e.reason&&e.reason.message?e.reason.message:"unexpected loading error")));
-if(window.THREE){try{boot()}catch(error){showLoadError("Game startup error: "+(error&&error.message?error.message:"unknown error"));console.error(error)}}else{showLoadError("The local 3D engine file could not be loaded. Reload the page; if this continues, the GitHub Pages deployment may still be updating.")}
+function openPanel(title,html){$('panelTitle').textContent=title;$('panelBody').innerHTML=html;$('panel').style.display='block'}
+$('closePanel').onclick=()=>$('panel').style.display='none';
+$('journalBtn').onclick=()=>openPanel("Mimo's journal",data.journal.length?data.journal.map(e=>'<div class="entry"><b>Day '+e.day+'</b><small>'+e.at+'</small><p>'+e.text+'</p></div>').join(''):'<p>The pages are still empty. Mimo is just beginning his story.</p>');
+$('museumBtn').onclick=()=>openPanel('The little collection',data.works.length?data.works.map(w=>'<div class="entry artifact"><div class="thumb"></div><div><b>'+w.title+'</b><small>Created on day '+w.day+' · imagined value '+w.price+' brass buttons</small></div></div>').join(''):'<p>Nothing on the shelf yet. Mimo has to discover a few things first.</p>');
+$('workshopBtn').onclick=()=>openPanel('The workshop','<p>A tiny workbench, a drawer full of lost screws and a very ambitious inventor.</p><p><b>'+data.works.length+'</b> creations · <b>'+data.discoveries+'</b> discoveries</p><button id="inspire">GIVE MIMO AN IDEA</button><p class="small">This is a little nudge, not an order. He will decide what to do with it.</p>');
+document.addEventListener('click',e=>{if(e.target&&e.target.id==='inspire'){createWork();$('panel').style.display='none'}});
+$('pauseBtn').onclick=()=>{paused=!paused;$('pauseBtn').textContent=paused?'▶ RESUME':'Ⅱ PAUSE';say(paused?'The attic falls quiet.':'Mimo is moving again.');};
+$('activity').textContent=data.activity;$('mood').textContent='Mood · '+data.mood;
+setInterval(()=>{$('activity').textContent=data.activity;$('mood').textContent='Mood · '+data.mood;save()},8000);
+addEventListener('beforeunload',save);log('A new day begins in the attic. Mimo is awake.');
+})();
 </script></body></html>
