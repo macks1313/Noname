@@ -153,7 +153,8 @@ document.getElementById("closePanel").onclick=()=>document.getElementById("panel
 const menuPanel=document.getElementById("panel");
 const menuToggle=document.getElementById("menuToggle");
 menuToggle.setAttribute("aria-expanded","false");
-menuToggle.onclick=()=>{const opening=menuPanel.style.display!=="block";menuPanel.style.display=opening?"block":"none";menuToggle.setAttribute("aria-expanded",String(opening));};
+function renderMenuHome(){document.getElementById("panelTitle").textContent="Briefsville";document.getElementById("panelBody").innerHTML="<p>Explore the town, meet its residents and discover hidden surprises.</p><button class='menubtn' data-page='Journal'>📖 Journal</button> <button class='menubtn' data-page='Gallery'>🎨 Gallery</button> <button class='menubtn' data-page='Inventory'>👜 Bag</button> <button class='menubtn' data-page='Shop'>🛍 Shop</button> <button class='menubtn' data-page='Status'>♡ Status</button> <button class='menubtn' data-page='Brain'>🧠 Mind</button>";}
+menuToggle.onclick=()=>{const opening=menuPanel.style.display!=="block";if(opening)renderMenuHome();menuPanel.style.display=opening?"block":"none";menuToggle.setAttribute("aria-expanded",String(opening));};
 document.getElementById("closePanel").onclick=()=>{menuPanel.style.display="none";menuToggle.setAttribute("aria-expanded","false");};
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menuPanel.style.display==="block"){menuPanel.style.display="none";menuToggle.setAttribute("aria-expanded","false");}});
 
@@ -167,8 +168,7 @@ Status:["Lady's Condition","<p>🍽 Hunger: "+state.hunger+"%<br>⚡ Energy: "+s
 };
 if(p==="Brain"){showPanel("Lady's Mind","<p><b>Autonomy:</b> Local decision engine active</p><p><b>Current ambition:</b> "+state.brain.goal+"</p><p><b>Last action:</b> "+state.brain.lastAction+"</p><blockquote>“"+state.brain.lastThought+"”</blockquote><p><b>Recent memories</b></p>"+(state.brain.memories.length?state.brain.memories.slice(0,8).map(m=>"<p class='small'>Day "+m.day+" · "+m.text+"</p>").join(""):"<p class='small'>Her memories will appear as she explores.</p>"));return;} if(pages[p])showPanel(pages[p][0],pages[p][1]);
 }
-document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>openPage(b.dataset.page));
-document.getElementById("panelBody").addEventListener("click",e=>{if(e.target.closest("[data-action='sell']")){if(!state.artworks.length)return;const a=state.artworks.shift();state.art=state.artworks.length;state.money+=a.value;state.sales++;toast("Sold "+a.title+" for £"+a.value+"!");openPage("Shop");renderMeters();}});
+document.getElementById("panelBody").addEventListener("click",e=>{const pageButton=e.target.closest("[data-page]");if(pageButton){openPage(pageButton.dataset.page);return;}if(e.target.closest("[data-action='sell']")){if(!state.artworks.length)return;const a=state.artworks.shift();state.art=state.artworks.length;state.money+=a.value;state.sales++;toast("Sold "+a.title+" for £"+a.value+"!");openPage("Shop");renderMeters();}});
 
 document.getElementById("interact").onclick=()=>{if(nearLady){openTalk();return}if(activeInteractable){activeInteractable.action();renderMeters()}};
 // Desktop mouse look and pointer lock
