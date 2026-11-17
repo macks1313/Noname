@@ -70,7 +70,7 @@ pantyShape.quadraticCurveTo(.60,-.28,.34,-.25);
 pantyShape.quadraticCurveTo(.15,-.22,0,-.72);
 pantyShape.quadraticCurveTo(-.15,-.22,-.34,-.25);
 pantyShape.quadraticCurveTo(-.60,-.28,-.64,-.05);
-pantyShape.close();
+pantyShape.closePath();
 const cloth=new THREE.Mesh(new THREE.ShapeGeometry(pantyShape,20),new THREE.MeshStandardMaterial({color:0xffe8d9,roughness:.7,side:THREE.DoubleSide}));
 cloth.position.set(0,1.55,.12);cloth.castShadow=true;lady.add(cloth);
 const waistband=new THREE.Mesh(new THREE.BoxGeometry(1.47,.13,.12),mat(0xf3a1b5));waistband.position.set(0,2.02,.16);lady.add(waistband);
