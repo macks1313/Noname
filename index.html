@@ -3,14 +3,14 @@
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#bfe8f4;color:#49384c;font-family:Inter,system-ui,Arial,sans-serif}#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%;touch-action:none}
 #top{position:fixed;z-index:5;top:0;left:0;right:0;padding:13px 16px;background:linear-gradient(#fff4e6ee,#fff4e688,transparent);pointer-events:none}.brand{font:700 18px Georgia,serif;letter-spacing:.12em;color:#a85d79}.tag{font-size:9px;letter-spacing:.2em;color:#705b77;text-transform:uppercase;margin-top:3px}.day{position:absolute;right:16px;top:17px;font-size:11px;color:#e9d6b3;border:1px solid #82718b;border-radius:20px;padding:7px 11px;background:#211d2caa}
-#meters{position:fixed;z-index:6;top:64px;left:14px;display:flex;gap:7px;flex-wrap:wrap;max-width:calc(100% - 28px);pointer-events:none}.meter{width:106px;padding:7px 9px;border-radius:9px;background:#fff8eddd;border:1px solid #d9a6a9;backdrop-filter:blur(8px)}.meterhead{display:flex;justify-content:space-between;font-size:9px;color:#705b77;margin-bottom:5px}.meterhead b{color:#49384c}.track{height:5px;background:#ead9d0;border-radius:5px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#f08a9b,#f4c45e,#83c9a9);border-radius:5px}
+#meters{display:none}.meter{width:106px;padding:7px 9px;border-radius:9px;background:#fff8eddd;border:1px solid #d9a6a9;backdrop-filter:blur(8px)}.meterhead{display:flex;justify-content:space-between;font-size:9px;color:#705b77;margin-bottom:5px}.meterhead b{color:#49384c}.track{height:5px;background:#ead9d0;border-radius:5px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#f08a9b,#f4c45e,#83c9a9);border-radius:5px}
 #hint{position:fixed;z-index:5;top:135px;left:50%;transform:translateX(-50%);font-size:10px;color:#654c67;background:#fff8edee;padding:7px 12px;border:1px solid #e4b6b5;border-radius:20px;white-space:nowrap;pointer-events:none}
-#minimapWrap{position:fixed;z-index:7;right:12px;top:82px;width:124px;padding:6px;border-radius:15px;background:#fff8eddf;border:2px solid #e5b96b;box-shadow:0 5px 20px #72556b33}#minimapTitle{font-size:8px;font-weight:900;letter-spacing:.16em;text-align:center;color:#705b77;margin-bottom:4px}#minimap{display:block;width:108px;height:108px;border-radius:10px;background:#cfe9c4}#minimapLegend{font-size:8px;text-align:center;color:#705b77;margin-top:4px}#crosshair{position:fixed;z-index:4;left:50%;top:50%;width:9px;height:9px;border:1px solid #fff9;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 8px #000}
+#minimapWrap{display:none}#minimapTitle{font-size:8px;font-weight:900;letter-spacing:.16em;text-align:center;color:#705b77;margin-bottom:4px}#minimap{display:block;width:108px;height:108px;border-radius:10px;background:#cfe9c4}#minimapLegend{font-size:8px;text-align:center;color:#705b77;margin-top:4px}#crosshair{position:fixed;z-index:4;left:50%;top:50%;width:9px;height:9px;border:1px solid #fff9;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 8px #000}
 #interact{position:fixed;z-index:7;left:50%;bottom:18%;transform:translateX(-50%);display:none;border:1px solid #e4c27d;background:#fff8ed;color:#654c67;padding:12px 18px;border-radius:24px;font-weight:700;box-shadow:0 8px 30px #0008}
 #controls{position:fixed;z-index:6;bottom:24px;left:20px;display:flex;gap:12px;align-items:end}.stick{width:132px;height:132px;border-radius:50%;border:2px solid #e0a7a8;background:#fff4e6bb;backdrop-filter:blur(5px);position:relative;touch-action:none}.knob{position:absolute;width:48px;height:48px;border-radius:50%;left:34px;top:34px;background:#e7a7a8;border:2px solid #fff8ed;box-shadow:0 3px 12px #0006}.sticklabel{position:absolute;left:0;right:0;bottom:-17px;text-align:center;font-size:10px;color:#654c67;letter-spacing:.1em}
 
-#menu{position:fixed;z-index:8;right:14px;top:65px;display:flex;gap:6px;flex-direction:column}.menubtn{background:#fff8edee;border:1px solid #d9a6a9;color:#654c67;border-radius:10px;padding:9px 12px;font-size:11px;backdrop-filter:blur(8px)}
-#panel{display:none;position:fixed;z-index:12;right:16px;top:50%;transform:translateY(-50%);width:min(350px,calc(100% - 32px));max-height:75vh;overflow:auto;background:#fff8edf5;border:1px solid #d9a6a9;border-radius:17px;padding:18px;box-shadow:0 18px 60px #000b;backdrop-filter:blur(15px)}#panel h2{font:22px Georgia,serif;color:#a85d79;margin:0 0 10px}#panel p{font-size:13px;color:#705b77;line-height:1.6}#panel .close{float:right;background:none;border:1px solid #716078;color:#fff;border-radius:8px;padding:5px 9px}#panel .small{font-size:10px;color:#967f91}
+#menu{position:fixed;z-index:8;right:14px;top:14px;display:flex;gap:6px;flex-direction:column}.menubtn{background:#fff8edee;border:1px solid #d9a6a9;color:#654c67;border-radius:10px;padding:9px 12px;font-size:11px;backdrop-filter:blur(8px)}
+#panel{display:none;position:fixed;z-index:12;right:14px;top:62px;transform:none;width:min(330px,calc(100% - 28px));max-height:72vh;overflow:auto;background:#fff8f2f5;border:1px solid #d9a6a9;border-radius:17px;padding:18px;box-shadow:0 18px 60px #000b;backdrop-filter:blur(15px)}#panel h2{font:22px Georgia,serif;color:#a85d79;margin:0 0 10px}#panel p{font-size:13px;color:#705b77;line-height:1.6}#panel .close{float:right;background:none;border:1px solid #716078;color:#fff;border-radius:8px;padding:5px 9px}#panel .small{font-size:10px;color:#967f91}
 #dialog{display:none;position:fixed;z-index:13;left:50%;bottom:12%;transform:translateX(-50%);width:min(500px,calc(100% - 28px));background:#fff8edf5;border:1px solid #e5b96b;border-radius:16px;padding:16px 18px;box-shadow:0 12px 50px #000b}#dialog strong{color:#a85d79;font:18px Georgia,serif}#dialog p{margin:8px 0 12px;font:14px/1.5 Georgia,serif}#dialog button{float:right;background:#a85d79;border:1px solid #d9a6a9;border-radius:9px;padding:7px 13px;color:#fff}
 #toast{position:fixed;z-index:20;bottom:18px;left:50%;transform:translateX(-50%);background:#fff1cc;color:#654c67;padding:10px 15px;border-radius:30px;font-size:11px;opacity:0;transition:.2s;pointer-events:none}#toast.show{opacity:1}
 #loadError{display:none;position:fixed;z-index:40;inset:0;background:#eaf7f5f2;align-items:center;justify-content:center;text-align:center;padding:28px}#loadError .box{max-width:440px;background:#fff8ed;border:1px solid #d9a6a9;border-radius:18px;padding:24px}#loadError h2{font:26px Georgia,serif;color:#efcc89}#loadError p{font-size:14px;line-height:1.6;color:#e4d8e1}#loadError button{background:#594052;color:white;border:1px solid #b18b9e;padding:10px 16px;border-radius:10px}
@@ -23,8 +23,8 @@
 <button id="interact">Talk to Lady Briefington</button>
 <div id="controls"><div class="stick" id="moveStick"><div class="knob" id="moveKnob"></div><div class="sticklabel">MOVE</div></div></div>
 
-<div id="menu"><button class="menubtn" data-page="Journal">📖 Journal</button><button class="menubtn" data-page="Gallery">🎨 Gallery</button><button class="menubtn" data-page="Inventory">👜 Bag</button><button class="menubtn" data-page="Shop">🛍 Shop</button></div>
-<div id="panel"><button class="close" id="closePanel">✕</button><h2 id="panelTitle"></h2><div id="panelBody"></div></div>
+<div id="menu"><button class="menubtn" id="menuToggle">☰ MENU</button></div>
+<div id="panel"><button class="close" id="closePanel">✕</button><h2 id="panelTitle">Briefsville</h2><div id="panelBody"><p>Explore the town, meet its residents and discover hidden surprises.</p><button class="menubtn" data-page="Journal">📖 Journal</button> <button class="menubtn" data-page="Gallery">🎨 Gallery</button> <button class="menubtn" data-page="Inventory">👜 Bag</button> <button class="menubtn" data-page="Shop">🛍 Shop</button><button class="menubtn" data-page="Status">♡ Status</button></div></div>
 <div id="dialog"><strong>Lady Briefington</strong><p id="dialogText"></p><button id="dialogClose">Dismiss</button></div><div id="toast"></div><div id="loadError"><div class="box"><h2>Briefsville is not responding</h2><p id="loadErrorText">The 3D world could not start.</p><button onclick="location.reload()">Try again</button></div></div>
 <script src="./three.min.js"></script>
 <script>
@@ -65,6 +65,7 @@ function flowerbed(x,z){const bed=box(4,.25,2,mat(0x7b9e4d),x,.18,z);for(let i=0
 flowerbed(-10,9);flowerbed(13,10);flowerbed(-13,-9);flowerbed(25,5);
 function bench(x,z){box(2,.16,.55,mat(0xb77b55),x,.65,z);box(2,.75,.14,mat(0xb77b55),x,1,z-.23);for(let dx of [-.75,.75])box(.12,.65,.12,mat(0x65545a),x+dx,.32,z)}
 bench(4,8);bench(14,5);bench(-8,12);
+const worldInteractables=[{name:"The Laundry",x:-16,z:-15,r:5,action:()=>{state.hygiene=Math.min(100,state.hygiene+18);toast("Fresh as a daisy. Hygiene +18!") }},{name:"The Thrift Shop",x:18,z:-16,r:5,action:()=>{state.money=Math.max(0,state.money-2);toast("You browse the boutique. A questionable purchase costs £2.")}},{name:"The Drunken Sock",x:-18,z:17,r:5,action:()=>{state.mood=Math.min(100,state.mood+12);toast("A little gossip lifts your mood. +12 mood!") }},{name:"Lost Things Museum",x:18,z:17,r:6,action:()=>{state.art++;toast("You discover a tiny masterpiece. Gallery +1!") }},{name:"Town Fountain",x:9,z:-7,r:4,action:()=>{state.energy=Math.min(100,state.energy+8);toast("A peaceful pause by the fountain. Energy +8!") }},{name:"Flower Garden",x:13,z:10,r:4,action:()=>{state.mood=Math.min(100,state.mood+8);toast("The flowers are lovely. Mood +8!") }}];
 
 // Distinct points of interest
 function sign(text,x,z,color){const base=box(3,2,.25,mat(color),x,1.6,z);const canvas=document.createElement("canvas");canvas.width=512;canvas.height=128;const c=canvas.getContext("2d");c.fillStyle="#241e2c";c.fillRect(0,0,512,128);c.fillStyle="#f0cf91";c.font="bold 48px Georgia";c.textAlign="center";c.fillText(text,256,82);const tex=new THREE.CanvasTexture(canvas);const board=new THREE.Mesh(new THREE.PlaneGeometry(3,0.75),new THREE.MeshBasicMaterial({map:tex}));board.position.set(x,2.6,z+.14);scene.add(board);return base}
@@ -72,32 +73,33 @@ sign("THE LAUNDRY",-16,-15,0xe99b88);building(-16,-20,9,8,7,0xf2a6a0);
 sign("THRIFT SHOP",18,-16,0x8a6e89);building(18,-21,9,8,7,0xf3c56b);
 sign("THE DRUNKEN SOCK",-18,17,0x8a6e89);building(-18,22,10,8,8,0x8fc9e8);
 sign("LOST THINGS MUSEUM",18,17,0x8a6e89);building(18,22,11,9,10,0x9bd6b1);
-// Character: a little animated anthropomorphic lace-panties silhouette
+
+// Lady Briefington: unmistakable high-waisted culotte character
 const lady=new THREE.Group();
 const pantyShape=new THREE.Shape();
-pantyShape.moveTo(-.72,.48);pantyShape.lineTo(.72,.48);pantyShape.lineTo(.64,-.05);
-pantyShape.quadraticCurveTo(.60,-.28,.34,-.25);
-pantyShape.quadraticCurveTo(.15,-.22,0,-.72);
-pantyShape.quadraticCurveTo(-.15,-.22,-.34,-.25);
-pantyShape.quadraticCurveTo(-.60,-.28,-.64,-.05);
-pantyShape.closePath();
-const cloth=new THREE.Mesh(new THREE.ExtrudeGeometry(pantyShape,{depth:.22,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.055,bevelThickness:.05}),new THREE.MeshStandardMaterial({color:0xff5f9e,roughness:.58,metalness:.02}));
+pantyShape.moveTo(-.78,.58);pantyShape.quadraticCurveTo(0,.68,.78,.58);
+pantyShape.lineTo(.72,-.10);pantyShape.quadraticCurveTo(.68,-.34,.43,-.28);
+pantyShape.quadraticCurveTo(.20,-.22,0,-.76);
+pantyShape.quadraticCurveTo(-.20,-.22,-.43,-.28);
+pantyShape.quadraticCurveTo(-.68,-.34,-.72,-.10);pantyShape.closePath();
+const clothMat=new THREE.MeshStandardMaterial({color:0xfff0e8,roughness:.82});
+const cloth=new THREE.Mesh(new THREE.ExtrudeGeometry(pantyShape,{depth:.24,bevelEnabled:true,bevelSegments:4,steps:1,bevelSize:.065,bevelThickness:.055}),clothMat);
 cloth.position.set(0,1.55,.12);cloth.castShadow=true;lady.add(cloth);
-const smileCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(-.19,1.57,.43),new THREE.Vector3(0,1.49,.46),new THREE.Vector3(.19,1.57,.43)]);
-const smile=new THREE.Mesh(new THREE.TubeGeometry(smileCurve,16,.025,8,false),mat(0x71334f));lady.add(smile);
-const cheekMat=mat(0xffb0c7);for(const x of [-.34,.34]){const cheek=new THREE.Mesh(new THREE.SphereGeometry(.075,10,8),cheekMat);cheek.position.set(x,1.59,.42);lady.add(cheek)}
-const armMat=mat(0xff5f9e);for(const x of [-.88,.88]){const arm=new THREE.Mesh(new THREE.CylinderGeometry(.07,.07,.48,8),armMat);arm.position.set(x,1.28,.06);arm.rotation.z=x<0?-.45:.45;lady.add(arm)}
-
-const waistband=new THREE.Mesh(new THREE.BoxGeometry(1.47,.15,.16),mat(0xffc6df));waistband.position.set(0,2.02,.16);lady.add(waistband);
-const laceMat=mat(0xd987a7);
-for(let x=-.58;x<=.59;x+=.17){const dot=new THREE.Mesh(new THREE.SphereGeometry(.035,8,6),laceMat);dot.position.set(x,1.94,.2);lady.add(dot)}
+const waistband=new THREE.Mesh(new THREE.BoxGeometry(1.62,.19,.19),mat(0xd98eae));waistband.position.set(0,2.13,.18);lady.add(waistband);
+const waistTrim=new THREE.Mesh(new THREE.BoxGeometry(1.57,.045,.205),mat(0xffd8e7));waistTrim.position.set(0,2.02,.19);lady.add(waistTrim);
+const seamMat=mat(0xe3a9bd);
+for(const side of [-1,1]){const seamCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(side*.70,2.02,.27),new THREE.Vector3(side*.67,1.72,.29),new THREE.Vector3(side*.53,1.48,.29),new THREE.Vector3(side*.30,1.43,.29)]);lady.add(new THREE.Mesh(new THREE.TubeGeometry(seamCurve,18,.018,6,false),seamMat));}
+const gusset=new THREE.Mesh(new THREE.CircleGeometry(.22,24),mat(0xf7d8e3));gusset.position.set(0,1.30,.39);gusset.scale.set(1,.72,1);lady.add(gusset);
 const eyeMat=mat(0x392638);
-for(let x of [-.2,.2]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.075,12,10),eyeMat);eye.position.set(x,1.73,.2);lady.add(eye)}
-const monocle=new THREE.Mesh(new THREE.TorusGeometry(.17,.027,8,24),mat(0xd4a43c));monocle.position.set(.25,1.74,.23);lady.add(monocle);
-const pearls=new THREE.Mesh(new THREE.TorusGeometry(.38,.045,8,24),mat(0xfff5dc));pearls.position.set(0,1.38,.19);pearls.scale.set(1,.7,.8);lady.add(pearls);
-const bow=new THREE.Group();const bowA=new THREE.Mesh(new THREE.SphereGeometry(.13,10,8),mat(0xd96891));bowA.scale.set(1.3,.7,.45);bowA.position.x=-.13;const bowB=bowA.clone();bowB.position.x=.13;bow.add(bowA,bowB);bow.position.set(0,2.15,.18);lady.add(bow);
-const legs=[];for(let x of [-.25,.25]){const leg=new THREE.Mesh(new THREE.CylinderGeometry(.055,.07,.65,8),mat(0xe5bda9));leg.position.set(x,.55,0);lady.add(leg);legs.push(leg)}
-
+for(const x of [-.22,.22]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.085,14,12),eyeMat);eye.position.set(x,1.78,.27);lady.add(eye);const shine=new THREE.Mesh(new THREE.SphereGeometry(.025,8,8),mat(0xffffff));shine.position.set(x-.025,1.81,.34);lady.add(shine);}
+const smileCurve=new THREE.CatmullRomCurve3([new THREE.Vector3(-.16,1.59,.34),new THREE.Vector3(0,1.53,.38),new THREE.Vector3(.16,1.59,.34)]);lady.add(new THREE.Mesh(new THREE.TubeGeometry(smileCurve,16,.025,8,false),mat(0x71334f)));
+for(const x of [-.39,.39]){const cheek=new THREE.Mesh(new THREE.SphereGeometry(.085,10,8),mat(0xffb3c7));cheek.position.set(x,1.61,.29);lady.add(cheek);}
+const arms=[];
+for(const x of [-.88,.88]){const arm=new THREE.Group();const limb=new THREE.Mesh(new THREE.CapsuleGeometry(.075,.35,4,8),mat(0xffd6c8));limb.rotation.z=x<0?-.7:.7;arm.add(limb);arm.position.set(x,1.42,.08);lady.add(arm);arms.push(arm);const hand=new THREE.Mesh(new THREE.SphereGeometry(.10,10,8),mat(0xffd6c8));hand.position.set(x*1.12,1.19,.1);lady.add(hand);}
+const legs=[];
+for(const x of [-.29,.29]){const leg=new THREE.Mesh(new THREE.CapsuleGeometry(.075,.48,4,8),mat(0xffd6c8));leg.position.set(x,.52,.05);lady.add(leg);legs.push(leg);const shoe=new THREE.Mesh(new THREE.SphereGeometry(.15,12,8),mat(0x9b6688));shoe.scale.set(1.25,.55,1.5);shoe.position.set(x,.22,.13);lady.add(shoe);}
+const bow=new THREE.Group();const bowMat=mat(0xb85d88);const bowA=new THREE.Mesh(new THREE.SphereGeometry(.14,10,8),bowMat);bowA.scale.set(1.35,.72,.48);bowA.position.x=-.13;const bowB=bowA.clone();bowB.position.x=.13;bow.add(bowA,bowB);const knot=new THREE.Mesh(new THREE.SphereGeometry(.075,10,8),mat(0xf4c5d7));bow.add(knot);bow.position.set(0,2.31,.2);lady.add(bow);
+const laceMat=mat(0xd98cac);for(let x=-.61;x<=.62;x+=.15){const dot=new THREE.Mesh(new THREE.SphereGeometry(.027,8,6),laceMat);dot.position.set(x,1.94,.30);lady.add(dot);}
 lady.position.set(0,0,-2);scene.add(lady);lady.userData={home:new THREE.Vector3(0,0,-2),target:new THREE.Vector3(0,0,-2),walk:0};
 const beacon=new THREE.Group();
 const beam=new THREE.Mesh(new THREE.CylinderGeometry(.12,.55,5,12,1,true),new THREE.MeshBasicMaterial({color:0xffd477,transparent:true,opacity:.2,depthWrite:false}));
@@ -107,7 +109,7 @@ beaconRing.position.y=5.35;beacon.add(beaconRing);
 const beaconDot=new THREE.Mesh(new THREE.SphereGeometry(.2,12,10),new THREE.MeshBasicMaterial({color:0xffefb0}));
 beaconDot.position.y=5.35;beacon.add(beaconDot);scene.add(beacon);
 const hitObjects=[cloth];cloth.userData.isLady=true;
-const raycaster=new THREE.Raycaster(),center=new THREE.Vector2(0,0);let yaw=0,pitch=0,moveX=0,moveY=0,nearLady=false,started=true,dialogue=false,lastTime=performance.now();
+const raycaster=new THREE.Raycaster(),center=new THREE.Vector2(0,0);let yaw=0,pitch=0,moveX=0,moveY=0,nearLady=false,activeInteractable=null,started=true,dialogue=false,lastTime=performance.now();
 const moveVelocity=new THREE.Vector3(),mapCanvas=document.getElementById("minimap"),mapCtx=mapCanvas.getContext("2d");
 const mapPlaces=[{x:-16,z:-15,c:"#ed8c84"},{x:18,z:-16,c:"#e6ad47"},{x:-18,z:17,c:"#a889c9"},{x:18,z:17,c:"#5caaa0"}];
 const state={day:1,hunger:66,energy:82,mood:78,sleep:74,hygiene:43,health:100,money:14,art:0,events:["Lady Briefington was last spotted somewhere in Briefsville."]};
@@ -119,16 +121,16 @@ function openTalk(){dialogue=true;document.getElementById("dialogText").textCont
 document.getElementById("dialogClose").onclick=()=>{dialogue=false;document.getElementById("dialog").style.display="none"};
 document.getElementById("closePanel").onclick=()=>document.getElementById("panel").style.display="none";
 document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>{const p=b.dataset.page;const data={Journal:["Lady's Journal","<p>Day "+state.day+": Briefsville is tolerable. The locals are not.</p><p class='small'>Her diary will grow as the world simulation develops.</p>"],Gallery:["The Gallery","<p>Works on display: "+state.art+"</p><p class='small'>Lady Briefington is preparing her first collection, <em>Elegance in Exile</em>.</p>"],Inventory:["Personal Effects","<p>One pearl necklace · One gold monocle · A very strong opinion of herself.</p>"],Shop:["The Boutique","<p>The shop is not open yet. Lady Briefington is currently negotiating an unreasonable commission.</p>"]};showPanel(data[p][0],data[p][1])});
-document.getElementById("interact").onclick=openTalk;
+document.getElementById("interact").onclick=()=>{if(nearLady){openTalk();return}if(activeInteractable){activeInteractable.action();renderMeters()}};
 // Desktop mouse look and pointer lock
 
-document.addEventListener("mousemove",e=>{if(document.pointerLockElement===renderer.domElement){yaw-=e.movementX*.0022;pitch=Math.max(-1.15,Math.min(1.15,pitch-e.movementY*.0022))}});
+document.addEventListener("mousemove",e=>{if(document.pointerLockElement===renderer.domElement){yaw-=e.movementX*.0018;pitch=Math.max(-1.0,Math.min(1.0,pitch-e.movementY*.0018))}});
 function isCoarse(){return matchMedia("(pointer:coarse)").matches}
 function onPointerStick(el,knob,cb){let active=false,id=null;el.addEventListener("pointerdown",e=>{active=true;id=e.pointerId;el.setPointerCapture(id);update(e)});el.addEventListener("pointermove",e=>{if(active&&e.pointerId===id)update(e)});function end(e){if(e.pointerId!==id)return;active=false;id=null;knob.style.transform="translate(0,0)";cb(0,0)}el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);function update(e){const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=(e.clientX-cx)/(r.width*.34),dy=(e.clientY-cy)/(r.height*.34);const l=Math.hypot(dx,dy);if(l>1){dx/=l;dy/=l}knob.style.transform="translate("+dx*36+"px,"+dy*36+"px)";cb(dx,dy)}}
 onPointerStick(document.getElementById("moveStick"),document.getElementById("moveKnob"),(x,y)=>{moveX=x;moveY=y});
 let touchLook=null;
 document.addEventListener("pointerdown",e=>{if(e.pointerType==="touch"&&e.clientX>innerWidth*.42&&!e.target.closest("button,#menu,#panel,#minimapWrap"))touchLook={x:e.clientX,y:e.clientY,id:e.pointerId}},{capture:true});
-document.addEventListener("pointermove",e=>{if(touchLook&&touchLook.id===e.pointerId){yaw-=(e.clientX-touchLook.x)*.005;pitch=Math.max(-.72,Math.min(.72,pitch-(e.clientY-touchLook.y)*.0035));touchLook.x=e.clientX;touchLook.y=e.clientY}},{capture:true});
+document.addEventListener("pointermove",e=>{if(touchLook&&touchLook.id===e.pointerId){yaw-=(e.clientX-touchLook.x)*.0038;pitch=Math.max(-.78,Math.min(.78,pitch-(e.clientY-touchLook.y)*.0028));touchLook.x=e.clientX;touchLook.y=e.clientY}},{capture:true});
 document.addEventListener("pointerup",e=>{if(touchLook&&touchLook.id===e.pointerId)touchLook=null},{capture:true});
 document.addEventListener("pointercancel",()=>touchLook=null,{capture:true});
 function updateCamera(){camera.rotation.order="YXZ";camera.rotation.y=yaw;camera.rotation.x=pitch}
@@ -143,10 +145,10 @@ const [lx,ly]=xy(lady.position.x,lady.position.z);c.fillStyle="#e7a52d";c.beginP
 const [px,py]=xy(camera.position.x,camera.position.z);c.save();c.translate(px,py);c.rotate(-yaw);c.fillStyle="#7c55bb";c.beginPath();c.moveTo(0,-9);c.lineTo(6,7);c.lineTo(0,4);c.lineTo(-6,7);c.closePath();c.fill();c.restore();
 }
 function clampPos(v){v.x=Math.max(-43,Math.min(43,v.x));v.z=Math.max(-43,Math.min(43,v.z));return v}
-function wander(dt){lady.userData.walk+=dt;if(lady.userData.walk>8){lady.userData.walk=0;lady.userData.target.set(lady.userData.home.x+(Math.random()-.5)*12,0,lady.userData.home.z+(Math.random()-.5)*12)}const dir=lady.userData.target.clone().sub(lady.position);dir.y=0;if(dir.length()>.6){dir.normalize();lady.position.addScaledVector(dir,dt*.42);lady.rotation.y=Math.atan2(dir.x,dir.z);legs[0].rotation.x=Math.sin(performance.now()*.008)*.35;legs[1].rotation.x=-legs[0].rotation.x}beacon.position.set(lady.position.x,0,lady.position.z);beaconRing.rotation.y=performance.now()*.0012;beaconDot.position.y=5.35+Math.sin(performance.now()*.003)*.22}
-function checkLady(){const dist=camera.position.distanceTo(new THREE.Vector3(lady.position.x,1.3,lady.position.z));nearLady=dist<7;document.getElementById("interact").style.display=nearLady?"block":"none";document.getElementById("hint").textContent=nearLady?"Tap TALK to meet Lady Briefington":"Move with the joystick · Swipe the right side to look · Lady is "+Math.round(dist)+" m away";}
-function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-lastTime)/1000);lastTime=now;if(started){const forward=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));const desired=new THREE.Vector3();desired.addScaledVector(forward,-moveY);desired.addScaledVector(right,moveX);if(desired.length()>1)desired.normalize();const strength=Math.min(1,desired.length());if(strength<.08)desired.set(0,0,0);else desired.normalize().multiplyScalar(7.2*strength);
-moveVelocity.lerp(desired,1-Math.exp(-dt*13));camera.position.addScaledVector(moveVelocity,dt);clampPos(camera.position);if(moveVelocity.length()>.1){state.energy=Math.max(0,state.energy-dt*.018);state.hunger=Math.max(0,state.hunger-dt*.012)}updateCamera();wander(dt);checkLady();drawMap();}renderer.render(scene,camera)}
+function wander(dt){lady.userData.walk+=dt;lady.position.y=.035+Math.sin(performance.now()*.003)*.035;bow.rotation.z=Math.sin(performance.now()*.002)*.08;arms[0].rotation.z=Math.sin(performance.now()*.003)*.08;arms[1].rotation.z=-Math.sin(performance.now()*.003)*.08;if(lady.userData.walk>8){lady.userData.walk=0;lady.userData.target.set(lady.userData.home.x+(Math.random()-.5)*12,0,lady.userData.home.z+(Math.random()-.5)*12)}const dir=lady.userData.target.clone().sub(lady.position);dir.y=0;if(dir.length()>.6){dir.normalize();lady.position.addScaledVector(dir,dt*.42);lady.rotation.y=Math.atan2(dir.x,dir.z);legs[0].rotation.x=Math.sin(performance.now()*.008)*.35;legs[1].rotation.x=-legs[0].rotation.x}beacon.position.set(lady.position.x,0,lady.position.z);beaconRing.rotation.y=performance.now()*.0012;beaconDot.position.y=5.35+Math.sin(performance.now()*.003)*.22}
+function checkLady(){const dist=camera.position.distanceTo(new THREE.Vector3(lady.position.x,1.3,lady.position.z));nearLady=dist<7;activeInteractable=null;let nearest=Infinity;for(const item of worldInteractables){const d=Math.hypot(camera.position.x-item.x,camera.position.z-item.z);if(d<item.r&&d<nearest){nearest=d;activeInteractable=item}}const button=document.getElementById("interact");button.style.display=nearLady||activeInteractable?"block":"none";button.textContent=nearLady?"Talk to Lady Briefington":activeInteractable?"Explore · "+activeInteractable.name:"Explore";document.getElementById("hint").textContent=nearLady?"Lady Briefington is right here!":activeInteractable?"You found "+activeInteractable.name+" · tap to interact":"Joystick to move · drag the right side to look · Lady is "+Math.round(dist)+" m away";}
+function tick(now){requestAnimationFrame(tick);const dt=Math.min(.04,(now-lastTime)/1000);lastTime=now;if(started){const forward=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));const desired=new THREE.Vector3();desired.addScaledVector(forward,-moveY);desired.addScaledVector(right,moveX);if(desired.length()>1)desired.normalize();let strength=Math.min(1,desired.length());if(strength<.13){desired.set(0,0,0);strength=0}else{strength=(strength-.13)/.87;strength=strength*strength*(3-2*strength);desired.normalize().multiplyScalar(8.0*strength)}
+const response=desired.length()>moveVelocity.length()?7.5:10.5;moveVelocity.lerp(desired,1-Math.exp(-dt*response));camera.position.addScaledVector(moveVelocity,dt);clampPos(camera.position);if(moveVelocity.length()>.1){state.energy=Math.max(0,state.energy-dt*.018);state.hunger=Math.max(0,state.hunger-dt*.012)}updateCamera();wander(dt);checkLady();drawMap();}renderer.render(scene,camera)}
 requestAnimationFrame(tick);
 if(!isCoarse()){renderer.domElement.addEventListener("click",()=>{if(started&&!document.pointerLockElement)renderer.domElement.requestPointerLock?.()})}
 window.addEventListener("keydown",e=>{if(e.key==="w"||e.key==="ArrowUp")moveY=-1;if(e.key==="s"||e.key==="ArrowDown")moveY=1;if(e.key==="a"||e.key==="ArrowLeft")moveX=-1;if(e.key==="d"||e.key==="ArrowRight")moveX=1;if(e.key==="Escape")document.exitPointerLock?.()});
