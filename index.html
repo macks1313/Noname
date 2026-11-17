@@ -36,10 +36,10 @@ let renderer;
 try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:"high-performance"})}
 catch(error){showLoadError("Your browser could not start WebGL, which is required to display the 3D city. Try opening this page directly in Safari instead of the in-app browser.");return}
 
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x9edcf0);scene.fog=new THREE.Fog(0x9edcf0,55,115);
-const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,180);camera.position.set(0,1.7,10);
-renderer.setPixelRatio(Math.min(devicePixelRatio||1,isCoarse()?1.35:1.75));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=!isCoarse();renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.NoToneMapping;renderer.toneMappingExposure=1;renderer.domElement.style.position="absolute";renderer.domElement.style.inset="0";renderer.domElement.style.zIndex="0";root.appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0xffffff,0x6b8052,.95));const sun=new THREE.DirectionalLight(0xffedcf,1.05);sun.position.set(-20,35,15);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x9edcf0);scene.fog=null;
+const camera=new THREE.PerspectiveCamera(65,Math.max(1,innerWidth)/Math.max(1,innerHeight),.1,220);camera.position.set(0,2.4,14);camera.lookAt(0,1,0);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,isCoarse()?1.25:1.5));renderer.setSize(Math.max(1,root.clientWidth),Math.max(1,root.clientHeight),false);renderer.shadowMap.enabled=false;renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.NoToneMapping;renderer.domElement.style.cssText="position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0";root.appendChild(renderer.domElement);renderer.setClearColor(0x9edcf0,1);renderer.domElement.addEventListener("webglcontextlost",e=>{e.preventDefault();showLoadError("WebGL context lost on this device. Close other tabs and reload.")});
+scene.add(new THREE.HemisphereLight(0xffffff,0x6b8052,.95));const sun=new THREE.DirectionalLight(0xffedcf,1.05);sun.position.set(-20,35,15);sun.castShadow=false;scene.add(sun);
 const mat=(c,r)=>new THREE.MeshStandardMaterial({color:c,roughness:r===undefined?.85:r});
 const grass=mat(0x69ad62),road=mat(0x777b88),sidewalk=mat(0xe8c99b),brick=mat(0x94766e),cream=mat(0xd8c6a9),roof=mat(0x8a6686),windowMat=new THREE.MeshStandardMaterial({color:0xf5dca0,emissive:0x80602c,emissiveIntensity:.25}),treeMat=mat(0x4d9a65),trunk=mat(0x5c4538);
 function box(w,h,d,m,x,y,z){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);return o}
@@ -198,7 +198,7 @@ renderer.domElement.addEventListener("click",e=>{if(!started||dialogue||document
 lady.traverse(o=>{if(o.isMesh)o.userData.isLady=true});
 drawMap();
 setInterval(()=>{if(started){state.day++;state.hunger=Math.max(0,state.hunger-1);state.energy=Math.max(0,state.energy-1);state.sleep=Math.max(0,state.sleep-1);renderMeters()}},60000);
-renderMeters();window.addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+renderMeters();window.addEventListener("resize",()=>{camera.aspect=Math.max(1,innerWidth)/Math.max(1,innerHeight);camera.updateProjectionMatrix();renderer.setSize(Math.max(1,root.clientWidth),Math.max(1,root.clientHeight))});
 }
 window.addEventListener("error",e=>showLoadError("Game startup error: "+(e.message||"unknown JavaScript error")));
 window.addEventListener("unhandledrejection",e=>showLoadError("Game startup error: "+(e.reason&&e.reason.message?e.reason.message:"unexpected loading error")));
