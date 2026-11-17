@@ -13,12 +13,16 @@
 .talkPrompt{display:none;position:fixed;z-index:7;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--lime);color:#171a27;border:0;border-radius:30px;padding:14px 22px;font:800 11px ui-sans-serif,system-ui;letter-spacing:.08em;box-shadow:0 12px 35px #0007}.talkPrompt.show{display:block}
 .overlay{display:none;position:fixed;z-index:10;inset:0;background:rgba(4,12,16,.64);backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:16px}.overlay.open{display:flex}.sheet{width:min(680px,100%);max-height:82vh;overflow:auto;background:#171c2a;border:1px solid rgba(222,228,241,.18);border-radius:22px;padding:22px;box-shadow:0 30px 90px #0009}.sheethead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:15px;margin-bottom:15px}.sheet h2{font-size:24px;letter-spacing:-.04em;margin:0}.close{background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:22px;padding:9px 13px;color:#f4f1e8;font:10px ui-sans-serif,system-ui;font-weight:700}.entry{padding:13px 0;border-bottom:1px solid rgba(255,255,255,.1)}.entry small{font:9px ui-sans-serif,system-ui;color:var(--lime);letter-spacing:.12em}.entry b{display:block;font-size:16px;margin:6px 0}.entry p,.intro{font:12px/1.65 ui-sans-serif,system-ui;color:#b5bac9;margin:5px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px}.tile b{font-size:14px}.tile p{font:11px/1.5 ui-sans-serif,system-ui;color:#b5bac9}.dialogue{display:flex;flex-direction:column;gap:10px}.bubble{max-width:88%;padding:13px 16px;border-radius:16px;background:#303b55;font:13px/1.55 ui-sans-serif,system-ui;color:#f3f2e9}.bubble.me{align-self:flex-end;background:#ff9279;color:#171a27}.choices{display:flex;flex-wrap:wrap;gap:8px}.choices button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#f2f1e8;border-radius:22px;padding:10px 13px;font:11px ui-sans-serif,system-ui}.field{width:100%;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#f4f1e8;padding:12px;font:12px ui-sans-serif,system-ui;margin:7px 0}.gold{background:var(--lime);color:#171a27;border:0;border-radius:22px;padding:12px 16px;font:800 10px ui-sans-serif,system-ui;letter-spacing:.08em}.toast{position:fixed;z-index:12;top:78px;left:50%;transform:translateX(-50%);background:#ffe2d9;color:#171a27;padding:11px 17px;border-radius:24px;font:11px ui-sans-serif,system-ui;font-weight:700;opacity:0;transition:.2s;pointer-events:none;box-shadow:0 8px 24px #0005}.toast.show{opacity:1}
 @media(max-width:680px){.top{height:58px;padding:9px 12px}.seal{width:34px;height:34px;border-radius:12px}.brand{gap:8px}.brand b{font-size:12px}.brand small{font-size:6px}.status{font-size:7px;padding:8px 10px}.help{top:65px;font-size:7px;padding:8px 12px;max-width:calc(100vw - 24px);white-space:normal;line-height:1.4}.menu{top:108px;left:10px;right:10px;justify-content:center;gap:5px}.menu button{padding:9px 10px;font-size:8px}.actions{top:auto;right:10px;bottom:154px;flex-direction:column;gap:5px}.actions button{font-size:8px;padding:9px 11px}.joystick{width:108px;height:108px}.base{width:108px;height:108px}.knob{width:43px;height:43px}.hud{right:9px;bottom:17px;width:min(188px,calc(100vw - 122px));padding:11px 12px;border-radius:14px}.hudhead b{font-size:12px}.hudhead small{font-size:7px}.hud p{font-size:10px;margin-top:7px}.hud .thought{font-size:8px}.lookhint{bottom:119px;left:auto;right:9px;transform:none;max-width:calc(100vw - 125px);font-size:7px;line-height:1.4;padding:8px 10px}.overlay{padding:9px}.sheet{padding:16px;border-radius:17px;max-height:84vh}.sheet h2{font-size:20px}.grid{grid-template-columns:1fr}}
+
+.minimap{position:fixed;z-index:5;left:20px;bottom:20px;width:196px;height:196px;border-radius:50%;overflow:hidden;border:2px solid rgba(232,242,248,.72);background:rgba(10,19,28,.88);box-shadow:0 10px 34px #0008,0 0 0 5px #0a152b55;backdrop-filter:blur(8px);pointer-events:none}
+.minimap canvas{width:100%;height:100%;display:block}.maplabel{position:absolute;left:50%;top:9px;transform:translateX(-50%);font:800 8px system-ui;letter-spacing:.16em;color:#eaf3f7;text-shadow:0 1px 5px #000;white-space:nowrap}.maplegend{position:absolute;left:50%;bottom:9px;transform:translateX(-50%);display:flex;gap:9px;font:700 8px system-ui;color:#eef4f6;text-shadow:0 1px 5px #000;white-space:nowrap}.maplegend span{display:flex;align-items:center;gap:4px}.maplegend i{width:7px;height:7px;border-radius:50%;display:inline-block;background:#4de0ff}.maplegend .ladykey{background:#ffc85b}
+@media(max-width:680px){.minimap{width:132px;height:132px;left:9px;bottom:17px}.maplabel{top:7px;font-size:6px}.maplegend{bottom:7px;font-size:6px;gap:6px}.maplegend i{width:6px;height:6px}}
 </style></head><body>
-<div id="world"></div><header class="top"><div class="brand"><div class="seal">L</div><div><b>LADY <span>BRIEFINGTON</span></b><small>LA CITÉ DES AURORES · MONDE À EXPLORER</small></div></div><div class="status" id="clock">MONDE ÉVEILLÉ</div></header>
-<div class="help">LES ÎLES DE BRUME · APPROCHE-TOI DE LADY POUR LUI PARLER</div>
+<div id="world"></div><header class="top"><div class="brand"><div class="seal">L</div><div><b>LADY <span>BRIEFINGTON</span></b><small>QUARTIER DES HALLES · MONDE À EXPLORER</small></div></div><div class="status" id="clock">MONDE ÉVEILLÉ</div></header>
+<div class="help">QUARTIER DES HALLES · RETROUVE LADY SUR LA MINICARTE</div>
 <div class="actions"><button id="home">◎ ME REPLACER</button><button id="zoom">＋ ZOOM</button></div>
 <nav class="menu"><button data-panel="journal">☷ Journal</button><button data-panel="bag">▣ Sac à dos</button><button data-panel="discoveries">◇ Découvertes</button><button data-panel="letter">✉ Lui écrire</button></nav>
-<div class="joystick" id="joy"><div class="base"><div class="knob" id="knob"></div></div></div><div class="lookhint">TOUCHE À GAUCHE POUR AVANCER · GLISSE À DROITE POUR REGARDER</div>
+<div class="minimap"><canvas id="minimapCanvas" width="420" height="420"></canvas><div class="maplabel">QUARTIER DES HALLES</div><div class="maplegend"><span><i></i> VOUS</span><span><i class="ladykey"></i> LADY</span></div></div><div class="joystick" id="joy"><div class="base"><div class="knob" id="knob"></div></div></div><div class="lookhint">TOUCHE À GAUCHE POUR AVANCER · GLISSE À DROITE POUR REGARDER</div>
 <button class="talkPrompt" id="talkPrompt">✦ PARLER À LADY</button><div class="hud"><div class="hudhead"><b>Lady Briefington</b><small id="ladyState">EN EXPLORATION</small></div><p id="doing">Elle se promène quelque part sur l'île…</p><div class="thought" id="thought">Tu peux partir à sa recherche.</div></div>
 <div class="toast" id="toast"></div><div class="overlay" id="overlay"><section class="sheet"><div class="sheethead"><h2 id="title">Journal</h2><button class="close" id="close">FERMER ✕</button></div><div id="body"></div></section></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script><script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -55,57 +59,50 @@ function addMesh(g,m,x,y,z,rx=0,ry=0,rz=0,parent=scene){const o=new THREE.Mesh(g
 function cylinder(x,z,r1,r2,h,m,y=h/2,n=48){return addMesh(new THREE.CylinderGeometry(r1,r2,h,n),m,x,y,z)}
 function box(x,y,z,w,h,d,m,ry=0){return addMesh(new THREE.BoxGeometry(w,h,d),m,x,y,z,0,ry,0)}
 function ring(x,y,z,r,t,m){return addMesh(new THREE.TorusGeometry(r,t,12,96),m,x,y,z,Math.PI/2)}
-// A complete new solarpunk/futurist environment: luminous lagoon, pearl architecture and curved forms.
-const waterMat=new THREE.MeshPhysicalMaterial({color:0x0b526c,roughness:.16,metalness:.28,transparent:true,opacity:.94,clearcoat:1});
-addMesh(new THREE.CircleGeometry(62,96),waterMat,0,-1.1,0,-Math.PI/2);
-addMesh(new THREE.CircleGeometry(24,96),ground,0,-.24,0,-Math.PI/2);
-const outerRing=ring(0,-.12,0,23.7,.24,gold);
-for(let i=0;i<72;i++){let a=i*Math.PI*2/72,x=Math.cos(a)*24,z=Math.sin(a)*24;addMesh(new THREE.BoxGeometry(.34,.16,.12),glow,x,-.02,z,0,-a,0)}
-// Main radial promenades and a central plaza.
-box(0,-.08,0,5,.16,42,mat(0x526b7b,.48,.3));
-box(0,-.07,0,42,.14,5,mat(0x526b7b,.48,.3));
-cylinder(0,0,6.8,6.8,.22,pearl,.02,96);ring(0,.17,0,5.7,.07,glow);ring(0,.18,0,4.8,.045,gold);
-cylinder(0,0,2.15,2.15,.12,dark,.19,64);
-const core=cylinder(0,0,1.25,1.65,5.4,pearl,2.9,64);core.scale.y=1;
-cylinder(0,0,1.9,1.35,.42,gold,5.65,64);cylinder(0,0,.8,1.05,1.1,glass,6.35,48);
-ring(0,6.95,0,1.05,.09,glow);
-for(let i=0;i<8;i++){let a=i*Math.PI/4,x=Math.cos(a)*3.1,z=Math.sin(a)*3.1;let p=addMesh(new THREE.CylinderGeometry(.13,.22,3.2,20),white,x,1.65,z);p.rotation.z=Math.cos(a)*-.12;p.rotation.x=Math.sin(a)*.12;ring(x,3.2,z,.25,.045,gold)}
-// Four monumental gate structures with open passages.
-function gate(x,z,rot=0){let g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;scene.add(g);for(let side of [-1,1]){let p=new THREE.Mesh(new THREE.CylinderGeometry(.42,.58,5.8,32),pearl);p.position.set(side*3,2.9,0);p.castShadow=true;p.receiveShadow=true;g.add(p);let band=new THREE.Mesh(new THREE.TorusGeometry(.44,.075,10,40),gold);band.position.set(side*3,4.55,0);g.add(band)}let arch=new THREE.Mesh(new THREE.TorusGeometry(3,.34,16,72,Math.PI),white);arch.position.set(0,5.7,0);arch.rotation.z=Math.PI;arch.castShadow=true;g.add(arch);let strip=new THREE.Mesh(new THREE.TorusGeometry(3,.055,8,72,Math.PI),glow);strip.position.set(0,5.7,.04);strip.rotation.z=Math.PI;g.add(strip);return g}
-gate(0,-17,0);gate(17,0,Math.PI/2);gate(-17,0,Math.PI/2);gate(0,17,Math.PI);
-// Curved residential pavilions, glass wings, terraces.
-function pavilion(x,z,rot=0){let g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;scene.add(g);
-let base=new THREE.Mesh(new THREE.CylinderGeometry(3.2,3.55,.55,64),dark);base.position.y=.08;base.castShadow=true;base.receiveShadow=true;g.add(base);
-let body=new THREE.Mesh(new THREE.CylinderGeometry(2.65,3.05,3.7,64,1,true,0,Math.PI*1.62),white);body.position.y=2.15;body.castShadow=true;body.receiveShadow=true;g.add(body);
-let windowBand=new THREE.Mesh(new THREE.CylinderGeometry(2.72,2.72,1.55,64,1,true,0,Math.PI*1.62),glass);windowBand.position.y=2.35;g.add(windowBand);
-let roof=new THREE.Mesh(new THREE.SphereGeometry(2.85,48,18,0,Math.PI*2,0,Math.PI/2),pearl);roof.position.y=4.05;roof.scale.y=.35;roof.castShadow=true;g.add(roof);
-let light=new THREE.Mesh(new THREE.TorusGeometry(2.82,.07,10,64),glow);light.position.y=3.45;g.add(light);
-let deck=new THREE.Mesh(new THREE.CylinderGeometry(3.7,3.7,.14,64),gold);deck.position.y=.43;g.add(deck);
-return g}
-pavilion(-12,-10,.4);pavilion(12,-10,-.4);pavilion(-12,10,-.4);pavilion(12,10,.4);
-// slender observation spires, sculptural fins and gardens.
-for(let i=0;i<12;i++){let a=i*Math.PI/6,x=Math.cos(a)*19,z=Math.sin(a)*19;let h=4.5+(i%3)*1.2;let p=addMesh(new THREE.ConeGeometry(.58,h,6),i%2?pearl:dark,x,h/2-.15,z,0,a);p.scale.set(.72,1,.72);ring(x,h-.35,z,.48,.045,glow);addMesh(new THREE.SphereGeometry(.18,16,12),glow,x,h+.08,z)}
-function tree(x,z,s=1){let trunk=addMesh(new THREE.CylinderGeometry(.12*s,.2*s,2.2*s,12),gold,x,1.1*s,z);let crown=addMesh(new THREE.SphereGeometry(1.15*s,24,18),mat(0x317f83,.48,.12),x,2.5*s,z);crown.scale.set(1.25,.8,1);let halo=ring(x,3.05*s,z,.92*s,.035,glow)}
-for(let p of [[-8,-13],[8,-13],[-8,13],[8,13],[-16,5],[16,5],[-16,-5],[16,-5]])tree(p[0],p[1],.8);
-for(let i=0;i<28;i++){let a=i*2.399,r=8+(i%5)*1.6,x=Math.cos(a)*r,z=Math.sin(a)*r;let bed=addMesh(new THREE.CylinderGeometry(.58,.7,.16,24),dark,x,-.02,z);let plant=addMesh(new THREE.SphereGeometry(.38,16,12),mat(i%2?0x54b9a2:0x8aa7ba,.55),x,.3,z);plant.scale.y=1.35;addMesh(new THREE.SphereGeometry(.08,12,10),gold,x,.72,z)}
-// Floating luminous beacons around the promenade.
-for(let i=0;i<8;i++){let a=i*Math.PI/4,x=Math.cos(a)*14,z=Math.sin(a)*14;let stem=addMesh(new THREE.CylinderGeometry(.045,.07,1.5,12),gold,x,.75,z);let orb=addMesh(new THREE.SphereGeometry(.22,20,16),glow,x,1.62,z);let halo=ring(x,1.62,z,.35,.035,glow)}
-// Decorative staircases: broad shallow steps and a smooth central ramp make them traversable.
-function stair(x,z,rot=0){let g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;scene.add(g);for(let i=0;i<9;i++){let step=new THREE.Mesh(new THREE.BoxGeometry(3.4,.12,.42),white);step.position.set(0,.06+i*.055,1.7-i*.42);step.castShadow=true;step.receiveShadow=true;g.add(step)}let ramp=new THREE.Mesh(new THREE.BoxGeometry(2.45,.1,3.75),mat(0x829ba8,.38,.3));ramp.position.set(0,.25,0);ramp.rotation.x=-.13;ramp.receiveShadow=true;g.add(ramp);let rail1=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,3.8,12),glow);rail1.position.set(-1.55,.65,0);rail1.rotation.x=-.13;g.add(rail1);let rail2=rail1.clone();rail2.position.x=1.55;g.add(rail2)}
-stair(-6,0,Math.PI/2);stair(6,0,-Math.PI/2);
-// Landmark names correspond to actual places in the new city.
-const places=[{name:'La Porte des Aurores',x:0,z:-17,desc:'Une arche monumentale capte les premières lumières du jour.'},{name:'Le Pavillon des Marées',x:12,z:-10,desc:'Un observatoire de verre posé au-dessus de la lagune.'},{name:'Les Jardins suspendus',x:8,z:13,desc:'Des jardins lumineux se sont installés autour des bassins.'},{name:'La Flèche céleste',x:-19,z:0,desc:'Une tour fine domine les eaux et les passerelles.'},{name:'Le Cœur de la cité',x:0,z:0,desc:'La grande colonne de lumière semble alimenter toute la ville.'}];
-const colliders=[];
-function solidBox(x,z,w,d,pad=.55){colliders.push({type:'box',x,z,w:w/2+pad,d:d/2+pad})}
-function solidCircle(x,z,r){colliders.push({type:'circle',x,z,r})}
-function blocked(x,z){if(Math.hypot(x,z)>22.1)return true;return colliders.some(c=>c.type==='box'?Math.abs(x-c.x)<c.w&&Math.abs(z-c.z)<c.d:Math.hypot(x-c.x,z-c.z)<c.r)}
-// Physical footprints: openings remain clear, all other pavilion walls and gate piers block passage.
-for(let p of [[-12,-10],[12,-10],[-12,10],[12,10]])solidCircle(p[0],p[1],2.85);
-for(let a of [[-3,-17],[3,-17],[14,-3],[14,3],[-14,-3],[-14,3],[-3,17],[3,17]])solidCircle(a[0],a[1],.72);
-for(let i=0;i<12;i++){let a=i*Math.PI/6;solidCircle(Math.cos(a)*19,Math.sin(a)*19,.52)}solidCircle(0,0,1.45);for(let i=0;i<8;i++){let a=i*Math.PI/4;solidCircle(Math.cos(a)*3.1,Math.sin(a)*3.1,.34)}
+// Quartier contemporain piéton : chaussées, trottoirs, immeubles, vitrines, mobilier urbain et square.
+const asphalt=mat(0x252d35,.92),sidewalk=mat(0x9a9da0,.86),curb=mat(0xc1c4c5,.78),brick=mat(0x8b7770,.88),stucco=mat(0xb9b7ae,.82),facade=mat(0x737f87,.72),shopGlass=new THREE.MeshPhysicalMaterial({color:0x78a9bd,metalness:.12,roughness:.16,transparent:true,opacity:.68,clearcoat:1}),windowDark=mat(0x203440,.24,.3),metal=mat(0x454f56,.42,.65),treeMat=mat(0x426b50,.82),leaf2=mat(0x66845a,.86),roadPaint=mat(0xd8d6c9,.7),lampGlow=new THREE.MeshBasicMaterial({color:0xffe6b2});
+loadPBR('concrete_floor_01',sidewalk,5);loadPBR('marble_01',curb,2);loadPBR('metal_plate',metal,3);
+textureLoader.load('https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/asphalt_02/asphalt_02_diff_2k.jpg',t=>{t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(8,8);t.encoding=THREE.sRGBEncoding;asphalt.map=t;asphalt.needsUpdate=true},undefined,()=>{});
+textureLoader.load('https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/asphalt_02/asphalt_02_nor_gl_2k.jpg',t=>{t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(8,8);asphalt.normalMap=t;asphalt.needsUpdate=true},undefined,()=>{});
+function plane(x,z,w,d,m,y=-.18){return addMesh(new THREE.PlaneGeometry(w,d),m,x,y,z,-Math.PI/2)}
+function road(x,z,w,d){plane(x,z,w,d,asphalt,-.12);if(w>d){for(let xx=x-w/2+1;xx<x+w/2-1;xx+=3)box(xx,-.105,z,.95,.018,.09,roadPaint)}else{for(let zz=z-d/2+1;zz<z+d/2-1;zz+=3)box(x,-.105,zz,.09,.018,.95,roadPaint)}}
+function sidewalkStrip(x,z,w,d){plane(x,z,w,d,sidewalk,-.07)}
+plane(0,0,54,54,grass,-.28);
+road(0,0,54,7);road(0,-15,54,6);road(0,15,54,6);road(-16,0,6,54);road(16,0,6,54);
+for(let z of [-4.1,4.1,-19.1,-10.9,10.9,19.1]){sidewalkStrip(0,z,54,1.15);box(0,-.045,z,54,.12,.12,curb)}
+for(let x of [-19.1,-12.9,-3.1,3.1,12.9,19.1]){sidewalkStrip(x,0,1.15,54);box(x,-.045,0,.12,.12,54,curb)}
+function crosswalk(x,z,horizontal=true){for(let i=0;i<7;i++){if(horizontal)box(x-2.3+i*.76,-.075,z,.42,.025,2.5,roadPaint);else box(x,-.075,z-2.3+i*.76,2.5,.025,.42,roadPaint)}}
+crosswalk(-16,0);crosswalk(16,0);crosswalk(0,-15,false);crosswalk(0,15,false);
+const buildingFootprints=[];
+function apartment(x,z,w,d,floors=3,style=0){
+ const h=floors*2.65,bodyMat=[stucco,brick,facade][style%3],g=new THREE.Group();g.position.set(x,0,z);scene.add(g);
+ const body=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),bodyMat);body.position.y=h/2;body.castShadow=true;body.receiveShadow=true;g.add(body);
+ const roof=new THREE.Mesh(new THREE.BoxGeometry(w+.18,.22,d+.18),metal);roof.position.y=h+.1;roof.castShadow=true;g.add(roof);
+ const frontZ=z+(z<0?d/2+.035:-d/2-.035),dir=z<0?1:-1;
+ for(let floor=0;floor<floors;floor++){let yy=1+floor*2.65;for(let col=0;col<Math.max(2,Math.floor(w/1.5));col++){let xx=x-w/2+.85+col*((w-1.2)/Math.max(1,Math.floor(w/1.5)-1));let win=new THREE.Mesh(new THREE.BoxGeometry(.78,1.25,.075),shopGlass);win.position.set(xx,yy,frontZ);g.add(win);box(xx,yy-.68,frontZ+dir*.1,.9,.075,.26,metal);if(floor>0){box(xx,yy-.82,frontZ+dir*.2,.96,.055,.46,curb);for(let q of [-.44,.44])box(xx+q,yy-.58,frontZ+dir*.2,.045,.5,.045,metal)}}box(x,yy-.78,frontZ+dir*.14,w*.9,.09,.3,metal)}
+ const door=new THREE.Mesh(new THREE.BoxGeometry(1.05,2.05,.12),windowDark);door.position.set(x-w*.26,.98,frontZ+dir*.08);g.add(door);
+ const shop=new THREE.Mesh(new THREE.BoxGeometry(w*.62,1.75,.08),shopGlass);shop.position.set(x+w*.19,1.05,frontZ+dir*.09);g.add(shop);
+ box(x,2.18,frontZ+dir*.17,w*.72,.24,.18,metal);
+ for(let i=0;i<3;i++){let unit=new THREE.Mesh(new THREE.BoxGeometry(.75,.5,.65),metal);unit.position.set(x-w*.32+i*w*.3,h+.42,z);g.add(unit)}
+ buildingFootprints.push({x,z,w,d});
+}
+apartment(-9,-11,9,7,3,0);apartment(9,-11,9,7,4,2);apartment(-9,11,9,7,4,1);apartment(9,11,9,7,3,0);apartment(-23,0,6,12,3,2);apartment(23,0,6,12,4,1);apartment(0,-23,12,5,3,0);apartment(0,23,12,5,3,2);
+function storefront(x,z,labelText){box(x,.13,z,4.6,.26,3.4,curb);box(x,1.55,z,4.3,2.6,brick);box(x,1.35,z+(z<0?1.72:-1.72),3.5,1.9,.08,shopGlass);box(x,2.48,z+(z<0?1.83:-1.83),3.8,.32,.28,metal);let awning=box(x,2.2,z+(z<0?2:-2),3.9,.12,.85,mat(0x557b87,.65));awning.castShadow=true;let sign=document.createElement('canvas');sign.width=512;sign.height=96;let c=sign.getContext('2d');c.fillStyle='#1c303a';c.fillRect(0,0,512,96);c.fillStyle='#f4e9d4';c.font='bold 48px Arial';c.textAlign='center';c.fillText(labelText,256,65);let tex=new THREE.CanvasTexture(sign);let board=new THREE.Mesh(new THREE.PlaneGeometry(3.4,.62),new THREE.MeshBasicMaterial({map:tex}));board.position.set(x,2.85,z+(z<0?1.9:-1.9));if(z>0)board.rotation.y=Math.PI;scene.add(board)}
+storefront(-3,-10.9,'CAFÉ DES HALLES');storefront(3,10.9,'ÉPICERIE');
+function tree(x,z,s=1){addMesh(new THREE.CylinderGeometry(.13*s,.2*s,2*s,12),mat(0x66513d,.9),x,s,z);let crown=addMesh(new THREE.SphereGeometry(1.15*s,20,16),treeMat,x,2*s,z);crown.scale.set(1.1,.95,1.05);let crown2=addMesh(new THREE.SphereGeometry(.78*s,18,14),leaf2,x+.38*s,2.35*s,z+.18*s);crown2.scale.set(1,.8,1)}
+for(let p of [[-22,-6],[-22,7],[22,-6],[22,7],[-6,-20],[6,-20],[-6,20],[6,20],[-13,-6],[13,6]])tree(p[0],p[1],.85);
+function lamp(x,z){addMesh(new THREE.CylinderGeometry(.045,.07,4.2,12),metal,x,2.1,z);box(x+.42,4.12,z,.9,.08,.08,metal);addMesh(new THREE.SphereGeometry(.13,12,10),lampGlow,x+.8,4,z);let light=new THREE.PointLight(0xffdca6,.65,8);light.position.set(x+.8,3.9,z);scene.add(light)}
+for(let p of [[-5,-5],[5,-5],[-5,5],[5,5],[-20,-4],[20,4],[-5,-18],[5,18]])lamp(p[0],p[1]);
+function car(x,z,color,rot=0){let g=new THREE.Group();g.position.set(x,.05,z);g.rotation.y=rot;scene.add(g);let paint=mat(color,.28,.55);let body=new THREE.Mesh(new THREE.BoxGeometry(1.65,.55,3.2),paint);body.position.y=.55;body.castShadow=true;g.add(body);let cabin=new THREE.Mesh(new THREE.BoxGeometry(1.35,.62,1.7),shopGlass);cabin.position.set(0,1.08,-.12);g.add(cabin);for(let wx of [-.82,.82])for(let wz of [-1,1]){let wheel=new THREE.Mesh(new THREE.CylinderGeometry(.28,.28,.16,20),windowDark);wheel.position.set(wx,.34,wz);wheel.rotation.z=Math.PI/2;g.add(wheel)}}
+car(-10,0,0x596b76,Math.PI/2);car(10,0,0x9a5d4b,-Math.PI/2);car(0,-7,0x3f5d83,0);
+const places=[{name:'Café des Halles',x:-3,z:-10.9,desc:'Un café de quartier où les habitués se retrouvent dès le matin.'},{name:'La place du Marché',x:0,z:0,desc:'Une petite place bordée de commerces et de terrasses.'},{name:'L’Épicerie du Coin',x:3,z:10.9,desc:'Une épicerie indépendante au cœur du quartier.'},{name:'Le Jardin public',x:-19,z:0,desc:'Un petit square ombragé entre les rues du quartier.'},{name:'Le boulevard des Tilleuls',x:0,z:-15,desc:'L’axe principal du quartier, animé du matin au soir.'}];
+const colliders=[];function solidCircle(x,z,r){colliders.push({x,z,r})}
+function blocked(x,z){if(Math.abs(x)>25||Math.abs(z)>25)return true;return colliders.some(c=>Math.hypot(x-c.x,z-c.z)<c.r)}
+for(let b of buildingFootprints)solidCircle(b.x,b.z,Math.min(b.w,b.d)*.46);
+for(let p of [[-3,-10.9],[3,10.9]])solidCircle(p[0],p[1],1.9);
 // Character models: visitor and Lady are independent agents.
 function person(coat,hat){const group=new THREE.Group();const dress=new THREE.Mesh(new THREE.ConeGeometry(.48,1.28,24),mat(coat));dress.position.y=.72;dress.castShadow=true;group.add(dress);const collar=new THREE.Mesh(new THREE.SphereGeometry(.24,20,16),mat(0xf0e5cf));collar.position.y=1.27;collar.scale.set(1,.55,.8);group.add(collar);const head=new THREE.Mesh(new THREE.SphereGeometry(.23,24,20),mat(0xe8c8a6));head.position.y=1.58;group.add(head);const hair=new THREE.Mesh(new THREE.SphereGeometry(.245,20,16),mat(0x51382e));hair.position.set(0,1.68,-.055);hair.scale.set(1.04,1,.92);group.add(hair);const brim=new THREE.Mesh(new THREE.CylinderGeometry(.39,.39,.045,32),mat(hat));brim.position.y=1.82;group.add(brim);const crown=new THREE.Mesh(new THREE.CylinderGeometry(.22,.25,.25,24),mat(hat));crown.position.y=1.96;group.add(crown);const pack=new THREE.Mesh(new THREE.BoxGeometry(.34,.42,.2),mat(0x6b5137));pack.position.set(0,.78,-.34);group.add(pack);scene.add(group);return group}
-const lady=person(0x2b9eaa,0xd6b77b);lady.position.set(-2,0,2);
+const lady=person(0x334d67,0xc9a46b);lady.position.set(-3,0,-10.9);
 const beacon=new THREE.Group();
 const halo=new THREE.Mesh(new THREE.TorusGeometry(.28,.035,8,36),new THREE.MeshBasicMaterial({color:0xff9279}));halo.position.y=2.65;beacon.add(halo);
 const beam=new THREE.Mesh(new THREE.CylinderGeometry(.025,.12,1.2,12,1,true),new THREE.MeshBasicMaterial({color:0xff9279,transparent:true,opacity:.22,side:THREE.DoubleSide}));beam.position.y=2.95;beacon.add(beam);lady.add(beacon);
@@ -128,6 +125,11 @@ let joyOrigin={x:0,y:0},joyPointer=null;
 window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true});window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 $('home').onclick=()=>{camera.position.set(0,1.65,18);camera.rotation.order='YXZ';camera.rotation.set(pitch,yaw,0);say('Tu es ici.')};$('zoom').onclick=()=>{zoom=Math.max(.75,zoom-.15);camera.fov=48*zoom;camera.updateProjectionMatrix()};
 const clockEl=$('clock');
+const mapCanvas=$('minimapCanvas'),mapCtx=mapCanvas.getContext('2d');
+function drawMinimap(){const c=mapCtx,W=mapCanvas.width,H=mapCanvas.height,cx=W/2,cy=H/2,R=196,scale=7.2;c.clearRect(0,0,W,H);c.save();c.beginPath();c.arc(cx,cy,R,0,Math.PI*2);c.clip();c.fillStyle='#17252d';c.fillRect(0,0,W,H);
+c.save();c.translate(cx,cy);c.rotate(-yaw);c.fillStyle='#34444b';for(let x of [-23,-9,9,23])for(let z of [-23,-4,4,23])c.fillRect(x*scale,z*scale,14*scale,8*scale);c.fillStyle='#3f5058';for(let z of [-15,0,15])c.fillRect(-27*scale,(z-3)*scale,54*scale,6*scale);for(let x of [-16,0,16])c.fillRect((x-3)*scale,-27*scale,6*scale,54*scale);c.fillStyle='#87918e';for(let b of buildingFootprints)c.fillRect((b.x-b.w/2)*scale,(b.z-b.d/2)*scale,b.w*scale,b.d*scale);c.fillStyle='#52715a';c.fillRect(-22*scale,-3*scale,6*scale,6*scale);c.restore();
+let dx=lady.position.x-camera.position.x,dz=lady.position.z-camera.position.z,tx=cx+(dx*Math.cos(yaw)-dz*Math.sin(yaw))*scale,ty=cy+(dx*Math.sin(yaw)+dz*Math.cos(yaw))*scale;c.setLineDash([8,8]);c.strokeStyle='rgba(255,202,93,.7)';c.lineWidth=3;c.beginPath();c.moveTo(cx,cy);c.lineTo(tx,ty);c.stroke();c.setLineDash([]);c.beginPath();c.arc(tx,ty,12,0,Math.PI*2);c.fillStyle='#ffc85b';c.fill();c.lineWidth=4;c.strokeStyle='#26313a';c.stroke();c.beginPath();c.arc(cx,cy,10,0,Math.PI*2);c.fillStyle='#49d9ff';c.fill();c.strokeStyle='#f2fbff';c.lineWidth=3;c.stroke();c.beginPath();c.moveTo(cx,cy-24);c.lineTo(cx-9,cy-5);c.lineTo(cx,cy-9);c.lineTo(cx+9,cy-5);c.closePath();c.fillStyle='#f5fbff';c.fill();c.restore()}
+
 function animate(t){requestAnimationFrame(animate);let dt=Math.min(.05,(t-last)/1000);last=t;
 let side=joy.x,forward=-joy.y;if(keys.a||keys.arrowleft)side-=1;if(keys.d||keys.arrowright)side+=1;if(keys.w||keys.arrowup)forward+=1;if(keys.s||keys.arrowdown)forward-=1;let l=Math.hypot(side,forward);if(l>.05){side/=Math.max(1,l);forward/=Math.max(1,l);let speed=5.2*dt,dx=(Math.cos(yaw)*side-Math.sin(yaw)*forward)*speed,dz=(-Math.sin(yaw)*side-Math.cos(yaw)*forward)*speed,nx=camera.position.x+dx,nz=camera.position.z+dz;if(!blocked(nx,camera.position.z))camera.position.x=nx;if(!blocked(camera.position.x,nz))camera.position.z=nz}
 camera.position.y=1.65;camera.rotation.order='YXZ';camera.rotation.set(pitch,yaw,0);
@@ -137,7 +139,7 @@ lady.position.y=Math.sin(t*.004)*.035;
 clock+=dt*1.1;if(clock>1440){clock-=1440;saved.day++}clockEl.textContent='JOUR '+String(saved.day).padStart(2,'0')+' · '+String(Math.floor(clock/60)).padStart(2,'0')+':'+String(Math.floor(clock%60)).padStart(2,'0');
 $('doing').textContent=ladyAction;$('thought').textContent='« '+ladyThought+' »';
 let nearLady=Math.hypot(camera.position.x-lady.position.x,camera.position.z-lady.position.z)<3.4;$('talkPrompt').classList.toggle('show',nearLady);if(nearLady&&!visited.has(ladyTarget)){visited.add(ladyTarget);say('Tu as retrouvé Lady Briefington ! Approche-toi pour lui parler.');}
-renderer.render(scene,camera)}
+drawMinimap();renderer.render(scene,camera)}
 camera.position.set(0,1.65,18);let initialDir=new THREE.Vector3(lady.position.x-camera.position.x,0,lady.position.z-camera.position.z);yaw=Math.atan2(-initialDir.x,-initialDir.z);camera.rotation.order='YXZ';camera.rotation.set(-.04,yaw,0);renderer.domElement.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&e.clientX<innerWidth*.55){e.preventDefault();pressed=true;joyPointer=e.pointerId;joyOrigin={x:e.clientX,y:e.clientY};$('joy').style.left=e.clientX+'px';$('joy').style.top=e.clientY+'px';$('joy').classList.add('active');joyMove(e);renderer.domElement.setPointerCapture(e.pointerId);return}lookDrag={id:e.pointerId,x:e.clientX,y:e.clientY,yaw,pitch};renderer.domElement.setPointerCapture(e.pointerId)});renderer.domElement.addEventListener('pointermove',e=>{if(pressed&&e.pointerId===joyPointer){joyMove(e);return}if(!lookDrag||lookDrag.id!==e.pointerId)return;yaw=lookDrag.yaw-(e.clientX-lookDrag.x)*.004;pitch=Math.max(-.65,Math.min(.5,lookDrag.pitch-(e.clientY-lookDrag.y)*.003))});renderer.domElement.addEventListener('pointerup',e=>{if(e.pointerId===joyPointer){joyStop();joyPointer=null}if(lookDrag&&lookDrag.id===e.pointerId)lookDrag=null});renderer.domElement.addEventListener('pointercancel',e=>{if(e.pointerId===joyPointer){joyStop();joyPointer=null}if(lookDrag&&lookDrag.id===e.pointerId)lookDrag=null});$('talkPrompt').onclick=openTalk;chooseLady();requestAnimationFrame(animate);
 window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 })();
